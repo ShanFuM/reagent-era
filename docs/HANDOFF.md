@@ -30,13 +30,18 @@ pnpm dev            # → http://localhost:5173
 pnpm build:single   # → dist-single/index.html，双击即玩
 ```
 
-**如果你 `pnpm install` 报符号链接错误**：说明 `.npmrc` 没生效或被删了，
-把这两行加回去：
+**如果你 `pnpm install` 报符号链接错误**：说明 `.npmrc` 没生效或被删了。
+它里面的四条都是必须的：
 
 ```
-node-linker=hoisted
-package-import-method=copy
+node-linker=hoisted            # 不用符号链接
+package-import-method=copy     # 复制代替硬链接
+dangerously-allow-all-builds=true  # 允许 esbuild 跑安装脚本
 ```
+
+第三条容易被忽略：pnpm 10 起默认不执行依赖的安装脚本，
+装完会返回**非 0 退出码**，看起来像失败。实测 `pnpm-workspace.yaml` 里的
+`onlyBuiltDependencies` 在 pnpm 11 下没生效，所以用这个总开关。
 
 > Node 版本没要求，18 以上都行。项目没有原生依赖，不需要 Python 或 C++ 工具链。
 
