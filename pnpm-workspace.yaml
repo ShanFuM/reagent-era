@@ -1,5 +1,9 @@
-# 本文件在 pnpm 11 下实测不生效（onlyBuiltDependencies 未被采纳），
-# 实际生效的是 .npmrc 里的 dangerously-allow-all-builds=true。
-# 保留此文件是为了 pnpm 10 及更早版本的兼容，删掉也不影响本项目。
+# pnpm 10 以后，构建脚本相关设置要放在这里（package.json 的 pnpm 字段已不再读取）。
+#
+# 注意：CI 里这两个设置实测都不生效，所以工作流里显式传了
+# `--dangerously-allow-all-builds`。本地如果 install 报
+# ERR_PNPM_IGNORED_BUILDS，也请加上这个参数。
 onlyBuiltDependencies:
   - esbuild
+
+dangerouslyAllowAllBuilds: true

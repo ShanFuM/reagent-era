@@ -21,7 +21,9 @@ jobs:
           cache: pnpm
 
       - name: 安装依赖
-        run: pnpm install --frozen-lockfile
+        # pnpm 10 起默认不执行依赖的安装脚本，装完会返回非 0。
+        # .npmrc 里的开关在 CI 下不生效，所以这里显式传参。
+        run: pnpm install --frozen-lockfile --dangerously-allow-all-builds
 
       - name: 化学数据校验
         run: pnpm check:data

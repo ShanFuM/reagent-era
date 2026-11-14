@@ -40,8 +40,15 @@ dangerously-allow-all-builds=true  # 允许 esbuild 跑安装脚本
 ```
 
 第三条容易被忽略：pnpm 10 起默认不执行依赖的安装脚本，
-装完会返回**非 0 退出码**，看起来像失败。实测 `pnpm-workspace.yaml` 里的
-`onlyBuiltDependencies` 在 pnpm 11 下没生效，所以用这个总开关。
+装完会返回**非 0 退出码**，看起来像失败（报 `ERR_PNPM_IGNORED_BUILDS`）。
+
+如果 `.npmrc` 没解决，直接在命令里加参数：
+
+```bash
+pnpm install --dangerously-allow-all-builds
+```
+
+CI 里就是这么写的（`.github/workflows/ci.yml`），因为那两个配置项在 CI 环境下没生效。
 
 > Node 版本没要求，18 以上都行。项目没有原生依赖，不需要 Python 或 C++ 工具链。
 
