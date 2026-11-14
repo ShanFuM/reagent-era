@@ -1,0 +1,9 @@
+# 统一换行，避免 Windows / 其他系统的 diff 噪音
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+
+# 锁文件不要参与 diff 折叠
+pnpm-lock.yaml -diff

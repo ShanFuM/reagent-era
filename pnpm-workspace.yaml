@@ -1,0 +1,5 @@
+# pnpm 设置。pnpm 10 以后不再读取 package.json 里的 pnpm 字段。
+# esbuild 的安装脚本需要允许执行，否则 vite 构建会缺二进制。
+packages: []
+onlyBuiltDependencies:
+  - esbuild

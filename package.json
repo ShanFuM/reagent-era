@@ -1,0 +1,32 @@
+{
+  "name": "reagent-era",
+  "private": true,
+  "version": "0.2.0",
+  "description": "试剂纪元 Reagent Era — 化学反应对战游戏（2026 波克 AI 游戏创作大赛 · 寓教于游赛道）",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build",
+    "build:single": "vite build --mode single",
+    "preview": "vite preview --host 0.0.0.0",
+    "check:data": "node scripts/validate-data.mjs",
+    "check:types": "tsc --noEmit",
+    "check:chem": "vite build --ssr scripts/chem-check.ts --outDir .check/chem --emptyOutDir && node .check/chem/chem-check.js",
+    "check:ui": "vite build --ssr scripts/smoke.tsx --outDir .check/ui --emptyOutDir && node .check/ui/smoke.js",
+    "check:sim": "vite build --ssr scripts/sim.ts --outDir .check/sim --emptyOutDir && node .check/sim/sim.js",
+    "check": "pnpm check:data && pnpm check:types && pnpm check:chem && pnpm check:ui",
+    "test": "node scripts/formula.test.mjs"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "vite-plugin-singlefile": "^2.0.3"
+  }
+}

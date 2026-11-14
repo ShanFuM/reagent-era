@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-single/
+.sim/
+.check/
+*.local
+.DS_Store
+.vite/
+*.zip
+install.log
