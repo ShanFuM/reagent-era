@@ -1,0 +1,284 @@
+{
+  "1": {
+    "id": 1,
+    "name": "铁锈傀儡",
+    "stage": "初中",
+    "textbook": "九年级下册 第八单元 金属和金属材料",
+    "guide": "选两种试剂就能出招。先找能置换的：金属 + 酸，或金属 + 盐。",
+    "enemy": {
+      "name": "铁锈傀儡",
+      "art": "🗿",
+      "hp": 210,
+      "atk": 9,
+      "armor": 0,
+      "weakness": ["置换", "产气"],
+      "resist": ["中和"],
+      "intro": "一层锈壳裹着的旧实验器材，动作很慢，但很硬。"
+    },
+    "shelf": ["Zn", "Fe", "Mg", "HCl", "H2SO4", "CuSO4", "AgNO3", "Al", "Cu", "O2"],
+    "handSize": 5,
+    "energy": 1,
+    "balanceTime": 0,
+    "requireBalance": false
+  },
+  "2": {
+    "id": 2,
+    "name": "酸雾史莱姆",
+    "stage": "初中",
+    "textbook": "九年级下册 第十单元 常见的酸、碱、盐 · 中和反应",
+    "guide": "它是酸做的，所以怕碱。酸 + 碱 = 中和，打它翻倍。",
+    "enemy": {
+      "name": "酸雾史莱姆",
+      "art": "🫧",
+      "hp": 235,
+      "atk": 10,
+      "armor": 0,
+      "weakness": ["中和"],
+      "resist": ["沉淀"],
+      "intro": "一滩会爬的稀盐酸，碰到什么都想溶掉。"
+    },
+    "shelf": ["HCl", "H2SO4", "NaOH", "KOH", "Ca(OH)2", "Mg(OH)2", "Cu(OH)2", "Ba(OH)2"],
+    "handSize": 5,
+    "energy": 1,
+    "balanceTime": 0,
+    "requireBalance": false
+  },
+  "3": {
+    "id": 3,
+    "name": "沉淀壳蟹",
+    "stage": "初中",
+    "textbook": "九年级下册 第十单元 复分解反应与溶解性表",
+    "guide": "它有难溶的壳，先用沉淀把它封住。两种溶液混合后要有沉淀才算数。",
+    "enemy": {
+      "name": "沉淀壳蟹",
+      "art": "🦀",
+      "hp": 255,
+      "atk": 11,
+      "armor": 1,
+      "weakness": ["沉淀"],
+      "resist": ["置换"],
+      "intro": "壳上结满白色沉淀，普通攻击碰不动。"
+    },
+    "shelf": [
+      "AgNO3", "HCl", "BaCl2", "H2SO4", "Na2CO3", "Ca(OH)2",
+      "CuSO4", "NaOH", "FeCl3", "NaCl", "Na2SO4"
+    ],
+    "handSize": 5,
+    "energy": 1,
+    "balanceTime": 15,
+    "requireBalance": true
+  },
+  "4": {
+    "id": 4,
+    "name": "石灰巨像",
+    "stage": "初中",
+    "textbook": "九年级上册 第六单元 碳和碳的氧化物",
+    "guide": "第一只 Boss。它由碳酸钙构成——用产气反应把它掏空。",
+    "enemy": {
+      "name": "石灰巨像",
+      "art": "🏛",
+      "hp": 400,
+      "atk": 13,
+      "armor": 2,
+      "weakness": ["产气", "分解"],
+      "resist": ["中和"],
+      "intro": "整座石灰窑活了过来，每一步都震得地面开裂。"
+    },
+    "shelf": [
+      "CaCO3", "HCl", "CaO", "H2O", "CO2", "C", "O2", "CuO",
+      "Fe2O3", "CO", "NaHCO3", "Ca(OH)2", "Ca(HCO3)2"
+    ],
+    "handSize": 6,
+    "energy": 2,
+    "balanceTime": 15,
+    "requireBalance": true
+  },
+  "5": {
+    "id": 5,
+    "name": "氯气妖",
+    "stage": "高一",
+    "textbook": "必修第一册 第二章 第二节 氯及其化合物",
+    "guide": "氯气会置换出更弱的卤素，也会被碱吸收。找置换和氧化还原。",
+    "enemy": {
+      "name": "氯气妖",
+      "art": "☠",
+      "hp": 300,
+      "atk": 12,
+      "armor": 0,
+      "weakness": ["置换", "氧化还原"],
+      "resist": ["化合"],
+      "intro": "黄绿色的雾气聚成一张脸，呼吸就是腐蚀。"
+    },
+    "shelf": [
+      "Cl2", "H2O", "NaOH", "Ca(OH)2", "NaBr", "KI",
+      "Fe", "Cu", "H2", "MnO2", "HCl"
+    ],
+    "handSize": 6,
+    "energy": 2,
+    "balanceTime": 15,
+    "requireBalance": true
+  },
+  "6": {
+    "id": 6,
+    "name": "钠焰幽灵",
+    "stage": "高一",
+    "textbook": "必修第一册 第二章 第一节 钠及其化合物",
+    "guide": "钠遇水就炸。过氧化钠遇水、遇二氧化碳都会放出氧气——注意配平。",
+    "enemy": {
+      "name": "钠焰幽灵",
+      "art": "🔥",
+      "hp": 340,
+      "atk": 13,
+      "armor": 1,
+      "weakness": ["氧化还原", "置换"],
+      "resist": ["分解"],
+      "intro": "一团黄色火焰，靠近它的水都会被点着。"
+    },
+    "shelf": ["Na", "H2O", "O2", "Na2O2", "CO2", "Na2O", "Na2CO3", "NaHCO3", "HCl"],
+    "handSize": 6,
+    "energy": 2,
+    "balanceTime": 15,
+    "requireBalance": true
+  },
+  "7": {
+    "id": 7,
+    "name": "铁锈骑士",
+    "stage": "高一",
+    "textbook": "必修第一册 第三章 第一节 铁及其化合物",
+    "guide": "它有两个价态：Fe²⁺ 和 Fe³⁺。用氯气把它氧化，用铁粉把它还原。",
+    "enemy": {
+      "name": "铁锈骑士",
+      "art": "🛡",
+      "hp": 360,
+      "atk": 14,
+      "armor": 1,
+      "weakness": ["氧化还原", "置换"],
+      "resist": ["中和"],
+      "intro": "锈红色的铠甲下面，铁在两种价态之间来回挣扎。"
+    },
+    "shelf": [
+      "FeCl2", "Cl2", "FeCl3", "Fe", "Cu", "Fe(OH)2",
+      "O2", "H2O", "Fe2O3", "HCl", "NaOH"
+    ],
+    "handSize": 6,
+    "energy": 2,
+    "balanceTime": 12,
+    "requireBalance": true
+  },
+  "8": {
+    "id": 8,
+    "name": "电子吞噬者",
+    "stage": "高一",
+    "textbook": "必修第一册 第一章 第三节 氧化还原反应",
+    "guide": "它靠吞电子活着。这里全是配平地狱：先数电子，再原子守恒。",
+    "enemy": {
+      "name": "电子吞噬者",
+      "art": "⚡",
+      "hp": 500,
+      "atk": 15,
+      "armor": 2,
+      "weakness": ["氧化还原", "分解"],
+      "resist": ["化合", "中和"],
+      "intro": "一个不断吸走电子的空洞，靠近它的物质都会失去光泽。"
+    },
+    "shelf": ["KMnO4", "HCl", "Cu", "H2SO4", "HNO3", "H2S", "SO2", "H2O2", "KClO3", "MnO2"],
+    "handSize": 7,
+    "energy": 2,
+    "balanceTime": 12,
+    "requireBalance": true
+  },
+  "9": {
+    "id": 9,
+    "name": "平衡之秤",
+    "stage": "高三",
+    "textbook": "选择性必修1 第一章 反应热 · 第二章 速率与化学平衡",
+    "guide": "它有三个状态。可逆反应会给出更多能量——但配平要更准。",
+    "enemy": {
+      "name": "平衡之秤",
+      "art": "⚖",
+      "hp": 420,
+      "atk": 15,
+      "armor": 1,
+      "weakness": ["化合", "燃烧"],
+      "resist": ["分解"],
+      "intro": "一架永远倾斜的天平，左边是反应物，右边是产物。"
+    },
+    "shelf": ["N2", "H2", "O2", "SO2", "NO2", "CO", "H2O", "I2", "CH4"],
+    "handSize": 6,
+    "energy": 2,
+    "balanceTime": 10,
+    "requireBalance": true
+  },
+  "10": {
+    "id": 10,
+    "name": "离子之海",
+    "stage": "高三",
+    "textbook": "选择性必修1 第三章 水溶液中的离子反应与平衡",
+    "guide": "这里没有干净的方程式。双水解、沉淀转化——谁更难溶，谁就赢。",
+    "enemy": {
+      "name": "离子之海",
+      "art": "🌊",
+      "hp": 460,
+      "atk": 16,
+      "armor": 1,
+      "weakness": ["沉淀", "产气"],
+      "resist": ["中和"],
+      "intro": "一整片沸腾的电解质溶液，每一步都踩在平衡点上。"
+    },
+    "shelf": [
+      "AgCl", "NaBr", "AgBr", "KI", "AlCl3", "FeCl3",
+      "NaHCO3", "Na2CO3", "CH3COOH", "Na2S", "HCl"
+    ],
+    "handSize": 6,
+    "energy": 2,
+    "balanceTime": 10,
+    "requireBalance": true
+  },
+  "11": {
+    "id": 11,
+    "name": "电蚀巨像",
+    "stage": "高三",
+    "textbook": "选择性必修1 第四章 化学反应与电能",
+    "guide": "它靠电流维持形态。电解和腐蚀都是氧化还原——找准反应方向。",
+    "enemy": {
+      "name": "电蚀巨像",
+      "art": "🔋",
+      "hp": 500,
+      "atk": 16,
+      "armor": 2,
+      "weakness": ["氧化还原", "置换"],
+      "resist": ["化合"],
+      "intro": "一节失控的巨大电池，电极上不断渗出锈水。"
+    },
+    "shelf": ["NaCl", "H2O", "CuSO4", "H2", "O2", "Fe", "Zn", "HCl"],
+    "handSize": 6,
+    "energy": 2,
+    "balanceTime": 10,
+    "requireBalance": true
+  },
+  "12": {
+    "id": 12,
+    "name": "裂谷之核",
+    "stage": "高三",
+    "textbook": "工业流程综合 · 必修一第一章 + 必修二第五章",
+    "guide": "终局。它是整条工业流程的化身：碱溶、中和、灼烧、电解，一步都不能错。",
+    "enemy": {
+      "name": "裂谷之核",
+      "art": "💠",
+      "hp": 420,
+      "atk": 15,
+      "armor": 2,
+      "weakness": ["复分解", "沉淀", "氧化还原", "分解"],
+      "resist": ["化合"],
+      "intro": "元素裂谷的中心。所有物质在这里被拆开，又重新拼起来。"
+    },
+    "shelf": [
+      "Al2O3", "NaOH", "H2O", "CO2", "Al(OH)3", "S", "O2",
+      "NH3", "SO2", "Al", "HCl", "NO", "NO2"
+    ],
+    "handSize": 7,
+    "energy": 3,
+    "balanceTime": 10,
+    "requireBalance": true
+  }
+}
