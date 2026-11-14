@@ -1,0 +1,263 @@
+import { useEffect, useState } from 'react';
+import {
+  advance,
+  confirmBalance,
+  createBattle,
+  skipBalance,
+  submitSelection,
+  toggleBoost,
+  toggleCard,
+} from '../engine/battle';
+import type { BattleState } from '../engine/battle';
+import { LEVELS, substance } from '../engine/data';
+import type { Level } from '../engine/data';
+import { formatFormula } from '../engine/formula.js';
+import BalancePad from './BalancePad';
+
+const KIND_CLASS: Record<string, string> = {
+  单质: 'element',
+  氧化物: 'oxide',
+  过氧化物: 'peroxide',
+  酸: 'acid',
+  碱: 'base',
+  盐: 'salt',
+  气体: 'gas',
+  有机物: 'organic',
+};
+
+interface Props {
+  level: Level;
+  onExit: () => void;
+  onCleared: (id: number) => void;
+  onNext: (id: number) => void;
+}
+
+export default function BattleScreen({ level, onExit, onCleared, onNext }: Props) {
+  const [state, setState] = useState<BattleState>(() => createBattle(level));
+
+  useEffect(() => {
+    if (state.phase !== 'resolving') return;
+    const timer = window.setTimeout(() => setState((s) => advance(s)), 1600);
+    return () => window.clearTimeout(timer);
+  }, [state.phase, state.logSeq]);
+
+  useEffect(() => {
+    if (state.phase === 'win') onCleared(level.id);
+  }, [state.phase, level.id, onCleared]);
+
+  const restart = () => setState(createBattle(level));
+  const nextLevel = LEVELS.find((l) => l.id === level.id + 1) ?? null;
+  const hpRatio = state.playerHp / state.playerMaxHp;
+  const enemyRatio = state.enemyHp / state.enemyMaxHp;
+
+  return (
+    <div className="battle">
+      <header className="topbar">
+        <button className="btn-ghost small" onClick={onExit}>
+          ← 关卡
+        </button>
+        <div className="topbar-title">
+          <span className="lv-no">第 {String(level.id).padStart(2, '0')} 关</span>
+          <span className="lv-name">{level.name}</span>
+          <span className="lv-stage">{level.stage}</span>
+        </div>
+        <div className="topbar-right">
+          <span className="turn-pill">
+            回合 {state.turn} / {state.maxTurns}
+          </span>
+          <button className="btn-ghost small" onClick={restart}>
+            重开
+          </button>
+        </div>
+      </header>
+
+      <div className="field">
+        <aside className="side left">
+          <div className="panel player-panel">
+            <div className="panel-label">配方师</div>
+            <div className="bar">
+              <div className={`bar-fill ${hpRatio < 0.3 ? 'low' : ''}`} style={{ width: `${hpRatio * 100}%` }} />
+              <span className="bar-text">
+                {state.playerHp} / {state.playerMaxHp}
+              </span>
+            </div>
+            <div className="chips">
+              {state.shield > 0 && <span className="chip shield">🛡 护盾 {state.shield}</span>}
+              {state.combo > 0 && <span className="chip combo">连锁 ×{state.combo}</span>}
+            </div>
+            <button
+              className={`energy-btn ${state.boost ? 'on' : ''}`}
+              disabled={state.energy <= 0 || state.phase !== 'select'}
+              onClick={() => setState((s) => toggleBoost(s))}
+            >
+              <span className="energy-dot" />
+              强化 ×1.25
+              <span className="energy-count">能量 {state.energy}</span>
+            </button>
+          </div>
+
+          <div className="panel log-panel">
+            <div className="panel-label">实验记录</div>
+            <div className="log">
+              {state.log.slice(-7).map((entry) => (
+                <div key={entry.id} className={`log-line ${entry.kind}`}>
+                  {entry.text}
+                </div>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        <main className="arena">
+          <div className="arena-grid" />
+          <div className={`enemy ${state.phase === 'resolving' ? 'hit' : ''}`}>
+            <div className="enemy-art">{state.level.enemy.art}</div>
+            <div className="enemy-name">{state.level.enemy.name}</div>
+            <div className="bar enemy-bar">
+              <div className="bar-fill enemy-fill" style={{ width: `${enemyRatio * 100}%` }} />
+              <span className="bar-text">
+                {state.enemyHp} / {state.enemyMaxHp}
+              </span>
+            </div>
+            <div className="enemy-tags">
+              {state.level.enemy.weakness.map((t) => (
+                <span key={t} className="tag weak">
+                  弱点 · {t} ×2
+                </span>
+              ))}
+              {state.level.enemy.resist.map((t) => (
+                <span key={t} className="tag resist">
+                  抗性 · {t} ×0.5
+                </span>
+              ))}
+              {state.enemyArmor > 0 && (
+                <span className="tag armor">
+                  护甲 {state.enemyArmor} · 减伤 {state.enemyArmor * 12}%
+                </span>
+              )}
+            </div>
+          </div>
+          {state.lastResult && state.phase === 'resolving' && (
+            <div
+              key={state.logSeq}
+              className={`damage-float ${state.lastResult.weak ? 'weak' : ''}`}
+            >
+              -{state.lastResult.damage}
+              {state.lastResult.weak && <span className="dmg-tag">弱点</span>}
+            </div>
+          )}
+        </main>
+
+        <aside className="side right">
+          <div className="panel guide-panel">
+            <div className="panel-label">战术提示</div>
+            <p className="guide-text">{level.guide}</p>
+          </div>
+          <div className="panel book-panel">
+            <div className="panel-label">教材出处</div>
+            <p className="book-text">{level.textbook}</p>
+          </div>
+          <div className="panel deck-panel">
+            <div className="deck-row">
+              <span>牌堆 {state.deck.length}</span>
+              <span>弃牌 {state.discard.length}</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div className="handbar">
+        <div className="hand">
+          {state.hand.map((id, index) => {
+            const sub = substance(id);
+            const selected = state.selected.includes(index);
+            return (
+              <button
+                key={`${id}-${index}`}
+                className={`card k-${KIND_CLASS[sub.kind] ?? 'element'} ${selected ? 'sel' : ''}`}
+                onClick={() => setState((s) => toggleCard(s, index))}
+                disabled={state.phase !== 'select'}
+              >
+                <span className="card-formula">{formatFormula(sub.formula)}</span>
+                <span className="card-name">{sub.name}</span>
+                <span className="card-kind">{sub.kind}</span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="action-panel">
+          <div className="action-hint">
+            {state.selected.length === 0
+              ? '选择 1–2 种物质，判断它们能否反应'
+              : state.selected.length === 1
+                ? '选第二种物质，或直接出招看单质分解'
+                : '出招：能反应就命中，不能反应就浪费一回合'}
+          </div>
+          <button
+            className="btn-summon"
+            disabled={state.selected.length === 0 || state.phase !== 'select'}
+            onClick={() => setState((s) => submitSelection(s))}
+          >
+            出 招
+          </button>
+        </div>
+      </div>
+
+      {state.phase === 'balance' && state.pending && (
+        <BalancePad
+          reaction={state.pending}
+          timeLimit={level.balanceTime}
+          combo={state.combo}
+          onConfirm={(coeffs, perfect) => setState((s) => confirmBalance(s, coeffs, perfect))}
+          onSkip={() => setState((s) => skipBalance(s))}
+        />
+      )}
+
+      {(state.phase === 'win' || state.phase === 'lose') && (
+        <div className="overlay">
+          <div className={`result ${state.phase === 'win' ? 'win' : 'lose'}`}>
+            <div className="result-title">{state.phase === 'win' ? '实验成功' : '实验失败'}</div>
+            <div className="result-sub">
+              {state.phase === 'win'
+                ? `${state.level.enemy.name} 被你彻底分解。`
+                : state.playerHp <= 0
+                  ? '你被反噬了。调整一下试剂搭配再试。'
+                  : '回合耗尽——试剂不够用了。'}
+            </div>
+            <div className="result-stats">
+              <div>
+                <span>造成伤害</span>
+                <b>{state.stats.dealt}</b>
+              </div>
+              <div>
+                <span>受到伤害</span>
+                <b>{state.stats.taken}</b>
+              </div>
+              <div>
+                <span>完美配平</span>
+                <b>{state.stats.perfect}</b>
+              </div>
+              <div>
+                <span>回合数</span>
+                <b>{state.stats.turns}</b>
+              </div>
+            </div>
+            <div className="result-actions">
+              <button className="btn-ghost" onClick={restart}>
+                再来一次
+              </button>
+              {state.phase === 'win' && nextLevel && (
+                <button className="btn-primary" onClick={() => onNext(nextLevel.id)}>
+                  下一关 · {nextLevel.name}
+                </button>
+              )}
+              <button className="btn-ghost" onClick={onExit}>
+                返回关卡
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
