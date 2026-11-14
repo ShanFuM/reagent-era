@@ -118,6 +118,14 @@ export function handHasMove(hand: string[]): boolean {
       if (canReact([hand[i], hand[j]])) return true;
     }
   }
+  // 三反应物的方程式（工业流程、铁的吸氧腐蚀等）也要算进来
+  for (let i = 0; i < hand.length; i += 1) {
+    for (let j = i + 1; j < hand.length; j += 1) {
+      for (let k = j + 1; k < hand.length; k += 1) {
+        if (canReact([hand[i], hand[j], hand[k]])) return true;
+      }
+    }
+  }
   return false;
 }
 
@@ -207,9 +215,11 @@ export function createBattle(level: Level): BattleState {
 export function toggleCard(s: BattleState, index: number): BattleState {
   if (s.phase !== 'select') return s;
   if (index < 0 || index >= s.hand.length) return s;
+  // 不限制选几张：有些方程式就是三四个反应物（如 4Fe + 3O2 + 6H2O），
+  // 限制成 2 张会把它们全部堵死。查表逻辑本身支持任意数量。
   const selected = s.selected.includes(index)
     ? s.selected.filter((i) => i !== index)
-    : [...s.selected.slice(-1), index];
+    : [...s.selected, index];
   return { ...s, selected };
 }
 

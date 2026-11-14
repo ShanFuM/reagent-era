@@ -188,10 +188,10 @@ export default function BattleScreen({ level, onExit, onCleared, onNext }: Props
         <div className="action-panel">
           <div className="action-hint">
             {state.selected.length === 0
-              ? '选择 1–2 种物质，判断它们能否反应'
+              ? '选择参与反应的物质，判断它们能否反应'
               : state.selected.length === 1
-                ? '选第二种物质，或直接出招看单质分解'
-                : '出招：能反应就命中，不能反应就浪费一回合'}
+                ? '可以再加一种，或直接出招（单质分解）'
+                : `已选 ${state.selected.length} 种 · 能反应就命中，不能反应浪费一回合`}
           </div>
           <button
             className="btn-summon"

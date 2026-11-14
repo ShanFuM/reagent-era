@@ -20,7 +20,10 @@ function pickMove(s: BattleState): number[] {
   const idx = s.hand.map((_, i) => i);
   const opts: number[][] = idx.map((i) => [i]);
   for (let i = 0; i < idx.length; i += 1) {
-    for (let j = i + 1; j < idx.length; j += 1) opts.push([i, j]);
+    for (let j = i + 1; j < idx.length; j += 1) {
+      opts.push([i, j]);
+      for (let k = j + 1; k < idx.length; k += 1) opts.push([i, j, k]);
+    }
   }
   const valid = opts.filter((p) => lookupReaction(p.map((i) => s.hand[i])));
   const pool = valid.length > 0 ? valid : opts;

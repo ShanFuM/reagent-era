@@ -120,6 +120,28 @@ for (const testCase of CASES) {
   }
 }
 
+// 多反应物方程式（3 个及以上）必须能查出来——手牌选择已经不设上限了
+const MULTI: string[][] = [
+  ['Al2O3', 'NaOH', 'H2O'],
+  ['Fe', 'O2', 'H2O'],
+  ['Na2CO3', 'CO2', 'H2O'],
+];
+for (const ids of MULTI) {
+  const hit = lookupReaction(ids);
+  if (!hit) {
+    failed += 1;
+    lines.push(`✗ ${ids.join(' + ')} 应该能反应，但判定为不反应`);
+    continue;
+  }
+  const eq = hit.reaction.reactants
+    .map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`)
+    .join(' + ');
+  const rhs = hit.reaction.products
+    .map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`)
+    .join(' + ');
+  lines.push(`✓ ${ids.join(' + ')} → ${eq} = ${rhs}`);
+}
+
 // 每一关的试剂架里，必须存在至少一条「可打出且能打弱点」的反应
 for (const level of LEVELS) {
   const shelf = level.shelf;
