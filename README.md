@@ -1,5 +1,7 @@
 # 试剂纪元 · Reagent Era
 
+[![check](https://github.com/ShanFuM/reagent-era/actions/workflows/ci.yml/badge.svg)](https://github.com/ShanFuM/reagent-era/actions/workflows/ci.yml)
+
 > 用化学反应对战。选两种试剂，判断它们能不能反应，配平，然后看它炸开。
 
 > ⚠️ **本仓库为参赛作品，保留所有权利。未经许可请勿搬运、复制、商用或用于其他比赛。**
