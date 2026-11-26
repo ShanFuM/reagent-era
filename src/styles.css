@@ -447,6 +447,15 @@ button:disabled {
   border-radius: 999px;
 }
 
+.phase-pill {
+  font-size: 12px;
+  color: var(--amber);
+  border: 1px solid rgba(255, 182, 72, 0.4);
+  background: rgba(255, 182, 72, 0.06);
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
 .field {
   display: grid;
   grid-template-columns: 296px 1fr 312px;
@@ -630,6 +639,12 @@ button:disabled {
   border-color: #fff;
 }
 
+.log-line.phase {
+  color: #ffd79a;
+  border-color: var(--amber);
+  font-weight: 700;
+}
+
 /* 战场 */
 .arena {
   position: relative;
@@ -683,6 +698,11 @@ button:disabled {
   color: var(--dim);
 }
 
+.enemy-phase-name {
+  color: var(--amber);
+  letter-spacing: 1px;
+}
+
 .enemy-bar {
   width: 320px;
 }
@@ -718,6 +738,144 @@ button:disabled {
   color: var(--violet);
 }
 
+/* ---------- 多阶段 Boss 工序链 ---------- */
+.chain-panel {
+  width: min(620px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(8, 13, 19, 0.72);
+  padding: 9px 12px 10px;
+}
+
+.chain-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.chain-title {
+  font-size: 11.5px;
+  letter-spacing: 1px;
+  color: var(--amber);
+}
+
+.chain-sub {
+  font-size: 10.5px;
+  color: var(--dim-2);
+}
+
+.chain-track {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.chain-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.chain-arrow {
+  font-size: 13px;
+  color: var(--dim-2);
+  padding: 0 2px;
+}
+
+.chain-node {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 74px;
+  padding: 5px 8px 4px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  background: #0a1118;
+}
+
+.chain-formula {
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.chain-name {
+  font-size: 9px;
+  color: var(--dim-2);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.chain-node--done {
+  border-color: rgba(194, 240, 74, 0.4);
+}
+
+.chain-node--done .chain-formula {
+  color: var(--lime);
+}
+
+.chain-node--current {
+  border-color: var(--amber);
+  background: rgba(255, 182, 72, 0.12);
+  box-shadow: 0 0 14px rgba(255, 182, 72, 0.18);
+}
+
+.chain-node--current .chain-formula {
+  color: var(--amber);
+}
+
+.chain-node--current .chain-name {
+  color: var(--amber);
+  opacity: 0.8;
+}
+
+.chain-node--pending {
+  opacity: 0.45;
+}
+
+.phase-shift {
+  position: absolute;
+  left: 50%;
+  top: 16%;
+  transform: translateX(-50%);
+  z-index: 8;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 48px;
+  border: 1px solid rgba(255, 182, 72, 0.55);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(32, 20, 5, 0.95), rgba(11, 7, 3, 0.95));
+  box-shadow: 0 0 60px rgba(255, 182, 72, 0.22);
+  animation: phase-shift-in 0.45s ease;
+}
+
+.phase-shift-kicker {
+  font-size: 12px;
+  letter-spacing: 6px;
+  color: var(--amber);
+}
+
+.phase-shift-title {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffe4b5;
+}
+
+.phase-shift-sub {
+  font-size: 12px;
+  color: var(--dim);
+  letter-spacing: 1px;
+}
+
 .damage-float {
   position: absolute;
   top: 34%;
@@ -744,6 +902,15 @@ button:disabled {
   display: block;
   text-align: center;
   margin-top: -6px;
+}
+
+.dmg-cut {
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--amber);
+  display: block;
+  text-align: center;
+  margin-top: 2px;
 }
 
 .guide-text,
@@ -1254,5 +1421,16 @@ button:disabled {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes phase-shift-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 22px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
   }
 }

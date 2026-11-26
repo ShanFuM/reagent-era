@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
 import {
   advance,
+  bossPhaseOf,
+  chainView,
   confirmBalance,
   createBattle,
+  enemyResistOf,
+  enemyWeaknessOf,
   skipBalance,
   submitSelection,
   toggleBoost,
@@ -51,6 +55,11 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
   const nextLevel = nextLevelInLine(line, level);
   const hpRatio = state.playerHp / state.playerMaxHp;
   const enemyRatio = state.enemyHp / state.enemyMaxHp;
+  const bossPhase = bossPhaseOf(state);
+  const phaseTotal = level.phases?.length ?? 0;
+  const chain = chainView(state);
+  const weaknessTags = enemyWeaknessOf(state);
+  const resistTags = enemyResistOf(state);
 
   return (
     <div className="battle">
@@ -66,6 +75,11 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           </span>
         </div>
         <div className="topbar-right">
+          {bossPhase && (
+            <span className="phase-pill">
+              阶段 {state.bossIndex + 1}/{phaseTotal} · {bossPhase.name}
+            </span>
+          )}
           <span className="turn-pill">
             回合 {state.turn} / {state.maxTurns}
           </span>
@@ -116,7 +130,10 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           <div className="arena-grid" />
           <div className={`enemy ${state.phase === 'resolving' ? 'hit' : ''}`}>
             <div className="enemy-art">{state.level.enemy.art}</div>
-            <div className="enemy-name">{state.level.enemy.name}</div>
+            <div className="enemy-name">
+              {state.level.enemy.name}
+              {bossPhase && <span className="enemy-phase-name"> · {bossPhase.name}</span>}
+            </div>
             <div className="bar enemy-bar">
               <div className="bar-fill enemy-fill" style={{ width: `${enemyRatio * 100}%` }} />
               <span className="bar-text">
@@ -124,12 +141,12 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
               </span>
             </div>
             <div className="enemy-tags">
-              {state.level.enemy.weakness.map((t) => (
+              {weaknessTags.map((t) => (
                 <span key={t} className="tag weak">
                   弱点 · {t} ×2
                 </span>
               ))}
-              {state.level.enemy.resist.map((t) => (
+              {resistTags.map((t) => (
                 <span key={t} className="tag resist">
                   抗性 · {t} ×0.5
                 </span>
@@ -140,6 +157,31 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
                 </span>
               )}
             </div>
+            {chain && (
+              <div className="chain-panel">
+                <div className="chain-head">
+                  <span className="chain-title">
+                    {chain.title} · 工序 {chain.done}/{chain.total}
+                  </span>
+                  <span className="chain-sub">
+                    {chain.done >= chain.total
+                      ? '✓ 工序完成'
+                      : `下一步：${chain.nodes.find((n) => n.status === 'current')?.name ?? '—'}`}
+                  </span>
+                </div>
+                <div className="chain-track">
+                  {chain.nodes.map((node, index) => (
+                    <span className="chain-item" key={`${node.id}-${index}`}>
+                      {index > 0 && <span className="chain-arrow">→</span>}
+                      <span className={`chain-node chain-node--${node.status}`}>
+                        <span className="chain-formula">{formatFormula(node.id)}</span>
+                        <span className="chain-name">{node.name}</span>
+                      </span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           {state.lastResult && state.phase === 'resolving' && (
             <div
@@ -148,6 +190,16 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             >
               -{state.lastResult.damage}
               {state.lastResult.weak && <span className="dmg-tag">弱点</span>}
+              {state.lastResult.offChain && <span className="dmg-cut">偏离工序 · 伤害减半</span>}
+            </div>
+          )}
+          {state.phaseSwitch && bossPhase && (
+            <div className="phase-shift" role="status">
+              <div className="phase-shift-kicker">阶段切换</div>
+              <div className="phase-shift-title">
+                第 {state.bossIndex + 1} / {phaseTotal} 阶段 · {bossPhase.name}
+              </div>
+              <div className="phase-shift-sub">回复 30 HP · 能量回满 · 护盾清零 · 工序重置</div>
             </div>
           )}
         </main>
@@ -223,7 +275,9 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             <div className="result-title">{state.phase === 'win' ? '实验成功' : '实验失败'}</div>
             <div className="result-sub">
               {state.phase === 'win'
-                ? `${state.level.enemy.name} 被你彻底分解。`
+                ? state.level.phases
+                  ? `${state.level.enemy.name} 的三道形态全部瓦解。`
+                  : `${state.level.enemy.name} 被你彻底分解。`
                 : state.playerHp <= 0
                   ? '你被反噬了。调整一下试剂搭配再试。'
                   : '回合耗尽——试剂不够用了。'}

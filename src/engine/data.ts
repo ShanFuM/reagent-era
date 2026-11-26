@@ -46,6 +46,21 @@ export interface Enemy {
   intro: string;
 }
 
+/**
+ * 多阶段 Boss 的单个阶段。字段全部来自 data/levels.json，纯数据、可序列化。
+ * required 是按顺序必须打出的方程式 id（只推动「工序」，不限制其它反应）。
+ */
+export interface BossPhase {
+  name: string;
+  intro: string;
+  hp: number;
+  atk: number;
+  armor: number;
+  weakness: ReactionType[];
+  resist: ReactionType[];
+  required?: string[];
+}
+
 /** 四条年级线。同一关可以同时属于多条线（前 4 关对四条线相同）。 */
 export type GradeLine = '初三' | '高一' | '高二' | '高三';
 
@@ -62,6 +77,8 @@ export interface Level {
   textbook: string;
   guide: string;
   enemy: Enemy;
+  /** 可选：多阶段 Boss。存在时按阶段切换血量/攻击/弱点，最后一阶段打完才判胜 */
+  phases?: BossPhase[];
   shelf: string[];
   handSize: number;
   energy: number;
