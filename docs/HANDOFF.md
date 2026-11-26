@@ -178,17 +178,21 @@ pnpm build:single
 
 ### 4.2 现在缺什么
 
-**代码层面只差三样**：
+**结构层已完成（2026-11-26）**，`pnpm check` 覆盖了这套规则：
 
-1. `data/levels.json` 里每个关卡加 `line` 和 `order` 字段：
+1. `data/levels.json` 每关有 `lines`（属于哪几条线）和 `order`（线内顺序）。
+   同一关可以被多条线共用——前 4 关就是四条线共用的新手教程，**不要复制成四份**。
    ```jsonc
-   "line": "高三",     // 初三 | 高一 | 高二 | 高三
-   "order": 1,         // 该线内的顺序
+   "lines": ["初三", "高一", "高二", "高三"],   // 该关出现在哪几条线
+   "order": 1                                  // 该线内的顺序，同线内不重复
    ```
-2. `src/ui/LevelSelect.tsx` 加「年级线」页签，按 `line` 分组显示
-3. `src/ui/BattleScreen.tsx` 的「下一关」逻辑：
-   现在写的是 `LEVELS.find(l => l.id === level.id + 1)`，
-   要改成「同一条线内 `order + 1`」
+2. `src/ui/LevelSelect.tsx` 有「年级线」页签，按 `lines` 过滤、按 `order` 排序
+3. `src/ui/BattleScreen.tsx` 的「下一关」走 `nextLevelInLine(line, level)`，
+   是「同一条线内 order + 1」，不是 id + 1
+4. `pnpm check:data` 会拒绝：线名拼错、同线 order 重复、某条线少于 4 关
+5. `pnpm check:ui` 会逐条线渲染，断言不串线，并走一遍「下一关」链
+
+**剩下的是纯内容**：给初三线补 8 关、高一线补 4 关、高二线补 4 关。
 
 **关卡 id 分配**（保持 number 类型，避免大改）：
 
@@ -198,6 +202,10 @@ pnpm build:single
 | 初三线 | 101–112 |
 | 高一线 | 201–212 |
 | 高二线 | 301–312 |
+
+> 新关卡的 `lines` 只写自己那条线，`order` 从 5 往后排（前 4 关是共用的）。
+> 例如初三线第 5 关：`id: 101, lines: ["初三"], order: 5`。
+> 关卡页面上显示的序号是 `order`，不是 `id`。
 
 ### 4.3 新关卡怎么做
 
@@ -273,7 +281,8 @@ CI 里跑的是 `check:data`、`check:chem`、`check:ui`、`check:types` 和构�
 | 反应规则引擎（8 条规则） | ✅ |
 | 战斗状态机、伤害模型 | ✅ |
 | 高三线 12 关 | ✅ |
-| 初三 / 高一 / 高二线 | ❌ **待做** |
+| 年级线结构（lines / order / 页签） | ✅ 2026-11-26 |
+| 初三 / 高一 / 高二线内容 | ❌ **待做** |
 | 第 12 关三阶段 Boss | ❌ |
 | 离子方程式模式 | ❌ |
 | 音效与打击反馈 | ❌ |
