@@ -3,6 +3,7 @@ import {
   advance,
   confirmBalance,
   createBattle,
+  resolveMisfire,
   skipBalance,
   submitSelection,
   toggleBoost,
@@ -69,18 +70,21 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
     if (state.phase === 'win') onCleared(level.id);
   }, [state.phase, level.id, onCleared]);
 
+  // 每次命中后都弹「正确方程式」——包括第 1、2 关这种不要求配平的关卡
+  useEffect(() => {
+    if (state.phase === 'resolving' && state.lastResult) setSolutionOpen(true);
+  }, [state.phase, state.logSeq, state.lastResult]);
+
   const restart = () => {
     setSolutionOpen(false);
     setState(createBattle(level));
   };
 
   const submitBalance = (coeffs: number[], perfect: boolean) => {
-    setSolutionOpen(true);
     setState((s) => confirmBalance(s, coeffs, perfect));
   };
 
   const skip = () => {
-    setSolutionOpen(true);
     setState((s) => skipBalance(s));
   };
 
@@ -280,6 +284,24 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             )}
             <button className="btn-primary" onClick={closeSolution}>
               记住了 · 继续
+            </button>
+          </div>
+        </div>
+      )}
+
+      {state.phase === 'misfire' && state.misfire && (
+        <div className="overlay">
+          <div className="misfire">
+            <div className="misfire-title">这两种物质不反应</div>
+            <div className="misfire-pair">{state.misfire.names.join(' + ')}</div>
+            <p className="misfire-text">
+              在中学化学范围内，它们混合后不会发生反应。这一回合被浪费了。
+            </p>
+            <p className="misfire-hint">
+              可以留意这些能反应的组合：酸 + 碱、金属 + 盐、金属 + 酸、酸 + 碳酸盐、金属氧化物 + 酸。
+            </p>
+            <button className="btn-primary" onClick={() => setState((s) => resolveMisfire(s))}>
+              知道了 · 继续
             </button>
           </div>
         </div>

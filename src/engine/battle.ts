@@ -3,7 +3,7 @@ import type { Level, Reaction, ReactionType } from './data';
 import { checkBalance } from './formula.js';
 
 export type Accuracy = 'none' | 'perfect' | 'correct' | 'wrong' | 'skip';
-export type Phase = 'select' | 'balance' | 'resolving' | 'win' | 'lose';
+export type Phase = 'select' | 'balance' | 'resolving' | 'misfire' | 'win' | 'lose';
 export type LogKind = 'info' | 'hit' | 'enemy' | 'effect' | 'warn' | 'win';
 
 export interface LogEntry {
@@ -49,6 +49,8 @@ export interface BattleState {
   pending: Reaction | null;
   coefficients: number[];
   lastResult: TurnResult | null;
+  /** 选错组合时记录的「不反应」信息，界面据此弹提示 */
+  misfire: { names: string[] } | null;
   log: LogEntry[];
   logSeq: number;
   stats: { dealt: number; taken: number; perfect: number; turns: number };
@@ -203,6 +205,7 @@ export function createBattle(level: Level): BattleState {
     pending: null,
     coefficients: [],
     lastResult: null,
+    misfire: null,
     log: [],
     logSeq: 0,
     stats: { dealt: 0, taken: 0, perfect: 0, turns: 0 },
@@ -233,14 +236,14 @@ export function submitSelection(s: BattleState): BattleState {
   const ids = s.selected.map((i) => s.hand[i]);
   const hit = lookupReaction(ids);
   if (!hit) {
-    const names = ids.map((id) => substance(id).name).join(' + ');
-    let next = pushLog(
+    const names = ids.map((id) => substance(id).name);
+    // 不立刻结算敌方回合：先让界面把「不反应」讲清楚，玩家关掉弹窗再推进
+    const next = pushLog(
       s,
       'warn',
-      `「${names}」之间没有可发生的反应——这一回合被浪费了。`,
+      `「${names.join(' + ')}」之间没有可发生的反应——这一回合被浪费了。`,
     );
-    next = { ...next, selected: [], boost: false };
-    return endTurn(next);
+    return { ...next, selected: [], boost: false, phase: 'misfire', misfire: { names } };
   }
   const coeffCount = hit.reaction.reactants.length + hit.reaction.products.length;
   if (s.level.requireBalance) {
@@ -481,4 +484,10 @@ export function endTurn(s: BattleState): BattleState {
 export function advance(s: BattleState): BattleState {
   if (s.phase !== 'resolving') return s;
   return endTurn(s);
+}
+
+/** 玩家看完「这两种物质不反应」的提示后继续；这一回合照常被浪费 */
+export function resolveMisfire(s: BattleState): BattleState {
+  if (s.phase !== 'misfire') return s;
+  return endTurn({ ...s, misfire: null });
 }

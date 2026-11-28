@@ -598,11 +598,11 @@ button:disabled {
 }
 
 .log-line {
-  font-size: 11.5px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.55;
   color: var(--dim);
   border-left: 2px solid var(--line-2);
-  padding-left: 8px;
+  padding-left: 10px;
 }
 
 .log-line.hit {
@@ -1170,6 +1170,54 @@ button:disabled {
 }
 
 .solution .btn-primary {
+  margin-top: 6px;
+  padding: 12px 44px;
+}
+
+/* ---------- 不反应提示 ---------- */
+.misfire {
+  width: 740px;
+  background: linear-gradient(180deg, #17110b, #0a0806);
+  border: 1px solid rgba(255, 182, 72, 0.34);
+  border-radius: 20px;
+  padding: 32px 42px 26px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.66);
+}
+
+.misfire-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--amber);
+}
+
+.misfire-pair {
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 24px;
+  color: #eaf6ff;
+}
+
+.misfire-text {
+  margin: 0;
+  font-size: 15px;
+  color: var(--dim);
+  line-height: 1.7;
+}
+
+.misfire-hint {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--dim-2);
+  line-height: 1.7;
+  max-width: 600px;
+}
+
+.misfire .btn-primary {
   margin-top: 6px;
   padding: 12px 44px;
 }

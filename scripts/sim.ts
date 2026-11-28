@@ -10,6 +10,7 @@ import {
   advance,
   confirmBalance,
   createBattle,
+  resolveMisfire,
   skipBalance,
   submitSelection,
   toggleCard,
@@ -59,6 +60,9 @@ function runOne(levelId: number, correctRate: number): Outcome {
           : skipBalance(s);
     } else if (s.phase === 'resolving') {
       s = advance(s);
+    } else if (s.phase === 'misfire') {
+      // 真人玩家要先关掉提示卡，模拟器直接略过
+      s = resolveMisfire(s);
     } else {
       break;
     }
