@@ -166,6 +166,27 @@ export function playableReactions(level: Level): [string, Reaction][] {
   );
 }
 
+/**
+ * 这一关的「标准答案」：
+ * - 有工序的 Boss 关 → 按工序顺序给（那本身就是解法）；
+ * - 普通关 → 试剂架里能打、且命中弱点的反应，按高频度排序取前 3 条。
+ */
+export function solutionReactions(level: Level): { id: string; reaction: Reaction }[] {
+  const required = (level.phases ?? []).flatMap((p) => p.required ?? []);
+  if (required.length > 0) {
+    return [...new Set(required)]
+      .map((id) => ({ id, reaction: REACTIONS[id] }))
+      .filter((x): x is { id: string; reaction: Reaction } => Boolean(x.reaction));
+  }
+
+  const weak = new Set(level.enemy.weakness);
+  const hits = playableReactions(level)
+    .filter(([, r]) => weak.has(r.type))
+    .sort((a, b) => (b[1].stars ?? 0) - (a[1].stars ?? 0));
+  const pool = hits.length > 0 ? hits : playableReactions(level);
+  return pool.slice(0, 3).map(([id, reaction]) => ({ id, reaction }));
+}
+
 export function levelById(id: number): Level {
   const lv = LEVELS.find((l) => l.id === id);
   if (!lv) throw new Error(`未知关卡：${id}`);

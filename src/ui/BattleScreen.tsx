@@ -14,10 +14,15 @@ import {
   toggleCard,
 } from '../engine/battle';
 import type { BattleState } from '../engine/battle';
-import { nextLevelInLine, substance } from '../engine/data';
-import type { GradeLine, Level } from '../engine/data';
+import { nextLevelInLine, solutionReactions, substance } from '../engine/data';
+import type { GradeLine, Level, Reaction } from '../engine/data';
 import { formatFormula } from '../engine/formula.js';
 import BalancePad from './BalancePad';
+
+const formatEquation = (r: Reaction) =>
+  `${r.reactants.map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`).join(' + ')} = ${r.products
+    .map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`)
+    .join(' + ')}`;
 
 const KIND_CLASS: Record<string, string> = {
   单质: 'element',
@@ -41,6 +46,7 @@ interface Props {
 
 export default function BattleScreen({ level, line, onExit, onCleared, onNext }: Props) {
   const [state, setState] = useState<BattleState>(() => createBattle(level));
+  const [hintOpen, setHintOpen] = useState(false);
 
   useEffect(() => {
     if (state.phase !== 'resolving') return;
@@ -55,6 +61,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
   const restart = () => setState(createBattle(level));
   const nextLevel = nextLevelInLine(line, level);
   const gate = skillGate(state);
+  const solutions = solutionReactions(level);
   const hpRatio = state.playerHp / state.playerMaxHp;
   const enemyRatio = state.enemyHp / state.enemyMaxHp;
   const bossPhase = bossPhaseOf(state);
@@ -90,6 +97,9 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           <span className="turn-pill">
             回合 {state.turn} / {state.maxTurns}
           </span>
+          <button className="btn-ghost small" onClick={() => setHintOpen(true)}>
+            💡 提示
+          </button>
           <button className="btn-ghost small" onClick={restart}>
             重开
           </button>
@@ -274,6 +284,38 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           onConfirm={(coeffs, perfect) => setState((s) => confirmBalance(s, coeffs, perfect))}
           onSkip={() => setState((s) => skipBalance(s))}
         />
+      )}
+
+      {hintOpen && (
+        <div className="overlay" onClick={() => setHintOpen(false)}>
+          <div className="hint-card" onClick={(e) => e.stopPropagation()}>
+            <div className="hint-head">
+              <div>
+                <div className="hint-title">通关提示 · {level.name}</div>
+                <div className="hint-sub">
+                  弱点：{level.enemy.weakness.join(' / ')}　|　{level.textbook}
+                </div>
+              </div>
+              <button className="btn-ghost small" onClick={() => setHintOpen(false)}>
+                关闭
+              </button>
+            </div>
+            <div className="hint-list">
+              {solutions.length === 0 && (
+                <div className="hint-empty">这一关没有内置答案，先按弱点类型试组合。</div>
+              )}
+              {solutions.map(({ id, reaction }) => (
+                <div className="hint-item" key={id}>
+                  <div className="hint-eq">{formatEquation(reaction)}</div>
+                  <div className="hint-meta">
+                    {reaction.type} · {reaction.condition} · {reaction.phenomenon}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="hint-foot">先自己试试；卡住再看。答案不唯一，命中弱点的组合都算。</div>
+          </div>
+        </div>
       )}
 
       {(state.phase === 'win' || state.phase === 'lose') && (
