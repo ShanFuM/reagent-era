@@ -182,9 +182,15 @@ for (const level of LEVELS) {
       if (level.enemy.weakness.includes(hit.reaction.type as never)) hitting += 1;
     }
   }
-  if (playable < 3) {
+  if (playable < 8) {
     failed += 1;
-    lines.push(`✗ 第 ${level.id} 关只有 ${playable} 条可打出的反应`);
+    lines.push(
+      `✗ 第 ${level.id} 关只有 ${playable} 条可打出的反应，多样性机制下至少要 8 条（否则玩家会被迫重复同一个反应）`,
+    );
+  }
+  if (hitting < 2) {
+    failed += 1;
+    lines.push(`✗ 第 ${level.id} 关只有 ${hitting} 条能命中弱点，至少要 2 条`);
   }
   lines.push(`· 第 ${level.id} 关：可打出 ${playable} 条，其中命中弱点 ${hitting} 条`);
 }
