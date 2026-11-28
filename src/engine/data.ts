@@ -46,6 +46,21 @@ export interface Enemy {
   intro: string;
 }
 
+/**
+ * 多阶段 Boss 的单个阶段。字段全部来自 data/levels.json，纯数据、可序列化。
+ * required 是按顺序必须打出的方程式 id（只推动「工序」，不限制其它反应）。
+ */
+export interface BossPhase {
+  name: string;
+  intro: string;
+  hp: number;
+  atk: number;
+  armor: number;
+  weakness: ReactionType[];
+  resist: ReactionType[];
+  required?: string[];
+}
+
 /** 四条年级线。同一关可以同时属于多条线（前 4 关对四条线相同）。 */
 export type GradeLine = '初三' | '高一' | '高二' | '高三';
 
@@ -62,11 +77,15 @@ export interface Level {
   textbook: string;
   guide: string;
   enemy: Enemy;
+  /** 可选：多阶段 Boss。存在时按阶段切换血量/攻击/弱点，最后一阶段打完才判胜 */
+  phases?: BossPhase[];
   shelf: string[];
   handSize: number;
   energy: number;
   balanceTime: number;
   requireBalance: boolean;
+  /** 收尾门槛：必须至少一次完美配平或一次强化，才能结算胜利（第 7 关之后） */
+  requireSkill?: boolean;
 }
 
 export const SUBSTANCES = substancesRaw as unknown as Record<string, Substance>;
@@ -145,6 +164,27 @@ export function playableReactions(level: Level): [string, Reaction][] {
   return Object.entries(REACTIONS).filter(
     ([, r]) => r.levels.includes(level.id) && r.reactants.every(([id]) => shelf.has(id)),
   );
+}
+
+/**
+ * 这一关的「标准答案」：
+ * - 有工序的 Boss 关 → 按工序顺序给（那本身就是解法）；
+ * - 普通关 → 试剂架里能打、且命中弱点的反应，按高频度排序取前 3 条。
+ */
+export function solutionReactions(level: Level): { id: string; reaction: Reaction }[] {
+  const required = (level.phases ?? []).flatMap((p) => p.required ?? []);
+  if (required.length > 0) {
+    return [...new Set(required)]
+      .map((id) => ({ id, reaction: REACTIONS[id] }))
+      .filter((x): x is { id: string; reaction: Reaction } => Boolean(x.reaction));
+  }
+
+  const weak = new Set(level.enemy.weakness);
+  const hits = playableReactions(level)
+    .filter(([, r]) => weak.has(r.type))
+    .sort((a, b) => (b[1].stars ?? 0) - (a[1].stars ?? 0));
+  const pool = hits.length > 0 ? hits : playableReactions(level);
+  return pool.slice(0, 3).map(([id, reaction]) => ({ id, reaction }));
 }
 
 export function levelById(id: number): Level {

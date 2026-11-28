@@ -447,6 +447,34 @@ button:disabled {
   border-radius: 999px;
 }
 
+.phase-pill {
+  font-size: 12px;
+  color: var(--amber);
+  border: 1px solid rgba(255, 182, 72, 0.4);
+  background: rgba(255, 182, 72, 0.06);
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+.gate-pill {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.gate-pill.todo {
+  color: var(--red);
+  border: 1px solid rgba(255, 95, 109, 0.45);
+  background: rgba(255, 95, 109, 0.08);
+}
+
+.gate-pill.ok {
+  color: var(--lime);
+  border: 1px solid rgba(194, 240, 74, 0.4);
+  background: rgba(194, 240, 74, 0.08);
+}
+
 .field {
   display: grid;
   grid-template-columns: 296px 1fr 312px;
@@ -635,6 +663,12 @@ button:disabled {
   border-color: #fff;
 }
 
+.log-line.phase {
+  color: #ffd79a;
+  border-color: var(--amber);
+  font-weight: 700;
+}
+
 /* 战场 */
 .arena {
   position: relative;
@@ -688,6 +722,11 @@ button:disabled {
   color: var(--dim);
 }
 
+.enemy-phase-name {
+  color: var(--amber);
+  letter-spacing: 1px;
+}
+
 .enemy-bar {
   width: 320px;
 }
@@ -723,6 +762,144 @@ button:disabled {
   color: var(--violet);
 }
 
+/* ---------- 多阶段 Boss 工序链 ---------- */
+.chain-panel {
+  width: min(620px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(8, 13, 19, 0.72);
+  padding: 9px 12px 10px;
+}
+
+.chain-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.chain-title {
+  font-size: 11.5px;
+  letter-spacing: 1px;
+  color: var(--amber);
+}
+
+.chain-sub {
+  font-size: 10.5px;
+  color: var(--dim-2);
+}
+
+.chain-track {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.chain-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.chain-arrow {
+  font-size: 13px;
+  color: var(--dim-2);
+  padding: 0 2px;
+}
+
+.chain-node {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 74px;
+  padding: 5px 8px 4px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  background: #0a1118;
+}
+
+.chain-formula {
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.chain-name {
+  font-size: 9px;
+  color: var(--dim-2);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.chain-node--done {
+  border-color: rgba(194, 240, 74, 0.4);
+}
+
+.chain-node--done .chain-formula {
+  color: var(--lime);
+}
+
+.chain-node--current {
+  border-color: var(--amber);
+  background: rgba(255, 182, 72, 0.12);
+  box-shadow: 0 0 14px rgba(255, 182, 72, 0.18);
+}
+
+.chain-node--current .chain-formula {
+  color: var(--amber);
+}
+
+.chain-node--current .chain-name {
+  color: var(--amber);
+  opacity: 0.8;
+}
+
+.chain-node--pending {
+  opacity: 0.45;
+}
+
+.phase-shift {
+  position: absolute;
+  left: 50%;
+  top: 16%;
+  transform: translateX(-50%);
+  z-index: 8;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 48px;
+  border: 1px solid rgba(255, 182, 72, 0.55);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(32, 20, 5, 0.95), rgba(11, 7, 3, 0.95));
+  box-shadow: 0 0 60px rgba(255, 182, 72, 0.22);
+  animation: phase-shift-in 0.45s ease;
+}
+
+.phase-shift-kicker {
+  font-size: 12px;
+  letter-spacing: 6px;
+  color: var(--amber);
+}
+
+.phase-shift-title {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffe4b5;
+}
+
+.phase-shift-sub {
+  font-size: 12px;
+  color: var(--dim);
+  letter-spacing: 1px;
+}
+
 .damage-float {
   position: absolute;
   top: 34%;
@@ -749,6 +926,15 @@ button:disabled {
   display: block;
   text-align: center;
   margin-top: -6px;
+}
+
+.dmg-cut {
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--amber);
+  display: block;
+  text-align: center;
+  margin-top: 2px;
 }
 
 .guide-text,
@@ -1439,4 +1625,413 @@ button:disabled {
   to {
     transform: rotate(360deg);
   }
+}
+
+@keyframes phase-shift-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 22px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+/* ---------- 通关提示（标准答案） ---------- */
+.hint-card {
+  width: min(760px, 92vw);
+  max-height: 78vh;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 24px;
+  border-radius: 16px;
+  border: 1px solid var(--line-2);
+  background: linear-gradient(180deg, #0d1621, #080d14);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.hint-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.hint-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.hint-sub {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--dim-2);
+}
+
+.hint-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.hint-item {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.hint-eq {
+  font-family: 'Cambria Math', 'Times New Roman', serif;
+  font-size: 17px;
+  color: var(--amber);
+  letter-spacing: 0.5px;
+}
+
+.hint-meta {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.hint-foot {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--dim-2);
+}
+
+.hint-empty {
+  font-size: 13px;
+  color: var(--dim);
+}
+
+/* ---------- 角色与出招特效 ---------- */
+.sprite {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.sprite-svg {
+  position: relative;
+  z-index: 1;
+  display: block;
+  filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.45));
+}
+
+.sprite-glow {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  filter: blur(8px);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.enemy-art .sprite-svg {
+  width: 224px;
+  height: 224px;
+}
+
+.enemy-art .sprite-glow {
+  width: 300px;
+  height: 300px;
+}
+
+.player-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.player-avatar .sprite-svg {
+  width: 72px;
+  height: 72px;
+}
+
+.player-avatar .sprite-glow {
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, rgba(194, 240, 74, 0.35), transparent 68%);
+}
+
+.player-sub {
+  font-size: 11px;
+  color: var(--dim-2);
+  margin-top: 2px;
+}
+
+.cast-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.cast-card {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--lime);
+  background: rgba(194, 240, 74, 0.14);
+  color: var(--lime);
+  font-size: 20px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 0 24px rgba(194, 240, 74, 0.35);
+  animation: cast-fly 0.62s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+@keyframes cast-fly {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 50px) scale(0.92) rotate(var(--rot, 0deg));
+  }
+  22% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -300px) scale(0.32) rotate(calc(var(--rot, 0deg) * 2.4));
+  }
+}
+
+.burst-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.burst-dot {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px rgba(63, 224, 207, 0.7);
+  animation: burst-out 0.6s ease-out forwards;
+}
+
+.burst-dot.weak {
+  background: var(--red);
+  box-shadow: 0 0 14px rgba(255, 95, 109, 0.85);
+}
+
+@keyframes burst-out {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--a)) translateX(12px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateX(130px) scale(0.15);
+  }
+}
+
+.burst-ring {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  border-radius: 50%;
+  border: 3px solid var(--cyan);
+  opacity: 0;
+  animation: burst-ring 0.55s ease-out forwards;
+}
+
+.burst-ring.weak {
+  border-color: var(--red);
+  box-shadow: 0 0 30px rgba(255, 95, 109, 0.5);
+}
+
+@keyframes burst-ring {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.35);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+/* ---------- 卡牌图标 / 关卡装饰 / 玩家受击 ---------- */
+.card-icon {
+  width: 26px;
+  height: 34px;
+  margin-bottom: -2px;
+}
+
+.card {
+  gap: 6px;
+}
+
+.deco-spin {
+  transform-origin: 80px 80px;
+  animation: deco-spin 22s linear infinite;
+}
+
+@keyframes deco-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.player-panel.hurt {
+  border-color: rgba(255, 95, 109, 0.65);
+  animation: hurt-shake 0.42s ease;
+}
+
+@keyframes hurt-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-7px);
+  }
+  60% {
+    transform: translateX(5px);
+  }
+}
+
+.arena.hurt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  box-shadow: inset 0 0 110px rgba(255, 95, 109, 0.45);
+  animation: hurt-vignette 0.62s ease forwards;
+}
+
+@keyframes hurt-vignette {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------- 发牌动画 / 血条刻度 ---------- */
+.card.deal-in {
+  animation: deal-in 0.46s cubic-bezier(0.2, 0.85, 0.3, 1) backwards;
+}
+
+@keyframes deal-in {
+  from {
+    opacity: 0;
+    transform: translate(150px, 70px) scale(0.78) rotate(10deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bar-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(25% - 1.5px),
+      rgba(255, 255, 255, 0.22) calc(25% - 1.5px),
+      rgba(255, 255, 255, 0.22) 25%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(10% - 1px),
+      rgba(2, 6, 10, 0.55) calc(10% - 1px),
+      rgba(2, 6, 10, 0.55) 10%
+    );
+}
+
+.enemy.hit .enemy-fill {
+  filter: brightness(1.55) saturate(1.2);
+}
+
+/* ---------- 工序引导气泡 ---------- */
+.chain-panel {
+  position: relative;
+}
+
+.chain-tip {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 12px);
+  transform: translateX(-50%);
+  z-index: 7;
+  width: max-content;
+  max-width: 580px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 182, 72, 0.55);
+  background: rgba(30, 21, 6, 0.96);
+  color: #ffd79a;
+  font-size: 12.5px;
+  line-height: 1.5;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.55);
+  animation: tip-pop 0.22s ease-out;
+}
+
+.chain-tip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-bottom-color: rgba(255, 182, 72, 0.55);
+}
+
+@keyframes tip-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.chain-node--pulse {
+  animation: node-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes node-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 182, 72, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(255, 182, 72, 0.16);
+  }
+}
+
+.title-team {
+  margin-top: 8px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--dim-2);
 }

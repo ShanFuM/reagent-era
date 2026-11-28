@@ -19,7 +19,8 @@ export default function TitleScreen({ onStart }: { onStart: () => void }) {
         <button className="btn-primary big" onClick={onStart}>
           开始实验
         </button>
-        <div className="title-foot">横屏游玩 · 12 关 · 初三 → 高三</div>
+        <div className="title-foot">横屏游玩 · 28 关 · 四条年级线</div>
+        <div className="title-team">化出界限　·　邹梓轩 / 张峻搏</div>
       </div>
     </div>
   );

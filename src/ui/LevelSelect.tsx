@@ -80,7 +80,10 @@ export default function LevelSelect({ cleared, line, onLine, onPick, onBack }: P
               <div className="level-name">{lv.name}</div>
               <div className="level-book">{lv.textbook}</div>
               <div className="level-meta">
-                <span>{lv.enemy.hp} HP</span>
+                <span>
+                  {lv.phases ? `${lv.phases.length} 阶段 · ` : ''}
+                  {lv.enemy.hp} HP
+                </span>
                 <span className="weak-tag">弱点 {lv.enemy.weakness.join('/')}</span>
               </div>
             </button>

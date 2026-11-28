@@ -1,9 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   advance,
+  bossPhaseOf,
+  chainView,
   confirmBalance,
   createBattle,
+  enemyResistOf,
+  enemyWeaknessOf,
   resolveMisfire,
+  skillGate,
   skipBalance,
   submitSelection,
   toggleBoost,
@@ -11,10 +16,16 @@ import {
   useHint,
 } from '../engine/battle';
 import type { BattleState } from '../engine/battle';
-import { nextLevelInLine, substance } from '../engine/data';
+import { nextLevelInLine, solutionReactions, substance } from '../engine/data';
 import type { GradeLine, Level, Reaction } from '../engine/data';
 import { formatFormula } from '../engine/formula.js';
 import BalancePad from './BalancePad';
+import { EnemySprite, PlayerSprite, CardIcon } from './Sprite';
+
+const formatEquation = (r: Reaction) =>
+  `${r.reactants.map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`).join(' + ')} = ${r.products
+    .map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`)
+    .join(' + ')}`;
 
 const KIND_CLASS: Record<string, string> = {
   单质: 'element',
@@ -57,8 +68,42 @@ interface Props {
 
 export default function BattleScreen({ level, line, onExit, onCleared, onNext }: Props) {
   const [state, setState] = useState<BattleState>(() => createBattle(level));
+  const [hintOpen, setHintOpen] = useState(false);
+  const [cast, setCast] = useState<{ id: number; cards: string[] } | null>(null);
+  const prevTaken = useRef(state.stats.taken);
+  const [hurt, setHurt] = useState(false);
+  const [chainTip, setChainTip] = useState(false);
+  const tipShown = useRef(false);
+  const prevHandLen = useRef(state.hand.length);
+  const [dealing, setDealing] = useState(true);
   /** 配平结束后弹出「正确方程式」，由玩家自己关闭才继续 */
   const [solutionOpen, setSolutionOpen] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDealing(false), 820);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (state.hand.length > prevHandLen.current) {
+      setDealing(true);
+      const timer = window.setTimeout(() => setDealing(false), 860);
+      prevHandLen.current = state.hand.length;
+      return () => window.clearTimeout(timer);
+    }
+    prevHandLen.current = state.hand.length;
+    return undefined;
+  }, [state.hand.length]);
+
+  useEffect(() => {
+    if (state.stats.taken === prevTaken.current) return;
+    const increased = state.stats.taken > prevTaken.current;
+    prevTaken.current = state.stats.taken;
+    if (!increased) return; // 重开时计数归零，不触发受击
+    setHurt(true);
+    const timer = window.setTimeout(() => setHurt(false), 620);
+    return () => window.clearTimeout(timer);
+  }, [state.stats.taken]);
 
   useEffect(() => {
     if (state.phase !== 'resolving') return;
@@ -71,12 +116,22 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
     if (state.phase === 'win') onCleared(level.id);
   }, [state.phase, level.id, onCleared]);
 
+  useEffect(() => {
+    if (!state.lastResult?.offChain || tipShown.current) return;
+    tipShown.current = true;
+    setChainTip(true);
+    const timer = window.setTimeout(() => setChainTip(false), 4600);
+    return () => window.clearTimeout(timer);
+  }, [state.logSeq, state.lastResult]);
+
   // 每次命中后都弹「正确方程式」——包括第 1、2 关这种不要求配平的关卡
   useEffect(() => {
     if (state.phase === 'resolving' && state.lastResult) setSolutionOpen(true);
   }, [state.phase, state.logSeq, state.lastResult]);
 
   const restart = () => {
+    tipShown.current = false;
+    setChainTip(false);
     setSolutionOpen(false);
     setState(createBattle(level));
   };
@@ -95,8 +150,24 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
     setState((s) => advance(s));
   };
   const nextLevel = nextLevelInLine(line, level);
+  const gate = skillGate(state);
+  const solutions = solutionReactions(level);
   const hpRatio = state.playerHp / state.playerMaxHp;
   const enemyRatio = state.enemyHp / state.enemyMaxHp;
+  const bossPhase = bossPhaseOf(state);
+  const phaseTotal = level.phases?.length ?? 0;
+  const chain = chainView(state);
+  const nextNode = chain?.nodes.find((n) => n.status === 'current') ?? null;
+  const weaknessTags = enemyWeaknessOf(state);
+  const resistTags = enemyResistOf(state);
+
+  const castCards = () => {
+    const cards = state.selected.map((i) => state.hand[i]).filter(Boolean);
+    if (!cards.length) return;
+    const id = Date.now();
+    setCast({ id, cards });
+    window.setTimeout(() => setCast((c) => (c && c.id === id ? null : c)), 700);
+  };
 
   return (
     <div className="battle">
@@ -112,9 +183,22 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           </span>
         </div>
         <div className="topbar-right">
+          {bossPhase && (
+            <span className="phase-pill">
+              阶段 {state.bossIndex + 1}/{phaseTotal} · {bossPhase.name}
+            </span>
+          )}
+          {gate.required && (
+            <span className={`gate-pill ${gate.satisfied ? 'ok' : 'todo'}`}>
+              {gate.satisfied ? '✓ 收尾条件已达' : '收尾需：完美配平 ×1 或 强化 ×1'}
+            </span>
+          )}
           <span className="turn-pill">
             回合 {state.turn} / {state.maxTurns}
           </span>
+          <button className="btn-ghost small" onClick={() => setHintOpen(true)}>
+            📖 答案
+          </button>
           <button className="btn-ghost small" onClick={restart}>
             重开
           </button>
@@ -123,8 +207,14 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
 
       <div className="field">
         <aside className="side left">
-          <div className="panel player-panel">
-            <div className="panel-label">配方师</div>
+          <div className={`panel player-panel ${hurt ? 'hurt' : ''}`}>
+            <div className="player-head">
+              <PlayerSprite className="player-avatar" />
+              <div>
+                <div className="panel-label">配方师</div>
+                <div className="player-sub">第 {state.turn} 回合</div>
+              </div>
+            </div>
             <div className="bar">
               <div className={`bar-fill ${hpRatio < 0.3 ? 'low' : ''}`} style={{ width: `${hpRatio * 100}%` }} />
               <span className="bar-text">
@@ -161,24 +251,56 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           </div>
         </aside>
 
-        <main className="arena">
+        <main className={`arena ${hurt ? 'hurt' : ''}`}>
           <div className="arena-grid" />
+          {cast && (
+            <div className="cast-layer" key={cast.id}>
+              {cast.cards.map((id, i) => (
+                <div
+                  key={`${id}-${i}`}
+                  className="cast-card"
+                  style={{
+                    ['--rot' as string]: `${(i - (cast.cards.length - 1) / 2) * 14}deg`,
+                    animationDelay: `${i * 70}ms`,
+                  }}
+                >
+                  {formatFormula(substance(id).formula)}
+                </div>
+              ))}
+            </div>
+          )}
+          {state.phase === 'resolving' && state.lastResult && (
+            <div className="burst-layer" key={`burst-${state.logSeq}`}>
+              <span className={`burst-ring ${state.lastResult.weak ? 'weak' : ''}`} />
+              {Array.from({ length: 14 }).map((_, i) => (
+                <span
+                  key={i}
+                  className={`burst-dot ${state.lastResult?.weak ? 'weak' : ''}`}
+                  style={{ ['--a' as string]: `${i * (360 / 14)}deg` }}
+                />
+              ))}
+            </div>
+          )}
           <div className={`enemy ${state.phase === 'resolving' ? 'hit' : ''}`}>
-            <div className="enemy-art">{state.level.enemy.art}</div>
-            <div className="enemy-name">{state.level.enemy.name}</div>
+            <EnemySprite level={state.level} className="enemy-art" />
+            <div className="enemy-name">
+              {state.level.enemy.name}
+              {bossPhase && <span className="enemy-phase-name"> · {bossPhase.name}</span>}
+            </div>
             <div className="bar enemy-bar">
               <div className="bar-fill enemy-fill" style={{ width: `${enemyRatio * 100}%` }} />
+              <span className="bar-ticks" />
               <span className="bar-text">
                 {state.enemyHp} / {state.enemyMaxHp}
               </span>
             </div>
             <div className="enemy-tags">
-              {state.level.enemy.weakness.map((t) => (
+              {weaknessTags.map((t) => (
                 <span key={t} className="tag weak">
                   弱点 · {t} ×2
                 </span>
               ))}
-              {state.level.enemy.resist.map((t) => (
+              {resistTags.map((t) => (
                 <span key={t} className="tag resist">
                   抗性 · {t} ×0.5
                 </span>
@@ -189,6 +311,41 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
                 </span>
               )}
             </div>
+            {chain && (
+              <div className="chain-panel">
+                <div className="chain-head">
+                  <span className="chain-title">
+                    {chain.title} · 工序 {chain.done}/{chain.total}
+                  </span>
+                  <span className="chain-sub">
+                    {chain.done >= chain.total
+                      ? '✓ 工序完成'
+                      : `下一步：${chain.nodes.find((n) => n.status === 'current')?.name ?? '—'}`}
+                  </span>
+                </div>
+                <div className="chain-track">
+                  {chain.nodes.map((node, index) => (
+                    <span className="chain-item" key={`${node.id}-${index}`}>
+                      {index > 0 && <span className="chain-arrow">→</span>}
+                      <span
+                        className={`chain-node chain-node--${node.status} ${
+                          chainTip && node.status === 'current' ? 'chain-node--pulse' : ''
+                        }`}
+                      >
+                        <span className="chain-formula">{formatFormula(node.id)}</span>
+                        <span className="chain-name">{node.name}</span>
+                      </span>
+                    </span>
+                  ))}
+                </div>
+                {chainTip && (
+                  <div className="chain-tip" role="status">
+                    这一击没按工序来，伤害减半 —— 跟着链条走
+                    {nextNode ? `，下一步「${nextNode.name}」` : ''}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           {state.lastResult && state.phase === 'resolving' && (
             <div
@@ -197,6 +354,16 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             >
               -{state.lastResult.damage}
               {state.lastResult.weak && <span className="dmg-tag">弱点</span>}
+              {state.lastResult.offChain && <span className="dmg-cut">偏离工序 · 伤害减半</span>}
+            </div>
+          )}
+          {state.phaseSwitch && bossPhase && (
+            <div className="phase-shift" role="status">
+              <div className="phase-shift-kicker">阶段切换</div>
+              <div className="phase-shift-title">
+                第 {state.bossIndex + 1} / {phaseTotal} 阶段 · {bossPhase.name}
+              </div>
+              <div className="phase-shift-sub">回复 30 HP · 能量回满 · 护盾清零 · 工序重置</div>
             </div>
           )}
         </main>
@@ -227,12 +394,14 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             return (
               <button
                 key={`${id}-${index}`}
-                className={`card k-${KIND_CLASS[sub.kind] ?? 'element'} ${
-                  selected ? 'sel' : ''
-                } ${state.hint.includes(index) ? 'hint' : ''}`}
+                className={`card k-${KIND_CLASS[sub.kind] ?? 'element'} ${selected ? 'sel' : ''} ${
+                  state.hint.includes(index) ? 'hint' : ''
+                } ${dealing ? 'deal-in' : ''}`}
+                style={{ animationDelay: `${index * 45}ms` }}
                 onClick={() => setState((s) => toggleCard(s, index))}
                 disabled={state.phase !== 'select'}
               >
+                <CardIcon kind={sub.kind} />
                 <span className="card-formula">{formatFormula(sub.formula)}</span>
                 <span className="card-name">{sub.name}</span>
                 <span className="card-kind">{sub.kind}</span>
@@ -258,7 +427,10 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           <button
             className="btn-summon"
             disabled={state.selected.length === 0 || state.phase !== 'select'}
-            onClick={() => setState((s) => submitSelection(s))}
+            onClick={() => {
+              castCards();
+              setState((s) => submitSelection(s));
+            }}
           >
             出 招
           </button>
@@ -273,6 +445,38 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           onConfirm={submitBalance}
           onSkip={skip}
         />
+      )}
+
+      {hintOpen && (
+        <div className="overlay" onClick={() => setHintOpen(false)}>
+          <div className="hint-card" onClick={(e) => e.stopPropagation()}>
+            <div className="hint-head">
+              <div>
+                <div className="hint-title">标准答案 · {level.name}</div>
+                <div className="hint-sub">
+                  弱点：{level.enemy.weakness.join(' / ')}　|　{level.textbook}
+                </div>
+              </div>
+              <button className="btn-ghost small" onClick={() => setHintOpen(false)}>
+                关闭
+              </button>
+            </div>
+            <div className="hint-list">
+              {solutions.length === 0 && (
+                <div className="hint-empty">这一关没有内置答案，先按弱点类型试组合。</div>
+              )}
+              {solutions.map(({ id, reaction }) => (
+                <div className="hint-item" key={id}>
+                  <div className="hint-eq">{formatEquation(reaction)}</div>
+                  <div className="hint-meta">
+                    {reaction.type} · {reaction.condition} · {reaction.phenomenon}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="hint-foot">先自己试试；卡住再看。答案不唯一，命中弱点的组合都算。</div>
+          </div>
+        </div>
       )}
 
       {solutionOpen && state.phase === 'resolving' && state.lastResult && (
@@ -326,7 +530,9 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             <div className="result-title">{state.phase === 'win' ? '实验成功' : '实验失败'}</div>
             <div className="result-sub">
               {state.phase === 'win'
-                ? `${state.level.enemy.name} 被你彻底分解。`
+                ? state.level.phases
+                  ? `${state.level.enemy.name} 的三道形态全部瓦解。`
+                  : `${state.level.enemy.name} 被你彻底分解。`
                 : state.playerHp <= 0
                   ? '你被反噬了。调整一下试剂搭配再试。'
                   : '回合耗尽——试剂不够用了。'}

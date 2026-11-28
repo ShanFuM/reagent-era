@@ -1,10 +1,10 @@
-import { lookupReaction, substance } from './data';
-import type { Level, Reaction, ReactionType } from './data';
+import { REACTIONS, lookupReaction, playableReactions, substance } from './data';
+import type { BossPhase, Level, Reaction, ReactionType } from './data';
 import { checkBalance } from './formula.js';
 
 export type Accuracy = 'none' | 'perfect' | 'correct' | 'wrong' | 'skip';
 export type Phase = 'select' | 'balance' | 'resolving' | 'misfire' | 'win' | 'lose';
-export type LogKind = 'info' | 'hit' | 'enemy' | 'effect' | 'warn' | 'win';
+export type LogKind = 'info' | 'hit' | 'enemy' | 'effect' | 'warn' | 'phase' | 'win';
 
 export interface LogEntry {
   id: number;
@@ -22,6 +22,8 @@ export interface TurnResult {
   effects: string[];
   comboBonus: number;
   boosted: boolean;
+  /** 处于工序阶段却打了非当前步骤的反应：伤害减半 */
+  offChain: boolean;
 }
 
 export interface BattleState {
@@ -45,6 +47,12 @@ export interface BattleState {
   combo: number;
   selected: number[];
   phase: Phase;
+  /** 多阶段 Boss 的当前阶段下标（0 起）；普通关卡恒为 0 */
+  bossIndex: number;
+  /** 当前阶段「工序」推进到第几步；没有工序的阶段恒为 0 */
+  chainStep: number;
+  /** 刚切过阶段：用于战斗内的阶段切换提示，进入下一回合时清除 */
+  phaseSwitch: boolean;
   pendingKey: string | null;
   pending: Reaction | null;
   coefficients: number[];
@@ -59,13 +67,52 @@ export interface BattleState {
   reactionCounts: Record<string, number>;
   log: LogEntry[];
   logSeq: number;
-  stats: { dealt: number; taken: number; perfect: number; turns: number };
+  stats: {
+    dealt: number;
+    taken: number;
+    perfect: number;
+    turns: number;
+    /** 本局用了几次「强化」 */
+    boostUsed: number;
+    /** 最后一击被技能门槛弹开的次数（只用于日志去重） */
+    gateBlocked: number;
+  };
+}
+
+/**
+ * 关卡技能门槛：第 7 关之后（`requireSkill`）必须至少有一次
+ * 「完美配平」或一次「强化」，否则最后一击不结算胜利。
+ */
+export function skillGate(s: BattleState): { required: boolean; satisfied: boolean } {
+  const required = Boolean(s.level.requireSkill);
+  const satisfied = s.stats.perfect > 0 || s.stats.boostUsed > 0;
+  return { required, satisfied: !required || satisfied };
+}
+
+/** 工序链上的一环：状态由引擎算好，界面只负责上色 */
+export interface ChainNode {
+  id: string;
+  name: string;
+  status: 'done' | 'current' | 'pending';
+}
+
+export interface ChainView {
+  title: string;
+  done: number;
+  total: number;
+  nodes: ChainNode[];
 }
 
 export const BASE_DAMAGE = 18;
 export const PLAYER_MAX_HP = 150;
 /** 手牌上限：多了会把牌堆挤爆，也会让界面溢出 */
 export const HAND_LIMIT = 8;
+/** 多阶段 Boss：每次切阶段回复的血量（不超过上限） */
+export const BOSS_PHASE_HEAL = 30;
+/** 多阶段 Boss：每多一个阶段，回合上限额外给几回合 */
+export const BOSS_PHASE_EXTRA_TURNS = 4;
+/** 工序阶段里，打非当前步骤的反应只结算一半伤害 */
+export const OFF_CHAIN_DAMAGE = 0.5;
 /** 每关可以点几次提示 */
 export const HINTS_PER_LEVEL = 3;
 
@@ -116,6 +163,83 @@ const shuffle = <T,>(arr: T[]): T[] => {
   }
   return out;
 };
+
+function bossPhases(level: Level): BossPhase[] {
+  return level.phases ?? [];
+}
+
+/** 当前阶段的配置；普通关卡返回 null。 */
+export function bossPhaseOf(s: BattleState): BossPhase | null {
+  return bossPhases(s.level)[s.bossIndex] ?? null;
+}
+
+/** 当前阶段的弱点/抗性；普通关卡退回关卡本身的配置。 */
+export function enemyWeaknessOf(s: BattleState): ReactionType[] {
+  return bossPhaseOf(s)?.weakness ?? s.level.enemy.weakness;
+}
+
+export function enemyResistOf(s: BattleState): ReactionType[] {
+  return bossPhaseOf(s)?.resist ?? s.level.enemy.resist;
+}
+
+function totalEnemyHp(level: Level): number {
+  const phases = bossPhases(level);
+  return phases.length > 0 ? phases.reduce((sum, p) => sum + p.hp, 0) : level.enemy.hp;
+}
+
+function requiredSteps(s: BattleState): string[] {
+  return bossPhaseOf(s)?.required ?? [];
+}
+
+function isOnChainStep(s: BattleState, key: string): boolean {
+  const steps = requiredSteps(s);
+  return s.chainStep < steps.length && steps[s.chainStep] === key;
+}
+
+function isOffChainStep(s: BattleState, key: string): boolean {
+  const steps = requiredSteps(s);
+  return steps.length > 0 && s.chainStep < steps.length && steps[s.chainStep] !== key;
+}
+
+/**
+ * 工序推进时自动入手牌的主要产物。
+ * 规则：优先取「既不是气体、也不是沉淀」的第一个产物；都不满足时退回第一个产物。
+ * 这样 Na[Al(OH)4] 这类不在试剂架上的中间物能自动续上，
+ * 而不用在引擎里写死任何物质。
+ */
+function mainProductOf(reaction: Reaction): string | null {
+  const gas = new Set(reaction.gas ?? []);
+  const precipitate = new Set(reaction.precipitate ?? []);
+  const main = reaction.products.find(([id]) => !gas.has(id) && !precipitate.has(id));
+  return (main ?? reaction.products[0])?.[0] ?? null;
+}
+
+function addCardToHand(s: BattleState, id: string): BattleState {
+  // 出招时至少会移除 1 张手牌，所以这里加上 1 张不会突破 HAND_LIMIT
+  return { ...s, hand: [...s.hand, id] };
+}
+
+/** 阶段 2 的 NH₃ → NO → NO₂ → HNO₃ 这类链条，统一由这里生成节点与状态。 */
+export function chainView(s: BattleState): ChainView | null {
+  const phase = bossPhaseOf(s);
+  const steps = phase?.required ?? [];
+  if (!phase || steps.length === 0) return null;
+
+  const nodes: ChainNode[] = [];
+  const startId = REACTIONS[steps[0]]?.reactants[0]?.[0];
+  if (startId) {
+    // 起点物质是链条的输入，视为「已完成」
+    nodes.push({ id: startId, name: substance(startId).name, status: 'done' });
+  }
+  steps.forEach((reactionId, index) => {
+    const productId = REACTIONS[reactionId]?.products[0]?.[0];
+    if (!productId) return;
+    const status = index < s.chainStep ? 'done' : index === s.chainStep ? 'current' : 'pending';
+    nodes.push({ id: productId, name: substance(productId).name, status });
+  });
+
+  return { title: phase.name, done: s.chainStep, total: steps.length, nodes };
+}
 
 export function canReact(ids: string[]): boolean {
   return ids.length > 0 && lookupReaction(ids) !== null;
@@ -225,19 +349,69 @@ function ensurePlayable(s: BattleState): BattleState {
   );
 }
 
+/** 这一回合发牌要围绕哪条反应：有工序的阶段优先给当前这一步，其余随机取一条可打反应。 */
+function chooseDealReaction(s: BattleState): Reaction | null {
+  const phase = bossPhaseOf(s);
+  const stepId = phase?.required?.[s.chainStep];
+  if (stepId && REACTIONS[stepId]) return REACTIONS[stepId];
+  const list = playableReactions(s.level);
+  if (list.length === 0) return null;
+  return list[Math.floor(Math.random() * list.length)][1];
+}
+
+/**
+ * 发一手「必定能打出至少一种反应」的牌：
+ * 某条反应所需物质各一张 + 2 张干扰牌。
+ * 牌堆里没有就先翻弃牌堆，保证凑得齐。
+ */
+function dealHand(s: BattleState): BattleState {
+  const reaction = chooseDealReaction(s);
+  if (!reaction) return s;
+
+  let deck = s.deck.slice();
+  let discard = s.discard.slice();
+  const hand: string[] = [];
+
+  const take = (id?: string) => {
+    let idx = id ? deck.indexOf(id) : -1;
+    if (idx < 0) {
+      if (id) {
+        if (discard.length === 0) return;
+        deck = shuffle([...deck, ...discard]);
+        discard = [];
+        idx = deck.indexOf(id);
+        if (idx < 0) return;
+      } else {
+        if (deck.length === 0) {
+          if (discard.length === 0) return;
+          deck = shuffle([...deck, ...discard]);
+          discard = [];
+        }
+        if (deck.length === 0) return;
+        idx = Math.floor(Math.random() * deck.length);
+      }
+    }
+    hand.push(deck[idx]);
+    deck.splice(idx, 1);
+  };
+
+  for (const [id] of reaction.reactants) take(id);
+  for (let i = 0; i < 3; i += 1) take();
+
+  return { ...s, hand, deck, discard };
+}
+
 export function createBattle(level: Level): BattleState {
   const deck = shuffle(level.shelf);
   const hand: string[] = [];
-  for (let i = 0; i < level.handSize && deck.length > 0 && hand.length < HAND_LIMIT; i += 1) {
-    const card = deck.pop();
-    if (card) hand.push(card);
-  }
+  const phases = bossPhases(level);
+  const firstPhase = phases[0];
   const base: BattleState = {
     level,
     playerHp: PLAYER_MAX_HP,
     playerMaxHp: PLAYER_MAX_HP,
-    enemyHp: level.enemy.hp,
-    enemyMaxHp: level.enemy.hp,
+    enemyHp: firstPhase?.hp ?? level.enemy.hp,
+    enemyMaxHp: firstPhase?.hp ?? level.enemy.hp,
     shield: 0,
     hand,
     deck,
@@ -245,14 +419,20 @@ export function createBattle(level: Level): BattleState {
     energy: level.energy,
     boost: false,
     turn: 1,
-    maxTurns: 16 + Math.round(level.enemy.hp / 120),
-    enemyArmor: level.enemy.armor,
+    maxTurns:
+      16 +
+      Math.round(totalEnemyHp(level) / 120) +
+      Math.max(0, phases.length - 1) * BOSS_PHASE_EXTRA_TURNS,
+    enemyArmor: firstPhase?.armor ?? level.enemy.armor,
     choke: 0,
     burn: 0,
     bind: 0,
     combo: 0,
     selected: [],
     phase: 'select',
+    bossIndex: 0,
+    chainStep: 0,
+    phaseSwitch: false,
     pendingKey: null,
     pending: null,
     coefficients: [],
@@ -263,11 +443,17 @@ export function createBattle(level: Level): BattleState {
     reactionCounts: {},
     log: [],
     logSeq: 0,
-    stats: { dealt: 0, taken: 0, perfect: 0, turns: 0 },
+    stats: { dealt: 0, taken: 0, perfect: 0, turns: 0, boostUsed: 0, gateBlocked: 0 },
   };
-  return ensurePlayable(
-    pushLog(base, 'info', `遭遇「${level.enemy.name}」：${level.enemy.intro}`),
-  );
+  let opening = pushLog(base, 'info', `遭遇「${level.enemy.name}」：${level.enemy.intro}`);
+  if (firstPhase) {
+    opening = pushLog(
+      opening,
+      'phase',
+      `第 1 / ${phases.length} 阶段 · ${firstPhase.name}：${firstPhase.intro}`,
+    );
+  }
+  return ensurePlayable(dealHand(opening));
 }
 
 export function toggleCard(s: BattleState, index: number): BattleState {
@@ -343,17 +529,20 @@ export function previewDamage(
   reaction: Reaction,
   accuracy: Accuracy,
   perfectBonus = false,
+  reactionKey: string | null = null,
   variety = 1,
 ): number {
   const profile = TYPE_PROFILE[reaction.type];
   const cond = COND_COEF[reaction.condition] ?? 1;
   const acc = ACC_COEF[accuracy] * (perfectBonus && accuracy === 'perfect' ? 1.1 : 1);
-  const weak = s.level.enemy.weakness.includes(reaction.type);
-  const resist = s.level.enemy.resist.includes(reaction.type);
+  const weak = enemyWeaknessOf(s).includes(reaction.type);
+  const resist = enemyResistOf(s).includes(reaction.type);
   const weakMult = weak ? 2 : resist ? 0.5 : 1;
   const comboBonus = Math.min(s.combo, 5) * 0.1;
   const boostMult = s.boost && s.energy > 0 ? 1.25 : 1;
   const armorMult = Math.max(0.4, 1 - s.enemyArmor * 0.12);
+  const chainMult =
+    reactionKey !== null && isOffChainStep(s, reactionKey) ? OFF_CHAIN_DAMAGE : 1;
   const raw =
     BASE_DAMAGE *
     profile.base *
@@ -363,8 +552,100 @@ export function previewDamage(
     (1 + comboBonus) *
     boostMult *
     armorMult *
+    chainMult *
     variety;
   return Math.max(1, Math.round(raw));
+}
+
+/** 工序推进一步：记录进度，并把主要产物塞进手牌（不写死任何物质）。 */
+function advanceChain(s: BattleState, reaction: Reaction, total: number): BattleState {
+  const step = s.chainStep + 1;
+  const productId = mainProductOf(reaction);
+  let next: BattleState = { ...s, chainStep: step };
+  if (productId) next = addCardToHand(next, productId);
+  next = pushLog(
+    next,
+    'effect',
+    productId
+      ? `工序 ${step}/${total} 完成：${substance(productId).name} 已加入手牌。`
+      : `工序 ${step}/${total} 完成。`,
+  );
+  if (step >= total) {
+    next = pushLog(next, 'phase', '全部工序完成——这一阶段不再有伤害折半。');
+  }
+  return next;
+}
+
+/** 血量归零：还有下一阶段就切换，否则判胜。 */
+function resolveEnemyDefeat(s: BattleState, text: string): BattleState {
+  if (s.enemyHp > 0) return s;
+  const phases = bossPhases(s.level);
+  const hasNextPhase = phases.length > 0 && s.bossIndex + 1 < phases.length;
+
+  // 技能门槛只挡「最终结算」，不挡阶段切换
+  if (!hasNextPhase && !skillGate(s).satisfied) {
+    const first = s.stats.gateBlocked === 0;
+    let blocked: BattleState = {
+      ...s,
+      enemyHp: 1,
+      stats: { ...s.stats, gateBlocked: s.stats.gateBlocked + 1 },
+    };
+    if (first) {
+      blocked = pushLog(
+        blocked,
+        'warn',
+        '最后一击被弹开了——这一关必须至少完成一次「完美配平」，或使用一次「强化」，才能真正终结它。',
+      );
+    }
+    return blocked;
+  }
+
+  if (hasNextPhase) {
+    return enterNextBossPhase(s, text);
+  }
+  const winText =
+    phases.length > 0
+      ? `${s.level.enemy.name} 的 ${phases.length} 个形态全部瓦解。`
+      : `${s.level.enemy.name} ${text}。`;
+  const next: BattleState = { ...s, phase: 'win' };
+  return pushLog(next, 'win', winText);
+}
+
+function enterNextBossPhase(s: BattleState, brokenText: string): BattleState {
+  const phases = bossPhases(s.level);
+  const nextIndex = s.bossIndex + 1;
+  const phase = phases[nextIndex];
+  if (!phase) return s;
+  const previous = phases[s.bossIndex];
+  const healed = Math.min(s.playerMaxHp, s.playerHp + BOSS_PHASE_HEAL);
+  let next: BattleState = {
+    ...s,
+    bossIndex: nextIndex,
+    enemyHp: phase.hp,
+    enemyMaxHp: phase.hp,
+    enemyArmor: phase.armor,
+    playerHp: healed,
+    energy: s.level.energy,
+    shield: 0,
+    chainStep: 0,
+    combo: 0,
+    burn: 0,
+    choke: 0,
+    phaseSwitch: true,
+    phase: 'resolving',
+  };
+  next = pushLog(next, 'phase', `「${previous?.name ?? '外壳'}」${brokenText}。`);
+  next = pushLog(
+    next,
+    'phase',
+    `进入第 ${nextIndex + 1} / ${phases.length} 阶段 · ${phase.name}：${phase.intro}`,
+  );
+  next = pushLog(
+    next,
+    'effect',
+    `阶段切换：回复 ${healed - s.playerHp} HP，能量回满，护盾清零，工序重新开始。`,
+  );
+  return next;
 }
 
 function settle(
@@ -375,11 +656,13 @@ function settle(
   perfect: boolean,
 ): BattleState {
   const boosted = s.boost && s.energy > 0;
+  const onChain = isOnChainStep(s, key);
+  const offChain = isOffChainStep(s, key);
   const usedTimes = s.reactionCounts[key] ?? 0;
   const variety = varietyMultiplier(usedTimes);
-  const damage = previewDamage(s, reaction, accuracy, perfect, variety);
-  const weak = s.level.enemy.weakness.includes(reaction.type);
-  const resist = s.level.enemy.resist.includes(reaction.type);
+  const damage = previewDamage(s, reaction, accuracy, perfect, key, variety);
+  const weak = enemyWeaknessOf(s).includes(reaction.type);
+  const resist = enemyResistOf(s).includes(reaction.type);
   const profile = TYPE_PROFILE[reaction.type];
   const comboBonus = Math.min(s.combo, 5) * 0.1;
 
@@ -402,6 +685,7 @@ function settle(
       ...s.stats,
       dealt: s.stats.dealt + damage,
       perfect: s.stats.perfect + (perfect ? 1 : 0),
+      boostUsed: s.stats.boostUsed + (boosted ? 1 : 0),
     },
     lastResult: {
       reactionKey: key,
@@ -413,6 +697,7 @@ function settle(
       effects: [profile.effect],
       comboBonus,
       boosted,
+      offChain,
     },
     phase: 'resolving',
     pendingKey: null,
@@ -434,6 +719,18 @@ function settle(
     `${reaction.type}反应${accText} 造成 ${damage} 点伤害${weak ? '（命中弱点 ×2）' : resist ? '（被抗性削弱）' : ''}`,
   );
   if (reaction.phenomenon) next = pushLog(next, 'effect', reaction.phenomenon);
+
+  if (offChain) {
+    const steps = requiredSteps(s);
+    const nextStep = REACTIONS[steps[s.chainStep]];
+    const nextName = nextStep?.products[0]?.[0];
+    next = pushLog(
+      next,
+      'warn',
+      `偏离当前工序${nextName ? `（下一步：${substance(nextName).name}）` : ''}，伤害减半。`,
+    );
+  }
+  if (onChain) next = advanceChain(next, reaction, requiredSteps(s).length);
 
   if (usedTimes === 0) {
     next = pushLog(next, 'effect', '首次使用这个反应 · 伤害 ×1.1');
@@ -469,8 +766,7 @@ function settle(
   }
 
   if (next.enemyHp <= 0) {
-    next = { ...next, phase: 'win' };
-    next = pushLog(next, 'win', `${next.level.enemy.name} 被彻底分解。`);
+    next = resolveEnemyDefeat(next, '被彻底分解');
   }
   return next;
 }
@@ -520,7 +816,10 @@ export function enemyTurn(s: BattleState): BattleState {
     return pushLog(next, 'enemy', '敌方被束缚，无法行动。');
   }
 
-  const raw = next.level.enemy.atk * (next.choke > 0 ? 0.7 : 1);
+  const phase = bossPhaseOf(next);
+  const atk = phase?.atk ?? next.level.enemy.atk;
+  const title = phase ? `${next.level.enemy.name}·${phase.name}` : next.level.enemy.name;
+  const raw = atk * (next.choke > 0 ? 0.7 : 1);
   const dmg = Math.max(1, Math.round(raw));
   const absorbed = Math.min(next.shield, dmg);
   const through = dmg - absorbed;
@@ -534,7 +833,7 @@ export function enemyTurn(s: BattleState): BattleState {
   next = pushLog(
     next,
     'enemy',
-    `${next.level.enemy.name} 反击，造成 ${through} 点伤害${absorbed > 0 ? `（护盾抵挡 ${absorbed}）` : ''}。`,
+    `${title} 反击，造成 ${through} 点伤害${absorbed > 0 ? `（护盾抵挡 ${absorbed}）` : ''}。`,
   );
   if (next.playerHp <= 0) {
     next = { ...next, phase: 'lose' };
@@ -557,21 +856,30 @@ export function endTurn(s: BattleState): BattleState {
     };
     next = pushLog(next, 'effect', `灼烧持续伤害 ${burnDmg} 点。`);
     if (next.enemyHp <= 0) {
-      next = { ...next, phase: 'win' };
-      return pushLog(next, 'win', `${next.level.enemy.name} 被烧尽了。`);
+      next = resolveEnemyDefeat(next, '被烧尽了');
+      if (next.phase === 'win') return next;
+      // 灼烧烧掉一个阶段：保留 resolving，让阶段切换提示完整播完
+      if (next.phaseSwitch) return next;
     }
   }
 
   next = enemyTurn(next);
   if (next.phase === 'lose') return next;
 
-  next = drawCards(next, 2);
+  // 回合结束：整手弃掉，重新发一手「必定有反应」的牌
+  next = dealHand({
+    ...next,
+    hand: [],
+    discard: [...next.discard, ...next.hand],
+    selected: [],
+  });
   next = {
     ...next,
     turn: next.turn + 1,
     selected: [],
     hint: [],
     phase: 'select',
+    phaseSwitch: false,
     stats: { ...next.stats, turns: next.stats.turns + 1 },
   };
   if (next.turn > next.maxTurns) {

@@ -29,6 +29,8 @@ const warnings = [];
 const fail = (msg) => errors.push(msg);
 const warn = (msg) => warnings.push(msg);
 
+const REACTION_TYPES = ['置换', '中和', '沉淀', '产气', '分解', '化合', '燃烧', '氧化还原', '复分解'];
+
 // ---------- 1. 物质表 ----------
 for (const [id, s] of Object.entries(substances)) {
   const parsed = parseFormula(s.formula);
@@ -145,6 +147,51 @@ for (const [key, lv] of Object.entries(levels)) {
     fail(`${label} 要求配平但没给倒计时`);
   }
   if (!(lv.handSize >= 2)) fail(`${label} 手牌上限过小`);
+
+  // ---- 多阶段 Boss ----
+  if (lv.phases !== undefined) {
+    if (!Array.isArray(lv.phases) || lv.phases.length === 0) {
+      fail(`${label} 的 phases 必须是非空数组`);
+    } else {
+      const phaseHp = lv.phases.reduce((sum, p) => sum + (Number(p.hp) || 0), 0);
+      if (lv.enemy.hp !== phaseHp) {
+        fail(
+          `${label} 的 enemy.hp（${lv.enemy.hp}）必须等于各阶段血量和（${phaseHp}）——关卡列表按 enemy.hp 显示总血量`,
+        );
+      }
+      lv.phases.forEach((p, index) => {
+        const plabel = `${label} 阶段 ${index + 1}`;
+        if (!p.name) fail(`${plabel} 缺少名称`);
+        if (!(p.hp > 0)) fail(`${plabel} 血量无效`);
+        if (!(p.atk > 0)) fail(`${plabel} 攻击无效`);
+        if (!Array.isArray(p.weakness)) fail(`${plabel} 缺少 weakness 数组`);
+        if (!Array.isArray(p.resist)) fail(`${plabel} 缺少 resist 数组`);
+        const badTypes = [...(p.weakness ?? []), ...(p.resist ?? [])].filter(
+          (t) => !REACTION_TYPES.includes(t),
+        );
+        if (badTypes.length) fail(`${plabel} 有未知反应类型 ${badTypes.join('/')}`);
+
+        const required = p.required ?? [];
+        if (!Array.isArray(required)) {
+          fail(`${plabel} 的 required 必须是数组`);
+        } else {
+          if (new Set(required).size !== required.length) {
+            fail(`${plabel} 的 required 有重复步骤`);
+          }
+          for (const rid of required) {
+            const r = reactions[rid];
+            if (!r) {
+              fail(`${plabel} 的 required 引用了不存在的方程式 "${rid}"`);
+              continue;
+            }
+            if (!(r.levels ?? []).includes(lv.id)) {
+              fail(`${plabel} 的工序 ${rid} 不属于第 ${lv.id} 关`);
+            }
+          }
+        }
+      });
+    }
+  }
 }
 
 // ---------- 3.5 年级线 ----------
