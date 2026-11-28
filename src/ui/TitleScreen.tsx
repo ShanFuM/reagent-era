@@ -1,7 +1,12 @@
+import { PlayerSprite } from './Sprite';
+
 export default function TitleScreen({ onStart }: { onStart: () => void }) {
   return (
     <div className="title-screen">
       <div className="title-glow" />
+      <div className="title-hero">
+        <PlayerSprite />
+      </div>
       <div className="title-inner">
         <div className="title-kicker">2026 波克 AI 游戏创作大赛 · 寓教于游</div>
         <h1 className="title-main">试剂纪元</h1>
