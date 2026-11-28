@@ -17,15 +17,11 @@ import {
 } from '../engine/battle';
 import type { BattleState } from '../engine/battle';
 import { nextLevelInLine, solutionReactions, substance } from '../engine/data';
-import type { GradeLine, Level, Reaction } from '../engine/data';
+import type { GradeLine, Level } from '../engine/data';
 import { formatFormula } from '../engine/formula.js';
+import { equationText } from '../engine/equation';
 import BalancePad from './BalancePad';
 import { EnemySprite, PlayerSprite, CardIcon } from './Sprite';
-
-const formatEquation = (r: Reaction) =>
-  `${r.reactants.map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`).join(' + ')} = ${r.products
-    .map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`)
-    .join(' + ')}`;
 
 const KIND_CLASS: Record<string, string> = {
   单质: 'element',
@@ -36,13 +32,6 @@ const KIND_CLASS: Record<string, string> = {
   盐: 'salt',
   气体: 'gas',
   有机物: 'organic',
-};
-
-/** 把一条反应渲染成带系数的方程式文本（下标用 unicode） */
-const equationText = (r: Reaction): string => {
-  const side = (terms: [string, number][]) =>
-    terms.map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`).join(' + ');
-  return `${side(r.reactants)} = ${side(r.products)}`;
 };
 
 const verdictText = (accuracy: string): string =>
@@ -467,7 +456,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
               )}
               {solutions.map(({ id, reaction }) => (
                 <div className="hint-item" key={id}>
-                  <div className="hint-eq">{formatEquation(reaction)}</div>
+                  <div className="hint-eq">{equationText(reaction)}</div>
                   <div className="hint-meta">
                     {reaction.type} · {reaction.condition} · {reaction.phenomenon}
                   </div>

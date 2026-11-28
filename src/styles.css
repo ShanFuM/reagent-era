@@ -1254,6 +1254,15 @@ button:disabled {
   margin: 0 6px;
 }
 
+/* 气标 ↑ / 沉淀 ↓，跟在化学式右上角 */
+.eq-mark {
+  font-size: 20px;
+  line-height: 1;
+  vertical-align: super;
+  color: var(--cyan);
+  margin-left: 2px;
+}
+
 .coef {
   display: inline-flex;
   align-items: center;

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Reaction } from '../engine/data';
 import { formatFormula } from '../engine/formula.js';
+import { productMark } from '../engine/equation';
 
 interface Props {
   reaction: Reaction;
@@ -89,6 +90,14 @@ export default function BalancePad({ reaction, timeLimit, combo, onConfirm, onSk
                   </button>
                 </span>
                 <span className="eq-formula">{formatFormula(id)}</span>
+                <span className="eq-mark">
+                  {productMark(
+                    id,
+                    reaction.gas ?? [],
+                    reaction.precipitate ?? [],
+                    reaction.condition,
+                  )}
+                </span>
                 {i < reaction.products.length - 1 && <span className="eq-op">+</span>}
               </span>
             );
