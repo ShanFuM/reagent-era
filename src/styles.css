@@ -456,6 +456,25 @@ button:disabled {
   border-radius: 999px;
 }
 
+.gate-pill {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.gate-pill.todo {
+  color: var(--red);
+  border: 1px solid rgba(255, 95, 109, 0.45);
+  background: rgba(255, 95, 109, 0.08);
+}
+
+.gate-pill.ok {
+  color: var(--lime);
+  border: 1px solid rgba(194, 240, 74, 0.4);
+  background: rgba(194, 240, 74, 0.08);
+}
+
 .field {
   display: grid;
   grid-template-columns: 296px 1fr 312px;

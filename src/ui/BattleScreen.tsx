@@ -7,6 +7,7 @@ import {
   createBattle,
   enemyResistOf,
   enemyWeaknessOf,
+  skillGate,
   skipBalance,
   submitSelection,
   toggleBoost,
@@ -53,6 +54,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
 
   const restart = () => setState(createBattle(level));
   const nextLevel = nextLevelInLine(line, level);
+  const gate = skillGate(state);
   const hpRatio = state.playerHp / state.playerMaxHp;
   const enemyRatio = state.enemyHp / state.enemyMaxHp;
   const bossPhase = bossPhaseOf(state);
@@ -78,6 +80,11 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           {bossPhase && (
             <span className="phase-pill">
               阶段 {state.bossIndex + 1}/{phaseTotal} · {bossPhase.name}
+            </span>
+          )}
+          {gate.required && (
+            <span className={`gate-pill ${gate.satisfied ? 'ok' : 'todo'}`}>
+              {gate.satisfied ? '✓ 收尾条件已达' : '收尾需：完美配平 ×1 或 强化 ×1'}
             </span>
           )}
           <span className="turn-pill">

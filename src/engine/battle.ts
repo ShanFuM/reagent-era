@@ -59,7 +59,26 @@ export interface BattleState {
   lastResult: TurnResult | null;
   log: LogEntry[];
   logSeq: number;
-  stats: { dealt: number; taken: number; perfect: number; turns: number };
+  stats: {
+    dealt: number;
+    taken: number;
+    perfect: number;
+    turns: number;
+    /** 本局用了几次「强化」 */
+    boostUsed: number;
+    /** 最后一击被技能门槛弹开的次数（只用于日志去重） */
+    gateBlocked: number;
+  };
+}
+
+/**
+ * 关卡技能门槛：第 7 关之后（`requireSkill`）必须至少有一次
+ * 「完美配平」或一次「强化」，否则最后一击不结算胜利。
+ */
+export function skillGate(s: BattleState): { required: boolean; satisfied: boolean } {
+  const required = Boolean(s.level.requireSkill);
+  const satisfied = s.stats.perfect > 0 || s.stats.boostUsed > 0;
+  return { required, satisfied: !required || satisfied };
 }
 
 /** 工序链上的一环：状态由引擎算好，界面只负责上色 */
@@ -318,7 +337,7 @@ export function createBattle(level: Level): BattleState {
     lastResult: null,
     log: [],
     logSeq: 0,
-    stats: { dealt: 0, taken: 0, perfect: 0, turns: 0 },
+    stats: { dealt: 0, taken: 0, perfect: 0, turns: 0, boostUsed: 0, gateBlocked: 0 },
   };
   let opening = pushLog(base, 'info', `遭遇「${level.enemy.name}」：${level.enemy.intro}`);
   if (firstPhase) {
@@ -428,7 +447,27 @@ function advanceChain(s: BattleState, reaction: Reaction, total: number): Battle
 function resolveEnemyDefeat(s: BattleState, text: string): BattleState {
   if (s.enemyHp > 0) return s;
   const phases = bossPhases(s.level);
-  if (phases.length > 0 && s.bossIndex + 1 < phases.length) {
+  const hasNextPhase = phases.length > 0 && s.bossIndex + 1 < phases.length;
+
+  // 技能门槛只挡「最终结算」，不挡阶段切换
+  if (!hasNextPhase && !skillGate(s).satisfied) {
+    const first = s.stats.gateBlocked === 0;
+    let blocked: BattleState = {
+      ...s,
+      enemyHp: 1,
+      stats: { ...s.stats, gateBlocked: s.stats.gateBlocked + 1 },
+    };
+    if (first) {
+      blocked = pushLog(
+        blocked,
+        'warn',
+        '最后一击被弹开了——这一关必须至少完成一次「完美配平」，或使用一次「强化」，才能真正终结它。',
+      );
+    }
+    return blocked;
+  }
+
+  if (hasNextPhase) {
     return enterNextBossPhase(s, text);
   }
   const winText =
@@ -509,6 +548,7 @@ function settle(
       ...s.stats,
       dealt: s.stats.dealt + damage,
       perfect: s.stats.perfect + (perfect ? 1 : 0),
+      boostUsed: s.stats.boostUsed + (boosted ? 1 : 0),
     },
     lastResult: {
       reactionKey: key,

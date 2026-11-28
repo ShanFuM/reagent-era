@@ -84,6 +84,8 @@ export interface Level {
   energy: number;
   balanceTime: number;
   requireBalance: boolean;
+  /** 收尾门槛：必须至少一次完美配平或一次强化，才能结算胜利（第 7 关之后） */
+  requireSkill?: boolean;
 }
 
 export const SUBSTANCES = substancesRaw as unknown as Record<string, Substance>;

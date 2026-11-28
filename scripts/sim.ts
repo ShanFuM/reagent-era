@@ -12,6 +12,7 @@ import {
   createBattle,
   skipBalance,
   submitSelection,
+  toggleBoost,
   toggleCard,
 } from '../src/engine/battle';
 import type { BattleState } from '../src/engine/battle';
@@ -47,6 +48,8 @@ function runOne(levelId: number, correctRate: number): Outcome {
     guard += 1;
     if (s.phase === 'select') {
       let next = s;
+      // 偶尔用一次强化：既模拟真人打法，也覆盖「收尾门槛」的强化路径
+      if (Math.random() < 0.3 && next.energy > 0) next = toggleBoost(next);
       for (const i of pickMove(s)) next = toggleCard(next, i);
       s = submitSelection(next);
     } else if (s.phase === 'balance') {

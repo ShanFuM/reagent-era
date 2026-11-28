@@ -11,7 +11,7 @@
       "name": "铁锈傀儡",
       "art": "🗿",
       "hp": 210,
-      "atk": 9,
+      "atk": 11,
       "armor": 0,
       "weakness": ["置换", "产气"],
       "resist": ["中和"],
@@ -35,7 +35,7 @@
       "name": "酸雾史莱姆",
       "art": "🫧",
       "hp": 235,
-      "atk": 10,
+      "atk": 12,
       "armor": 0,
       "weakness": ["中和"],
       "resist": ["沉淀"],
@@ -59,7 +59,7 @@
       "name": "沉淀壳蟹",
       "art": "🦀",
       "hp": 255,
-      "atk": 11,
+      "atk": 13,
       "armor": 1,
       "weakness": ["沉淀"],
       "resist": ["置换"],
@@ -83,7 +83,7 @@
       "name": "石灰巨像",
       "art": "🏛",
       "hp": 400,
-      "atk": 13,
+      "atk": 15,
       "armor": 2,
       "weakness": ["产气", "分解"],
       "resist": ["中和"],
@@ -107,7 +107,7 @@
       "name": "氯气妖",
       "art": "☠",
       "hp": 300,
-      "atk": 12,
+      "atk": 14,
       "armor": 0,
       "weakness": ["置换", "氧化还原"],
       "resist": ["化合"],
@@ -131,7 +131,7 @@
       "name": "钠焰幽灵",
       "art": "🔥",
       "hp": 340,
-      "atk": 13,
+      "atk": 15,
       "armor": 1,
       "weakness": ["氧化还原", "置换"],
       "resist": ["分解"],
@@ -165,7 +165,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 12,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "8": {
     "id": 8,
@@ -189,7 +190,8 @@
     "handSize": 7,
     "energy": 2,
     "balanceTime": 12,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "9": {
     "id": 9,
@@ -213,7 +215,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 10,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "10": {
     "id": 10,
@@ -237,7 +240,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 10,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "11": {
     "id": 11,
@@ -261,7 +265,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 10,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "12": {
     "id": 12,
@@ -274,19 +279,20 @@
     "enemy": {
       "name": "裂谷之核",
       "art": "💠",
-      "hp": 1000,
+      "hp": 400,
       "atk": 15,
       "armor": 2,
       "weakness": ["复分解", "沉淀", "氧化还原", "分解"],
       "resist": ["化合"],
       "intro": "元素裂谷的中心。所有物质在这里被拆开，又重新拼起来。"
     },
-    "phases": [{"name":"工业流程","hp":300,"atk":6,"armor":1,"weakness":["复分解","沉淀","氧化还原","分解"],"resist":["化合"],"required":["r85","r86","r87","r88"],"intro":"铝土矿碱溶、通 CO₂ 析出、灼烧、电解——四道工序，顺序不能乱。"}, {"name":"推断链","hp":300,"atk":7,"armor":1,"weakness":["氧化还原","化合","分解","沉淀"],"resist":["中和"],"required":["r93","r94","r95"],"intro":"氮的转化链：NH₃ → NO → NO₂ → HNO₃。链走通之前，杂反应伤害减半。"}, {"name":"综合","hp":400,"atk":9,"armor":2,"weakness":["复分解","沉淀","氧化还原","分解","化合"],"resist":[],"intro":"最后的形态。所有知识库里的反应都能伤到它——没有固定工序了。"}],
+    "phases": [{"name":"工业流程","hp":130,"atk":16,"armor":1,"weakness":["复分解","沉淀","氧化还原","分解"],"resist":["化合"],"required":["r85","r86","r87","r88"],"intro":"铝土矿碱溶、通 CO₂ 析出、灼烧、电解——四道工序，顺序不能乱。"}, {"name":"推断链","hp":120,"atk":17,"armor":1,"weakness":["氧化还原","化合","分解","沉淀"],"resist":["中和"],"required":["r93","r94","r95"],"intro":"氮的转化链：NH₃ → NO → NO₂ → HNO₃。链走通之前，杂反应伤害减半。"}, {"name":"综合","hp":150,"atk":22,"armor":2,"weakness":["复分解","沉淀","氧化还原","分解","化合"],"resist":[],"intro":"最后的形态。所有知识库里的反应都能伤到它——没有固定工序了。"}],
     "shelf": ["Al2O3", "NaOH", "H2O", "CO2", "Al(OH)3", "S", "O2", "NH3", "SO2", "Al", "HCl", "NO", "NO2"],
     "handSize": 7,
     "energy": 3,
     "balanceTime": 10,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "101": {
     "id": 101,
@@ -300,7 +306,7 @@
       "name": "缺氧孢衣",
       "art": "🫠",
       "hp": 320,
-      "atk": 9,
+      "atk": 11,
       "armor": 0,
       "weakness": ["分解"],
       "resist": ["中和"],
@@ -324,7 +330,7 @@
       "name": "余烬之丘",
       "art": "🔥",
       "hp": 380,
-      "atk": 10,
+      "atk": 12,
       "armor": 0,
       "weakness": ["燃烧", "化合"],
       "resist": ["沉淀"],
@@ -358,7 +364,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 15,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "104": {
     "id": 104,
@@ -382,7 +389,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 12,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "105": {
     "id": 105,
@@ -406,7 +414,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 15,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "106": {
     "id": 106,
@@ -430,7 +439,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 12,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "107": {
     "id": 107,
@@ -454,7 +464,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 12,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "108": {
     "id": 108,
@@ -478,7 +489,8 @@
     "handSize": 7,
     "energy": 3,
     "balanceTime": 10,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "201": {
     "id": 201,
@@ -502,7 +514,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 12,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "202": {
     "id": 202,
@@ -526,7 +539,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 12,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "203": {
     "id": 203,
@@ -550,7 +564,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 10,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "204": {
     "id": 204,
@@ -574,7 +589,8 @@
     "handSize": 7,
     "energy": 3,
     "balanceTime": 10,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "301": {
     "id": 301,
@@ -598,7 +614,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 10,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "302": {
     "id": 302,
@@ -622,7 +639,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 10,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "303": {
     "id": 303,
@@ -646,7 +664,8 @@
     "handSize": 6,
     "energy": 2,
     "balanceTime": 10,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   },
   "304": {
     "id": 304,
@@ -670,6 +689,7 @@
     "handSize": 7,
     "energy": 3,
     "balanceTime": 10,
-    "requireBalance": true
+    "requireBalance": true,
+    "requireSkill": true
   }
 }
