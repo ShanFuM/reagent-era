@@ -1,4 +1,4 @@
-import { REACTIONS, lookupReaction, substance } from './data';
+import { REACTIONS, lookupReaction, playableReactions, substance } from './data';
 import type { BossPhase, Level, Reaction, ReactionType } from './data';
 import { checkBalance } from './formula.js';
 
@@ -295,13 +295,61 @@ function ensurePlayable(s: BattleState): BattleState {
   return pushLog(next, 'info', '手牌无法出招，自动重洗。');
 }
 
+/** 这一回合发牌要围绕哪条反应：有工序的阶段优先给当前这一步，其余随机取一条可打反应。 */
+function chooseDealReaction(s: BattleState): Reaction | null {
+  const phase = bossPhaseOf(s);
+  const stepId = phase?.required?.[s.chainStep];
+  if (stepId && REACTIONS[stepId]) return REACTIONS[stepId];
+  const list = playableReactions(s.level);
+  if (list.length === 0) return null;
+  return list[Math.floor(Math.random() * list.length)][1];
+}
+
+/**
+ * 发一手「必定能打出至少一种反应」的牌：
+ * 某条反应所需物质各一张 + 2 张干扰牌。
+ * 牌堆里没有就先翻弃牌堆，保证凑得齐。
+ */
+function dealHand(s: BattleState): BattleState {
+  const reaction = chooseDealReaction(s);
+  if (!reaction) return s;
+
+  let deck = s.deck.slice();
+  let discard = s.discard.slice();
+  const hand: string[] = [];
+
+  const take = (id?: string) => {
+    let idx = id ? deck.indexOf(id) : -1;
+    if (idx < 0) {
+      if (id) {
+        if (discard.length === 0) return;
+        deck = shuffle([...deck, ...discard]);
+        discard = [];
+        idx = deck.indexOf(id);
+        if (idx < 0) return;
+      } else {
+        if (deck.length === 0) {
+          if (discard.length === 0) return;
+          deck = shuffle([...deck, ...discard]);
+          discard = [];
+        }
+        if (deck.length === 0) return;
+        idx = Math.floor(Math.random() * deck.length);
+      }
+    }
+    hand.push(deck[idx]);
+    deck.splice(idx, 1);
+  };
+
+  for (const [id] of reaction.reactants) take(id);
+  for (let i = 0; i < 2; i += 1) take();
+
+  return { ...s, hand, deck, discard };
+}
+
 export function createBattle(level: Level): BattleState {
   const deck = shuffle(level.shelf);
   const hand: string[] = [];
-  for (let i = 0; i < level.handSize && deck.length > 0 && hand.length < HAND_LIMIT; i += 1) {
-    const card = deck.pop();
-    if (card) hand.push(card);
-  }
   const phases = bossPhases(level);
   const firstPhase = phases[0];
   const base: BattleState = {
@@ -347,7 +395,7 @@ export function createBattle(level: Level): BattleState {
       `第 1 / ${phases.length} 阶段 · ${firstPhase.name}：${firstPhase.intro}`,
     );
   }
-  return ensurePlayable(opening);
+  return ensurePlayable(dealHand(opening));
 }
 
 export function toggleCard(s: BattleState, index: number): BattleState {
@@ -723,7 +771,13 @@ export function endTurn(s: BattleState): BattleState {
   next = enemyTurn(next);
   if (next.phase === 'lose') return next;
 
-  next = drawCards(next, 2);
+  // 回合结束：整手弃掉，重新发一手「必定有反应」的牌
+  next = dealHand({
+    ...next,
+    hand: [],
+    discard: [...next.discard, ...next.hand],
+    selected: [],
+  });
   next = {
     ...next,
     turn: next.turn + 1,
