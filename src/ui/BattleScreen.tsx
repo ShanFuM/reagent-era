@@ -51,6 +51,8 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
   const [cast, setCast] = useState<{ id: number; cards: string[] } | null>(null);
   const prevTaken = useRef(state.stats.taken);
   const [hurt, setHurt] = useState(false);
+  const [chainTip, setChainTip] = useState(false);
+  const tipShown = useRef(false);
   const prevHandLen = useRef(state.hand.length);
   const [dealing, setDealing] = useState(true);
 
@@ -90,7 +92,19 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
     if (state.phase === 'win') onCleared(level.id);
   }, [state.phase, level.id, onCleared]);
 
-  const restart = () => setState(createBattle(level));
+  useEffect(() => {
+    if (!state.lastResult?.offChain || tipShown.current) return;
+    tipShown.current = true;
+    setChainTip(true);
+    const timer = window.setTimeout(() => setChainTip(false), 4600);
+    return () => window.clearTimeout(timer);
+  }, [state.logSeq, state.lastResult]);
+
+  const restart = () => {
+    tipShown.current = false;
+    setChainTip(false);
+    setState(createBattle(level));
+  };
   const nextLevel = nextLevelInLine(line, level);
   const gate = skillGate(state);
   const solutions = solutionReactions(level);
@@ -99,6 +113,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
   const bossPhase = bossPhaseOf(state);
   const phaseTotal = level.phases?.length ?? 0;
   const chain = chainView(state);
+  const nextNode = chain?.nodes.find((n) => n.status === 'current') ?? null;
   const weaknessTags = enemyWeaknessOf(state);
   const resistTags = enemyResistOf(state);
 
@@ -265,13 +280,23 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
                   {chain.nodes.map((node, index) => (
                     <span className="chain-item" key={`${node.id}-${index}`}>
                       {index > 0 && <span className="chain-arrow">→</span>}
-                      <span className={`chain-node chain-node--${node.status}`}>
+                      <span
+                        className={`chain-node chain-node--${node.status} ${
+                          chainTip && node.status === 'current' ? 'chain-node--pulse' : ''
+                        }`}
+                      >
                         <span className="chain-formula">{formatFormula(node.id)}</span>
                         <span className="chain-name">{node.name}</span>
                       </span>
                     </span>
                   ))}
                 </div>
+                {chainTip && (
+                  <div className="chain-tip" role="status">
+                    这一击没按工序来，伤害减半 —— 跟着链条走
+                    {nextNode ? `，下一步「${nextNode.name}」` : ''}
+                  </div>
+                )}
               </div>
             )}
           </div>

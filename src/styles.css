@@ -1785,3 +1785,62 @@ button:disabled {
 .enemy.hit .enemy-fill {
   filter: brightness(1.55) saturate(1.2);
 }
+
+/* ---------- 工序引导气泡 ---------- */
+.chain-panel {
+  position: relative;
+}
+
+.chain-tip {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 12px);
+  transform: translateX(-50%);
+  z-index: 7;
+  width: max-content;
+  max-width: 580px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 182, 72, 0.55);
+  background: rgba(30, 21, 6, 0.96);
+  color: #ffd79a;
+  font-size: 12.5px;
+  line-height: 1.5;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.55);
+  animation: tip-pop 0.22s ease-out;
+}
+
+.chain-tip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-bottom-color: rgba(255, 182, 72, 0.55);
+}
+
+@keyframes tip-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.chain-node--pulse {
+  animation: node-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes node-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 182, 72, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(255, 182, 72, 0.16);
+  }
+}
