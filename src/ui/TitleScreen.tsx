@@ -14,7 +14,7 @@ export default function TitleScreen({ onStart }: { onStart: () => void }) {
         <p className="title-desc">
           你是裂谷里最后一个配方师。
           <br />
-          手上的试剂只有两种用对，才会发生反应。
+          手上的试剂要先配成反应，才伤得到它。
         </p>
         <button className="btn-primary big" onClick={onStart}>
           开始实验

@@ -575,10 +575,16 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
       {state.phase === 'misfire' && state.misfire && (
         <div className="overlay">
           <div className="misfire">
-            <div className="misfire-title">这两种物质不反应</div>
+            <div className="misfire-title">
+              {state.misfire.names.length > 2
+                ? `这 ${state.misfire.names.length} 种物质不反应`
+                : '这两种物质不反应'}
+            </div>
             <div className="misfire-pair">{state.misfire.names.join(' + ')}</div>
             <p className="misfire-text">
-              在中学化学范围内，它们混合后不会发生反应。这一回合被浪费了。
+              在中学化学范围内，
+              {state.misfire.names.length > 2 ? '这几种物质混合后' : '它们混合后'}不会发生反应。
+              这一回合被浪费了。
             </p>
             <p className="misfire-hint">
               可以留意这些能反应的组合：酸 + 碱、金属 + 盐、金属 + 酸、酸 + 碳酸盐、金属氧化物 + 酸。
