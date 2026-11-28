@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   advance,
   bossPhaseOf,
@@ -18,7 +18,7 @@ import { nextLevelInLine, solutionReactions, substance } from '../engine/data';
 import type { GradeLine, Level, Reaction } from '../engine/data';
 import { formatFormula } from '../engine/formula.js';
 import BalancePad from './BalancePad';
-import { EnemySprite, PlayerSprite } from './Sprite';
+import { EnemySprite, PlayerSprite, CardIcon } from './Sprite';
 
 const formatEquation = (r: Reaction) =>
   `${r.reactants.map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`).join(' + ')} = ${r.products
@@ -49,6 +49,18 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
   const [state, setState] = useState<BattleState>(() => createBattle(level));
   const [hintOpen, setHintOpen] = useState(false);
   const [cast, setCast] = useState<{ id: number; cards: string[] } | null>(null);
+  const prevTaken = useRef(state.stats.taken);
+  const [hurt, setHurt] = useState(false);
+
+  useEffect(() => {
+    if (state.stats.taken === prevTaken.current) return;
+    const increased = state.stats.taken > prevTaken.current;
+    prevTaken.current = state.stats.taken;
+    if (!increased) return; // 重开时计数归零，不触发受击
+    setHurt(true);
+    const timer = window.setTimeout(() => setHurt(false), 620);
+    return () => window.clearTimeout(timer);
+  }, [state.stats.taken]);
 
   useEffect(() => {
     if (state.phase !== 'resolving') return;
@@ -118,7 +130,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
 
       <div className="field">
         <aside className="side left">
-          <div className="panel player-panel">
+          <div className={`panel player-panel ${hurt ? 'hurt' : ''}`}>
             <div className="player-head">
               <PlayerSprite className="player-avatar" />
               <div>
@@ -159,7 +171,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           </div>
         </aside>
 
-        <main className="arena">
+        <main className={`arena ${hurt ? 'hurt' : ''}`}>
           <div className="arena-grid" />
           {cast && (
             <div className="cast-layer" key={cast.id}>
@@ -295,6 +307,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
                 onClick={() => setState((s) => toggleCard(s, index))}
                 disabled={state.phase !== 'select'}
               >
+                <CardIcon kind={sub.kind} />
                 <span className="card-formula">{formatFormula(sub.formula)}</span>
                 <span className="card-name">{sub.name}</span>
                 <span className="card-kind">{sub.kind}</span>

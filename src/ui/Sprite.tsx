@@ -40,6 +40,91 @@ function Eyes({ cx, cy, gap = 26, r = 7 }: { cx: number; cy: number; gap?: numbe
   );
 }
 
+/** 每关一个装饰层：用关卡 id 取模，让同类剪影也能一眼区分 */
+function Deco({ variant, color }: { variant: number; color: string }) {
+  switch (variant) {
+    case 0:
+      return (
+        <g fill={color} opacity="0.5">
+          <rect x="16" y="32" width="11" height="11" rx="2" transform="rotate(20 21 37)" />
+          <rect x="132" y="46" width="9" height="9" rx="2" transform="rotate(-18 136 50)" />
+          <rect x="120" y="130" width="10" height="10" rx="2" transform="rotate(32 125 135)" />
+        </g>
+      );
+    case 1:
+      return (
+        <ellipse
+          cx="80"
+          cy="80"
+          rx="74"
+          ry="64"
+          fill="none"
+          stroke={color}
+          strokeWidth="2"
+          strokeDasharray="7 11"
+          opacity="0.32"
+          className="deco-spin"
+        />
+      );
+    case 2:
+      return (
+        <g fill={color} opacity="0.45">
+          <polygon points="80,2 89,21 71,21" />
+          <polygon points="80,158 89,139 71,139" />
+          <polygon points="2,80 21,71 21,89" />
+          <polygon points="158,80 139,71 139,89" />
+        </g>
+      );
+    case 3:
+      return (
+        <g fill="none" stroke={color} strokeWidth="3" opacity="0.4" strokeLinecap="round">
+          <path d="M20 60 A66 66 0 0 1 60 20" />
+          <path d="M100 140 A66 66 0 0 0 140 100" />
+        </g>
+      );
+    default:
+      return (
+        <g fill={color} opacity="0.45">
+          {[0, 1, 2, 3, 4, 5].map((i) => {
+            const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
+            return <circle key={i} cx={80 + Math.cos(a) * 78} cy={80 + Math.sin(a) * 70} r="4" />;
+          })}
+        </g>
+      );
+  }
+}
+
+/** 手牌上的试剂瓶图标，颜色跟着物质类别走 */
+const KIND_COLOR: Record<string, string> = {
+  单质: '#cfe0f2',
+  氧化物: '#6ba9ff',
+  过氧化物: '#ffb648',
+  酸: '#ff7a6b',
+  碱: '#6ff0a8',
+  盐: '#b48cff',
+  气体: '#6ff0e0',
+  有机物: '#ffd166',
+};
+
+export function CardIcon({ kind }: { kind: string }) {
+  const c = KIND_COLOR[kind] ?? '#8296aa';
+  return (
+    <svg className="card-icon" viewBox="0 0 40 48" aria-hidden="true">
+      <path
+        d="M16 5 h8 v12 l7 18 a6 6 0 0 1 -5 8 H14 a6 6 0 0 1 -5 -8 l7 -18 z"
+        fill="rgba(255,255,255,0.04)"
+        stroke={c}
+        strokeWidth="2.4"
+        strokeLinejoin="round"
+      />
+      <path d="M11 33 h18 l3 7 a5 5 0 0 1 -4 6 H12 a5 5 0 0 1 -4 -6 z" fill={c} opacity="0.55" />
+      <path d="M14 5 h12" stroke={c} strokeWidth="2.6" strokeLinecap="round" />
+      <circle cx="18" cy="37" r="2" fill="#fff" opacity="0.65" />
+      <circle cx="23" cy="42" r="1.6" fill="#fff" opacity="0.5" />
+    </svg>
+  );
+}
+
 /** 敌人形象：按弱点类型给不同的剪影，颜色带一点按关卡变化的色相偏移 */
 export function EnemySprite({ level, className = '' }: { level: Level; className?: string }) {
   const family = familyOf(level);
@@ -151,6 +236,7 @@ export function EnemySprite({ level, className = '' }: { level: Level; className
       <svg viewBox="0 0 160 160" className="sprite-svg">
         {grad}
         {shapes[family]}
+        <Deco variant={level.id % 5} color={p.light} />
       </svg>
     </div>
   );
