@@ -1856,9 +1856,16 @@ button:disabled {
   margin-bottom: 10px;
 }
 
-.player-avatar .sprite-svg {
+.player-avatar .player-portrait {
+  position: relative;
+  z-index: 1;
   width: 84px;
   height: 84px;
+  border-radius: 50%;
+  border: 2px solid rgba(194, 240, 74, 0.4);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+  object-fit: cover;
+  display: block;
 }
 
 .player-avatar .sprite-glow {

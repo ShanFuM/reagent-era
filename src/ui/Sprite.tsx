@@ -1,4 +1,5 @@
 import type { Level, ReactionType } from '../engine/data';
+import heroPortrait from '../assets/hero.png';
 
 type Family = 'metal' | 'slime' | 'shell' | 'cloud' | 'crystal' | 'flame' | 'lattice';
 
@@ -242,107 +243,12 @@ export function EnemySprite({ level, className = '' }: { level: Level; className
   );
 }
 
-/** 玩家形象：配方师 —— 蓬松银发 + 额顶护目镜 + 白大褂 + 苯环徽章 */
+/** 玩家形象：直接使用提供的角色立绘（圆形头像） */
 export function PlayerSprite({ className = '' }: { className?: string }) {
   return (
     <div className={`sprite player-sprite ${className}`} aria-hidden="true">
       <div className="sprite-glow player-glow" />
-      <svg viewBox="0 0 120 150" className="sprite-svg">
-        <defs>
-          <linearGradient id="hero-hair" x1="0" y1="0" x2="0.2" y2="1">
-            <stop offset="0%" stopColor="#e8ecf8" />
-            <stop offset="55%" stopColor="#cdd3e8" />
-            <stop offset="100%" stopColor="#a9b1cf" />
-          </linearGradient>
-          <linearGradient id="hero-coat" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#d5def0" />
-          </linearGradient>
-          <linearGradient id="hero-lens" x1="0" y1="0" x2="0.4" y2="1">
-            <stop offset="0%" stopColor="#f4f8ff" />
-            <stop offset="100%" stopColor="#c9d8f0" />
-          </linearGradient>
-        </defs>
-
-        {/* 后发：整体轮廓 */}
-        <path
-          d="M60 8 C48 8 42 12 36 19 C29 15 22 23 23 33 C16 41 16 58 19 62 C20 82 27 95 41 100 L79 100 C93 95 100 82 101 62 C104 58 104 41 97 33 C98 23 91 15 84 19 C78 12 72 8 60 8 Z"
-          fill="url(#hero-hair)"
-          stroke="#2a2f45"
-          strokeWidth="3.4"
-        />
-
-        {/* 白大褂 */}
-        <path
-          d="M38 150 V104 C38 96 46 92 54 89 L60 98 L66 89 C74 92 82 96 82 104 V150 Z"
-          fill="url(#hero-coat)"
-          stroke="#2a2f45"
-          strokeWidth="3.2"
-        />
-        {/* 衬衫 */}
-        <path d="M54 89 L60 100 L66 89 L60 96 Z" fill="#b9c4dc" stroke="#2a2f45" strokeWidth="2.2" />
-        {/* 领带 */}
-        <path d="M60 98 l-5 6 l5 18 l5 -18 z" fill="#2b46c8" stroke="#2a2f45" strokeWidth="2.2" />
-        {/* 翻领 */}
-        <path d="M54 89 L46 150" stroke="#2a2f45" strokeWidth="2.2" fill="none" />
-        <path d="M66 89 L74 150" stroke="#2a2f45" strokeWidth="2.2" fill="none" />
-
-        {/* 脸 */}
-        <ellipse cx="60" cy="64" rx="23" ry="21" fill="#fbe3d8" stroke="#2a2f45" strokeWidth="3.2" />
-
-        {/* 两侧垂发 */}
-        <path
-          d="M35 46 C26 60 26 84 31 97 C38 92 41 70 43 56 Z"
-          fill="url(#hero-hair)"
-          stroke="#2a2f45"
-          strokeWidth="3"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M85 46 C94 60 94 84 89 97 C82 92 79 70 77 56 Z"
-          fill="url(#hero-hair)"
-          stroke="#2a2f45"
-          strokeWidth="3"
-          strokeLinejoin="round"
-        />
-
-        {/* 刘海 */}
-        <path
-          d="M37 54 C35 30 46 20 60 20 C74 20 85 30 83 54 C78 46 72 41 66 43 C62 47 58 47 54 43 C48 41 42 46 37 54 Z"
-          fill="url(#hero-hair)"
-          stroke="#2a2f45"
-          strokeWidth="3"
-          strokeLinejoin="round"
-        />
-
-        {/* 护目镜 */}
-        <g transform="rotate(-4 60 22)">
-          <path d="M22 22 h76" stroke="#2a2f45" strokeWidth="5" strokeLinecap="round" opacity="0.85" />
-          <rect x="26" y="8" width="68" height="24" rx="12" fill="#dde5f6" stroke="#2a2f45" strokeWidth="3.2" />
-          <rect x="31" y="12" width="26" height="16" rx="8" fill="url(#hero-lens)" stroke="#2a2f45" strokeWidth="2.4" />
-          <rect x="63" y="12" width="26" height="16" rx="8" fill="url(#hero-lens)" stroke="#2a2f45" strokeWidth="2.4" />
-          <path d="M35 16 l6 -3" stroke="#ffffff" strokeWidth="2.6" strokeLinecap="round" opacity="0.9" />
-          <path d="M67 16 l6 -3" stroke="#ffffff" strokeWidth="2.6" strokeLinecap="round" opacity="0.9" />
-        </g>
-
-        {/* 闭眼 */}
-        <path d="M45 65 q6.5 -7 13 0" fill="none" stroke="#2a2f45" strokeWidth="3.6" strokeLinecap="round" />
-        <path d="M62 65 q6.5 -7 13 0" fill="none" stroke="#2a2f45" strokeWidth="3.6" strokeLinecap="round" />
-        {/* 腮红 */}
-        <ellipse cx="42" cy="72" rx="5" ry="2.8" fill="#f3a9a0" opacity="0.65" />
-        <ellipse cx="78" cy="72" rx="5" ry="2.8" fill="#f3a9a0" opacity="0.65" />
-        {/* 笑 */}
-        <path d="M55 74 q5 7 10 0 z" fill="#e5807f" stroke="#2a2f45" strokeWidth="2" strokeLinejoin="round" />
-
-        {/* 苯环徽章 */}
-        <path
-          d="M45 112 l6.5 -3.8 l6.5 3.8 v7.6 l-6.5 3.8 l-6.5 -3.8 z"
-          fill="#c2f04a"
-          fillOpacity="0.9"
-          stroke="#2a2f45"
-          strokeWidth="2"
-        />
-      </svg>
+      <img className="player-portrait" src={heroPortrait} alt="" />
     </div>
   );
 }
