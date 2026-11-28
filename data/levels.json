@@ -1,7 +1,12 @@
 {
   "1": {
     "id": 1,
-    "lines": ["初三", "高一", "高二", "高三"],
+    "lines": [
+      "初三",
+      "高一",
+      "高二",
+      "高三"
+    ],
     "order": 1,
     "name": "铁锈傀儡",
     "stage": "初中",
@@ -13,11 +18,27 @@
       "hp": 210,
       "atk": 11,
       "armor": 0,
-      "weakness": ["置换", "产气"],
-      "resist": ["中和"],
+      "weakness": [
+        "置换",
+        "产气"
+      ],
+      "resist": [
+        "中和"
+      ],
       "intro": "一层锈壳裹着的旧实验器材，动作很慢，但很硬。"
     },
-    "shelf": ["Zn", "Fe", "Mg", "HCl", "H2SO4", "CuSO4", "AgNO3", "Al", "Cu", "O2"],
+    "shelf": [
+      "Zn",
+      "Fe",
+      "Mg",
+      "HCl",
+      "H2SO4",
+      "CuSO4",
+      "AgNO3",
+      "Al",
+      "Cu",
+      "O2"
+    ],
     "handSize": 5,
     "energy": 1,
     "balanceTime": 0,
@@ -25,7 +46,12 @@
   },
   "2": {
     "id": 2,
-    "lines": ["初三", "高一", "高二", "高三"],
+    "lines": [
+      "初三",
+      "高一",
+      "高二",
+      "高三"
+    ],
     "order": 2,
     "name": "酸雾史莱姆",
     "stage": "初中",
@@ -37,11 +63,24 @@
       "hp": 235,
       "atk": 12,
       "armor": 0,
-      "weakness": ["中和"],
-      "resist": ["沉淀"],
+      "weakness": [
+        "中和"
+      ],
+      "resist": [
+        "沉淀"
+      ],
       "intro": "一滩会爬的稀盐酸，碰到什么都想溶掉。"
     },
-    "shelf": ["HCl", "H2SO4", "NaOH", "KOH", "Ca(OH)2", "Mg(OH)2", "Cu(OH)2", "Ba(OH)2"],
+    "shelf": [
+      "HCl",
+      "H2SO4",
+      "NaOH",
+      "KOH",
+      "Ca(OH)2",
+      "Mg(OH)2",
+      "Cu(OH)2",
+      "Ba(OH)2"
+    ],
     "handSize": 5,
     "energy": 1,
     "balanceTime": 0,
@@ -49,7 +88,12 @@
   },
   "3": {
     "id": 3,
-    "lines": ["初三", "高一", "高二", "高三"],
+    "lines": [
+      "初三",
+      "高一",
+      "高二",
+      "高三"
+    ],
     "order": 3,
     "name": "沉淀壳蟹",
     "stage": "初中",
@@ -61,19 +105,40 @@
       "hp": 255,
       "atk": 13,
       "armor": 1,
-      "weakness": ["沉淀"],
-      "resist": ["置换"],
+      "weakness": [
+        "沉淀"
+      ],
+      "resist": [
+        "置换"
+      ],
       "intro": "壳上结满白色沉淀，普通攻击碰不动。"
     },
-    "shelf": ["AgNO3", "HCl", "BaCl2", "H2SO4", "Na2CO3", "Ca(OH)2", "CuSO4", "NaOH", "FeCl3", "NaCl", "Na2SO4"],
+    "shelf": [
+      "AgNO3",
+      "HCl",
+      "BaCl2",
+      "H2SO4",
+      "Na2CO3",
+      "Ca(OH)2",
+      "CuSO4",
+      "NaOH",
+      "FeCl3",
+      "NaCl",
+      "Na2SO4"
+    ],
     "handSize": 5,
     "energy": 1,
-    "balanceTime": 15,
+    "balanceTime": 22,
     "requireBalance": true
   },
   "4": {
     "id": 4,
-    "lines": ["初三", "高一", "高二", "高三"],
+    "lines": [
+      "初三",
+      "高一",
+      "高二",
+      "高三"
+    ],
     "order": 4,
     "name": "石灰巨像",
     "stage": "初中",
@@ -85,19 +150,44 @@
       "hp": 400,
       "atk": 15,
       "armor": 2,
-      "weakness": ["产气", "分解"],
-      "resist": ["中和"],
+      "weakness": [
+        "产气",
+        "分解"
+      ],
+      "resist": [
+        "中和"
+      ],
       "intro": "整座石灰窑活了过来，每一步都震得地面开裂。"
     },
-    "shelf": ["CaCO3", "HCl", "CaO", "H2O", "CO2", "C", "O2", "CuO", "Fe2O3", "CO", "NaHCO3", "Ca(OH)2", "Ca(HCO3)2", "Cu2(OH)2CO3", "Fe3O4"],
+    "shelf": [
+      "CaCO3",
+      "HCl",
+      "CaO",
+      "H2O",
+      "CO2",
+      "C",
+      "O2",
+      "CuO",
+      "Fe2O3",
+      "CO",
+      "NaHCO3",
+      "Ca(OH)2",
+      "Ca(HCO3)2",
+      "Cu2(OH)2CO3",
+      "Fe3O4"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 15,
+    "balanceTime": 22,
     "requireBalance": true
   },
   "5": {
     "id": 5,
-    "lines": ["高三", "高一", "高二"],
+    "lines": [
+      "高三",
+      "高一",
+      "高二"
+    ],
     "order": 5,
     "name": "氯气妖",
     "stage": "高一",
@@ -109,19 +199,41 @@
       "hp": 300,
       "atk": 14,
       "armor": 0,
-      "weakness": ["置换", "氧化还原"],
-      "resist": ["化合"],
+      "weakness": [
+        "置换",
+        "氧化还原"
+      ],
+      "resist": [
+        "化合"
+      ],
       "intro": "黄绿色的雾气聚成一张脸，呼吸就是腐蚀。"
     },
-    "shelf": ["Cl2", "H2O", "NaOH", "Ca(OH)2", "NaBr", "KI", "Fe", "Cu", "H2", "MnO2", "HCl", "H2S"],
+    "shelf": [
+      "Cl2",
+      "H2O",
+      "NaOH",
+      "Ca(OH)2",
+      "NaBr",
+      "KI",
+      "Fe",
+      "Cu",
+      "H2",
+      "MnO2",
+      "HCl",
+      "H2S"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 15,
+    "balanceTime": 22,
     "requireBalance": true
   },
   "6": {
     "id": 6,
-    "lines": ["高三", "高一", "高二"],
+    "lines": [
+      "高三",
+      "高一",
+      "高二"
+    ],
     "order": 6,
     "name": "钠焰幽灵",
     "stage": "高一",
@@ -133,19 +245,39 @@
       "hp": 340,
       "atk": 15,
       "armor": 1,
-      "weakness": ["氧化还原", "置换"],
-      "resist": ["分解"],
+      "weakness": [
+        "氧化还原",
+        "置换"
+      ],
+      "resist": [
+        "分解"
+      ],
       "intro": "一团黄色火焰，靠近它的水都会被点着。"
     },
-    "shelf": ["Na", "H2O", "O2", "Na2O2", "CO2", "Na2O", "Na2CO3", "NaHCO3", "HCl", "SO2"],
+    "shelf": [
+      "Na",
+      "H2O",
+      "O2",
+      "Na2O2",
+      "CO2",
+      "Na2O",
+      "Na2CO3",
+      "NaHCO3",
+      "HCl",
+      "SO2"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 15,
+    "balanceTime": 22,
     "requireBalance": true
   },
   "7": {
     "id": 7,
-    "lines": ["高三", "高一", "高二"],
+    "lines": [
+      "高三",
+      "高一",
+      "高二"
+    ],
     "order": 7,
     "name": "铁锈骑士",
     "stage": "高一",
@@ -157,20 +289,42 @@
       "hp": 360,
       "atk": 14,
       "armor": 1,
-      "weakness": ["氧化还原", "置换"],
-      "resist": ["中和"],
+      "weakness": [
+        "氧化还原",
+        "置换"
+      ],
+      "resist": [
+        "中和"
+      ],
       "intro": "锈红色的铠甲下面，铁在两种价态之间来回挣扎。"
     },
-    "shelf": ["FeCl2", "Cl2", "FeCl3", "Fe", "Cu", "Fe(OH)2", "O2", "H2O", "Fe2O3", "HCl", "NaOH", "Fe(OH)3"],
+    "shelf": [
+      "FeCl2",
+      "Cl2",
+      "FeCl3",
+      "Fe",
+      "Cu",
+      "Fe(OH)2",
+      "O2",
+      "H2O",
+      "Fe2O3",
+      "HCl",
+      "NaOH",
+      "Fe(OH)3"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 12,
+    "balanceTime": 18,
     "requireBalance": true,
     "requireSkill": true
   },
   "8": {
     "id": 8,
-    "lines": ["高三", "高一", "高二"],
+    "lines": [
+      "高三",
+      "高一",
+      "高二"
+    ],
     "order": 8,
     "name": "电子吞噬者",
     "stage": "高一",
@@ -182,20 +336,45 @@
       "hp": 500,
       "atk": 15,
       "armor": 2,
-      "weakness": ["氧化还原", "分解"],
-      "resist": ["化合", "中和"],
+      "weakness": [
+        "氧化还原",
+        "分解"
+      ],
+      "resist": [
+        "化合",
+        "中和"
+      ],
       "intro": "一个不断吸走电子的空洞，靠近它的物质都会失去光泽。"
     },
-    "shelf": ["KMnO4", "HCl", "Cu", "H2SO4", "HNO3", "H2S", "SO2", "H2O2", "KClO3", "MnO2", "Fe", "Na2S", "NaOH", "H2O", "C", "FeCl3"],
+    "shelf": [
+      "KMnO4",
+      "HCl",
+      "Cu",
+      "H2SO4",
+      "HNO3",
+      "H2S",
+      "SO2",
+      "H2O2",
+      "KClO3",
+      "MnO2",
+      "Fe",
+      "Na2S",
+      "NaOH",
+      "H2O",
+      "C",
+      "FeCl3"
+    ],
     "handSize": 7,
     "energy": 2,
-    "balanceTime": 12,
+    "balanceTime": 18,
     "requireBalance": true,
     "requireSkill": true
   },
   "9": {
     "id": 9,
-    "lines": ["高三"],
+    "lines": [
+      "高三"
+    ],
     "order": 9,
     "name": "平衡之秤",
     "stage": "高三",
@@ -207,20 +386,37 @@
       "hp": 420,
       "atk": 15,
       "armor": 1,
-      "weakness": ["化合", "燃烧"],
-      "resist": ["分解"],
+      "weakness": [
+        "化合",
+        "燃烧"
+      ],
+      "resist": [
+        "分解"
+      ],
       "intro": "一架永远倾斜的天平，左边是反应物，右边是产物。"
     },
-    "shelf": ["N2", "H2", "O2", "SO2", "NO2", "CO", "H2O", "I2", "CH4"],
+    "shelf": [
+      "N2",
+      "H2",
+      "O2",
+      "SO2",
+      "NO2",
+      "CO",
+      "H2O",
+      "I2",
+      "CH4"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 10,
+    "balanceTime": 16,
     "requireBalance": true,
     "requireSkill": true
   },
   "10": {
     "id": 10,
-    "lines": ["高三"],
+    "lines": [
+      "高三"
+    ],
     "order": 10,
     "name": "离子之海",
     "stage": "高三",
@@ -232,20 +428,40 @@
       "hp": 460,
       "atk": 16,
       "armor": 1,
-      "weakness": ["沉淀", "产气"],
-      "resist": ["中和"],
+      "weakness": [
+        "沉淀",
+        "产气"
+      ],
+      "resist": [
+        "中和"
+      ],
       "intro": "一整片沸腾的电解质溶液，每一步都踩在平衡点上。"
     },
-    "shelf": ["AgCl", "NaBr", "AgBr", "KI", "AlCl3", "FeCl3", "NaHCO3", "Na2CO3", "CH3COOH", "Na2S", "HCl", "NaOH"],
+    "shelf": [
+      "AgCl",
+      "NaBr",
+      "AgBr",
+      "KI",
+      "AlCl3",
+      "FeCl3",
+      "NaHCO3",
+      "Na2CO3",
+      "CH3COOH",
+      "Na2S",
+      "HCl",
+      "NaOH"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 10,
+    "balanceTime": 16,
     "requireBalance": true,
     "requireSkill": true
   },
   "11": {
     "id": 11,
-    "lines": ["高三"],
+    "lines": [
+      "高三"
+    ],
     "order": 11,
     "name": "电蚀巨像",
     "stage": "高三",
@@ -257,20 +473,36 @@
       "hp": 500,
       "atk": 16,
       "armor": 2,
-      "weakness": ["氧化还原", "置换"],
-      "resist": ["化合"],
+      "weakness": [
+        "氧化还原",
+        "置换"
+      ],
+      "resist": [
+        "化合"
+      ],
       "intro": "一节失控的巨大电池，电极上不断渗出锈水。"
     },
-    "shelf": ["NaCl", "H2O", "CuSO4", "H2", "O2", "Fe", "Zn", "HCl"],
+    "shelf": [
+      "NaCl",
+      "H2O",
+      "CuSO4",
+      "H2",
+      "O2",
+      "Fe",
+      "Zn",
+      "HCl"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 10,
+    "balanceTime": 16,
     "requireBalance": true,
     "requireSkill": true
   },
   "12": {
     "id": 12,
-    "lines": ["高三"],
+    "lines": [
+      "高三"
+    ],
     "order": 12,
     "name": "裂谷之核",
     "stage": "高三",
@@ -282,21 +514,103 @@
       "hp": 540,
       "atk": 15,
       "armor": 2,
-      "weakness": ["复分解", "沉淀", "氧化还原", "分解"],
-      "resist": ["化合"],
+      "weakness": [
+        "复分解",
+        "沉淀",
+        "氧化还原",
+        "分解"
+      ],
+      "resist": [
+        "化合"
+      ],
       "intro": "元素裂谷的中心。所有物质在这里被拆开，又重新拼起来。"
     },
-    "phases": [{"name":"工业流程","hp":180,"atk":16,"armor":1,"weakness":["复分解","沉淀","氧化还原","分解"],"resist":["化合"],"required":["r85","r86","r87","r88"],"intro":"铝土矿碱溶、通 CO₂ 析出、灼烧、电解——四道工序，顺序不能乱。"}, {"name":"推断链","hp":160,"atk":17,"armor":1,"weakness":["氧化还原","化合","分解","沉淀"],"resist":["中和"],"required":["r93","r94","r95"],"intro":"氮的转化链：NH₃ → NO → NO₂ → HNO₃。链走通之前，杂反应伤害减半。"}, {"name":"综合","hp":200,"atk":22,"armor":2,"weakness":["复分解","沉淀","氧化还原","分解","化合"],"resist":[],"intro":"最后的形态。所有知识库里的反应都能伤到它——没有固定工序了。"}],
-    "shelf": ["Al2O3", "NaOH", "H2O", "CO2", "Al(OH)3", "S", "O2", "NH3", "SO2", "Al", "HCl", "NO", "NO2"],
+    "phases": [
+      {
+        "name": "工业流程",
+        "hp": 180,
+        "atk": 16,
+        "armor": 1,
+        "weakness": [
+          "复分解",
+          "沉淀",
+          "氧化还原",
+          "分解"
+        ],
+        "resist": [
+          "化合"
+        ],
+        "required": [
+          "r85",
+          "r86",
+          "r87",
+          "r88"
+        ],
+        "intro": "铝土矿碱溶、通 CO₂ 析出、灼烧、电解——四道工序，顺序不能乱。"
+      },
+      {
+        "name": "推断链",
+        "hp": 160,
+        "atk": 17,
+        "armor": 1,
+        "weakness": [
+          "氧化还原",
+          "化合",
+          "分解",
+          "沉淀"
+        ],
+        "resist": [
+          "中和"
+        ],
+        "required": [
+          "r93",
+          "r94",
+          "r95"
+        ],
+        "intro": "氮的转化链：NH₃ → NO → NO₂ → HNO₃。链走通之前，杂反应伤害减半。"
+      },
+      {
+        "name": "综合",
+        "hp": 200,
+        "atk": 22,
+        "armor": 2,
+        "weakness": [
+          "复分解",
+          "沉淀",
+          "氧化还原",
+          "分解",
+          "化合"
+        ],
+        "resist": [],
+        "intro": "最后的形态。所有知识库里的反应都能伤到它——没有固定工序了。"
+      }
+    ],
+    "shelf": [
+      "Al2O3",
+      "NaOH",
+      "H2O",
+      "CO2",
+      "Al(OH)3",
+      "S",
+      "O2",
+      "NH3",
+      "SO2",
+      "Al",
+      "HCl",
+      "NO",
+      "NO2"
+    ],
     "handSize": 7,
     "energy": 3,
-    "balanceTime": 10,
+    "balanceTime": 16,
     "requireBalance": true,
     "requireSkill": true
   },
   "101": {
     "id": 101,
-    "lines": ["初三"],
+    "lines": [
+      "初三"
+    ],
     "order": 5,
     "name": "缺氧孢衣",
     "stage": "初中",
@@ -308,19 +622,41 @@
       "hp": 400,
       "atk": 11,
       "armor": 0,
-      "weakness": ["分解", "化合"],
-      "resist": ["中和"],
+      "weakness": [
+        "分解",
+        "化合"
+      ],
+      "resist": [
+        "中和"
+      ],
       "intro": "一层贴在瓶壁上的灰色孢衣，把周围的氧气吸得一干二净。"
     },
-    "shelf": ["H2O2", "MnO2", "KClO3", "KMnO4", "H2O", "O2", "C", "S", "Fe", "Mg", "P", "H2", "CH4", "CO"],
+    "shelf": [
+      "H2O2",
+      "MnO2",
+      "KClO3",
+      "KMnO4",
+      "H2O",
+      "O2",
+      "C",
+      "S",
+      "Fe",
+      "Mg",
+      "P",
+      "H2",
+      "CH4",
+      "CO"
+    ],
     "handSize": 5,
     "energy": 1,
-    "balanceTime": 15,
+    "balanceTime": 22,
     "requireBalance": true
   },
   "102": {
     "id": 102,
-    "lines": ["初三"],
+    "lines": [
+      "初三"
+    ],
     "order": 6,
     "name": "余烬之丘",
     "stage": "初中",
@@ -332,19 +668,35 @@
       "hp": 500,
       "atk": 12,
       "armor": 0,
-      "weakness": ["燃烧", "化合"],
-      "resist": ["沉淀"],
+      "weakness": [
+        "燃烧",
+        "化合"
+      ],
+      "resist": [
+        "沉淀"
+      ],
       "intro": "一座半熄半燃的灰丘，风一吹就亮一下。"
     },
-    "shelf": ["C", "O2", "Mg", "Fe", "CH4", "CO2", "H2O", "CO"],
+    "shelf": [
+      "C",
+      "O2",
+      "Mg",
+      "Fe",
+      "CH4",
+      "CO2",
+      "H2O",
+      "CO"
+    ],
     "handSize": 5,
     "energy": 1,
-    "balanceTime": 15,
+    "balanceTime": 22,
     "requireBalance": true
   },
   "103": {
     "id": 103,
-    "lines": ["初三"],
+    "lines": [
+      "初三"
+    ],
     "order": 7,
     "name": "夺氧者",
     "stage": "初中",
@@ -356,20 +708,35 @@
       "hp": 420,
       "atk": 11,
       "armor": 0,
-      "weakness": ["氧化还原"],
-      "resist": ["中和"],
+      "weakness": [
+        "氧化还原"
+      ],
+      "resist": [
+        "中和"
+      ],
       "intro": "一块不断从周围夺取氧的黑色矿石，摸上去冰凉。"
     },
-    "shelf": ["C", "CO", "CuO", "Fe2O3", "O2", "CO2", "Ca(OH)2", "H2"],
+    "shelf": [
+      "C",
+      "CO",
+      "CuO",
+      "Fe2O3",
+      "O2",
+      "CO2",
+      "Ca(OH)2",
+      "H2"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 15,
+    "balanceTime": 22,
     "requireBalance": true,
     "requireSkill": true
   },
   "104": {
     "id": 104,
-    "lines": ["初三"],
+    "lines": [
+      "初三"
+    ],
     "order": 8,
     "name": "守恒之眼",
     "stage": "初中",
@@ -381,20 +748,36 @@
       "hp": 520,
       "atk": 7,
       "armor": 1,
-      "weakness": ["复分解", "置换"],
-      "resist": ["燃烧"],
+      "weakness": [
+        "复分解",
+        "置换"
+      ],
+      "resist": [
+        "燃烧"
+      ],
       "intro": "一只悬在半空的眼球，天平在它瞳孔里不停摆动。"
     },
-    "shelf": ["Fe2O3", "HCl", "H2SO4", "Al", "CuSO4", "Fe", "O2", "CuO"],
+    "shelf": [
+      "Fe2O3",
+      "HCl",
+      "H2SO4",
+      "Al",
+      "CuSO4",
+      "Fe",
+      "O2",
+      "CuO"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 12,
+    "balanceTime": 18,
     "requireBalance": true,
     "requireSkill": true
   },
   "105": {
     "id": 105,
-    "lines": ["初三"],
+    "lines": [
+      "初三"
+    ],
     "order": 9,
     "name": "溶解度之沼",
     "stage": "初中",
@@ -406,20 +789,35 @@
       "hp": 380,
       "atk": 11,
       "armor": 1,
-      "weakness": ["沉淀"],
-      "resist": ["产气"],
+      "weakness": [
+        "沉淀"
+      ],
+      "resist": [
+        "产气"
+      ],
       "intro": "黏稠的沼泽，任何东西掉进去都会析出白色的壳。"
     },
-    "shelf": ["AgNO3", "NaCl", "Na2CO3", "Ca(OH)2", "CuSO4", "NaOH", "BaCl2", "Na2SO4"],
+    "shelf": [
+      "AgNO3",
+      "NaCl",
+      "Na2CO3",
+      "Ca(OH)2",
+      "CuSO4",
+      "NaOH",
+      "BaCl2",
+      "Na2SO4"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 15,
+    "balanceTime": 22,
     "requireBalance": true,
     "requireSkill": true
   },
   "106": {
     "id": 106,
-    "lines": ["初三"],
+    "lines": [
+      "初三"
+    ],
     "order": 10,
     "name": "活动性之序",
     "stage": "初中",
@@ -431,20 +829,36 @@
       "hp": 420,
       "atk": 12,
       "armor": 1,
-      "weakness": ["置换"],
-      "resist": ["中和"],
+      "weakness": [
+        "置换"
+      ],
+      "resist": [
+        "中和"
+      ],
       "intro": "一排悬浮的金属片，从钾一直排到金，谁站前面谁说了算。"
     },
-    "shelf": ["Zn", "Fe", "Cu", "Mg", "Al", "HCl", "H2SO4", "CuSO4", "AgNO3"],
+    "shelf": [
+      "Zn",
+      "Fe",
+      "Cu",
+      "Mg",
+      "Al",
+      "HCl",
+      "H2SO4",
+      "CuSO4",
+      "AgNO3"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 12,
+    "balanceTime": 18,
     "requireBalance": true,
     "requireSkill": true
   },
   "107": {
     "id": 107,
-    "lines": ["初三"],
+    "lines": [
+      "初三"
+    ],
     "order": 11,
     "name": "酸碱盐之网",
     "stage": "初中",
@@ -456,20 +870,39 @@
       "hp": 320,
       "atk": 12,
       "armor": 1,
-      "weakness": ["复分解", "产气", "沉淀"],
-      "resist": ["燃烧"],
+      "weakness": [
+        "复分解",
+        "产气",
+        "沉淀"
+      ],
+      "resist": [
+        "燃烧"
+      ],
       "intro": "无数离子在空气里连成一张网，碰到什么都要交换一次成分。"
     },
-    "shelf": ["HCl", "H2SO4", "NaOH", "Ca(OH)2", "Na2CO3", "NaHCO3", "BaCl2", "CuSO4", "FeCl3", "AgNO3"],
+    "shelf": [
+      "HCl",
+      "H2SO4",
+      "NaOH",
+      "Ca(OH)2",
+      "Na2CO3",
+      "NaHCO3",
+      "BaCl2",
+      "CuSO4",
+      "FeCl3",
+      "AgNO3"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 12,
+    "balanceTime": 18,
     "requireBalance": true,
     "requireSkill": true
   },
   "108": {
     "id": 108,
-    "lines": ["初三"],
+    "lines": [
+      "初三"
+    ],
     "order": 12,
     "name": "初中终局·元素之茧",
     "stage": "初中",
@@ -481,20 +914,42 @@
       "hp": 360,
       "atk": 13,
       "armor": 2,
-      "weakness": ["产气", "分解", "沉淀"],
-      "resist": ["化合"],
+      "weakness": [
+        "产气",
+        "分解",
+        "沉淀"
+      ],
+      "resist": [
+        "化合"
+      ],
       "intro": "一层又一层元素缠成的茧，每一层都写着不同章节的方程式。"
     },
-    "shelf": ["CaCO3", "HCl", "CaO", "H2O", "CO2", "C", "O2", "CuO", "Fe2O3", "CO", "NaOH", "CuSO4", "Zn"],
+    "shelf": [
+      "CaCO3",
+      "HCl",
+      "CaO",
+      "H2O",
+      "CO2",
+      "C",
+      "O2",
+      "CuO",
+      "Fe2O3",
+      "CO",
+      "NaOH",
+      "CuSO4",
+      "Zn"
+    ],
     "handSize": 7,
     "energy": 3,
-    "balanceTime": 10,
+    "balanceTime": 16,
     "requireBalance": true,
     "requireSkill": true
   },
   "201": {
     "id": 201,
-    "lines": ["高一"],
+    "lines": [
+      "高一"
+    ],
     "order": 9,
     "name": "递变之墙",
     "stage": "高一",
@@ -506,20 +961,38 @@
       "hp": 380,
       "atk": 12,
       "armor": 1,
-      "weakness": ["置换"],
-      "resist": ["化合"],
+      "weakness": [
+        "置换"
+      ],
+      "resist": [
+        "化合"
+      ],
       "intro": "一面刻着七列元素的墙，越往下颜色越深。"
     },
-    "shelf": ["Cl2", "NaBr", "KI", "MnO2", "HCl", "Na", "H2O", "Cu", "Fe", "Br2", "Na2SO3"],
+    "shelf": [
+      "Cl2",
+      "NaBr",
+      "KI",
+      "MnO2",
+      "HCl",
+      "Na",
+      "H2O",
+      "Cu",
+      "Fe",
+      "Br2",
+      "Na2SO3"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 12,
+    "balanceTime": 18,
     "requireBalance": true,
     "requireSkill": true
   },
   "202": {
     "id": 202,
-    "lines": ["高一"],
+    "lines": [
+      "高一"
+    ],
     "order": 10,
     "name": "硫烟之幕",
     "stage": "高一",
@@ -531,20 +1004,38 @@
       "hp": 460,
       "atk": 13,
       "armor": 1,
-      "weakness": ["氧化还原", "化合"],
-      "resist": ["中和"],
+      "weakness": [
+        "氧化还原",
+        "化合"
+      ],
+      "resist": [
+        "中和"
+      ],
       "intro": "一片呛人的淡黄色烟雾，边缘不断有单质硫析出。"
     },
-    "shelf": ["S", "O2", "SO2", "SO3", "H2O", "H2S", "KMnO4", "Cu", "H2SO4", "Na2SO3"],
+    "shelf": [
+      "S",
+      "O2",
+      "SO2",
+      "SO3",
+      "H2O",
+      "H2S",
+      "KMnO4",
+      "Cu",
+      "H2SO4",
+      "Na2SO3"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 12,
+    "balanceTime": 18,
     "requireBalance": true,
     "requireSkill": true
   },
   "203": {
     "id": 203,
-    "lines": ["高一"],
+    "lines": [
+      "高一"
+    ],
     "order": 11,
     "name": "氮之回廊",
     "stage": "高一",
@@ -556,20 +1047,42 @@
       "hp": 480,
       "atk": 14,
       "armor": 1,
-      "weakness": ["氧化还原", "化合"],
-      "resist": ["沉淀"],
+      "weakness": [
+        "氧化还原",
+        "化合"
+      ],
+      "resist": [
+        "沉淀"
+      ],
       "intro": "一条不断循环的回廊，空气里飘着刺鼻的气味。"
     },
-    "shelf": ["N2", "H2", "NH3", "O2", "NO", "NO2", "H2O", "HNO3", "Cu", "S", "C", "NH4Cl", "NaOH", "Ca(OH)2"],
+    "shelf": [
+      "N2",
+      "H2",
+      "NH3",
+      "O2",
+      "NO",
+      "NO2",
+      "H2O",
+      "HNO3",
+      "Cu",
+      "S",
+      "C",
+      "NH4Cl",
+      "NaOH",
+      "Ca(OH)2"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 10,
+    "balanceTime": 16,
     "requireBalance": true,
     "requireSkill": true
   },
   "204": {
     "id": 204,
-    "lines": ["高一"],
+    "lines": [
+      "高一"
+    ],
     "order": 12,
     "name": "高一终局·元素熔炉",
     "stage": "高一",
@@ -581,20 +1094,41 @@
       "hp": 500,
       "atk": 14,
       "armor": 2,
-      "weakness": ["氧化还原", "置换"],
-      "resist": ["化合"],
+      "weakness": [
+        "氧化还原",
+        "置换"
+      ],
+      "resist": [
+        "化合"
+      ],
       "intro": "一座烧得通红的炉子，炉口轮流喷出黄绿色和棕红色的烟。"
     },
-    "shelf": ["Cl2", "Na", "H2O", "Fe", "Cu", "HCl", "NaOH", "SO2", "O2", "FeCl3", "CuSO4", "Na2SO3", "Na2S"],
+    "shelf": [
+      "Cl2",
+      "Na",
+      "H2O",
+      "Fe",
+      "Cu",
+      "HCl",
+      "NaOH",
+      "SO2",
+      "O2",
+      "FeCl3",
+      "CuSO4",
+      "Na2SO3",
+      "Na2S"
+    ],
     "handSize": 7,
     "energy": 3,
-    "balanceTime": 10,
+    "balanceTime": 16,
     "requireBalance": true,
     "requireSkill": true
   },
   "301": {
     "id": 301,
-    "lines": ["高二"],
+    "lines": [
+      "高二"
+    ],
     "order": 9,
     "name": "反应热之炉",
     "stage": "高二",
@@ -606,20 +1140,37 @@
       "hp": 500,
       "atk": 13,
       "armor": 1,
-      "weakness": ["燃烧", "化合"],
-      "resist": ["沉淀"],
+      "weakness": [
+        "燃烧",
+        "化合"
+      ],
+      "resist": [
+        "沉淀"
+      ],
       "intro": "一座没有火焰却持续发烫的炉子，靠近就能感到热浪。"
     },
-    "shelf": ["CH4", "H2", "C", "O2", "CO", "CO2", "H2O", "S", "C2H5OH"],
+    "shelf": [
+      "CH4",
+      "H2",
+      "C",
+      "O2",
+      "CO",
+      "CO2",
+      "H2O",
+      "S",
+      "C2H5OH"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 10,
+    "balanceTime": 16,
     "requireBalance": true,
     "requireSkill": true
   },
   "302": {
     "id": 302,
-    "lines": ["高二"],
+    "lines": [
+      "高二"
+    ],
     "order": 10,
     "name": "速率之轮",
     "stage": "高二",
@@ -631,20 +1182,39 @@
       "hp": 500,
       "atk": 14,
       "armor": 1,
-      "weakness": ["化合"],
-      "resist": ["分解"],
+      "weakness": [
+        "化合"
+      ],
+      "resist": [
+        "分解"
+      ],
       "intro": "一只转个不停的轮盘，每一格都是一个还没到平衡的反应。"
     },
-    "shelf": ["N2", "H2", "I2", "SO2", "O2", "SO3", "NO2", "N2O4", "H2O", "NO", "CO2", "H2S"],
+    "shelf": [
+      "N2",
+      "H2",
+      "I2",
+      "SO2",
+      "O2",
+      "SO3",
+      "NO2",
+      "N2O4",
+      "H2O",
+      "NO",
+      "CO2",
+      "H2S"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 10,
+    "balanceTime": 16,
     "requireBalance": true,
     "requireSkill": true
   },
   "303": {
     "id": 303,
-    "lines": ["高二"],
+    "lines": [
+      "高二"
+    ],
     "order": 11,
     "name": "离子之潮",
     "stage": "高二",
@@ -656,20 +1226,38 @@
       "hp": 520,
       "atk": 15,
       "armor": 1,
-      "weakness": ["产气", "沉淀"],
-      "resist": ["中和"],
+      "weakness": [
+        "产气",
+        "沉淀"
+      ],
+      "resist": [
+        "中和"
+      ],
       "intro": "一片涨落的电解质潮水，每退一次就留下一层盐。"
     },
-    "shelf": ["CH3COOH", "Na2CO3", "NaHCO3", "AlCl3", "FeCl3", "Na2S", "HCl", "AgCl", "NaBr", "KI"],
+    "shelf": [
+      "CH3COOH",
+      "Na2CO3",
+      "NaHCO3",
+      "AlCl3",
+      "FeCl3",
+      "Na2S",
+      "HCl",
+      "AgCl",
+      "NaBr",
+      "KI"
+    ],
     "handSize": 6,
     "energy": 2,
-    "balanceTime": 10,
+    "balanceTime": 16,
     "requireBalance": true,
     "requireSkill": true
   },
   "304": {
     "id": 304,
-    "lines": ["高二"],
+    "lines": [
+      "高二"
+    ],
     "order": 12,
     "name": "高二终局·电蚀核心",
     "stage": "高二",
@@ -681,14 +1269,29 @@
       "hp": 560,
       "atk": 16,
       "armor": 2,
-      "weakness": ["氧化还原", "置换"],
-      "resist": ["中和"],
+      "weakness": [
+        "氧化还原",
+        "置换"
+      ],
+      "resist": [
+        "中和"
+      ],
       "intro": "一颗半埋在电解液里的核心，电极上不断渗出锈水。"
     },
-    "shelf": ["NaCl", "H2O", "CuSO4", "Cu", "Fe", "Zn", "HCl", "O2", "H2"],
+    "shelf": [
+      "NaCl",
+      "H2O",
+      "CuSO4",
+      "Cu",
+      "Fe",
+      "Zn",
+      "HCl",
+      "O2",
+      "H2"
+    ],
     "handSize": 7,
     "energy": 3,
-    "balanceTime": 10,
+    "balanceTime": 16,
     "requireBalance": true,
     "requireSkill": true
   }
