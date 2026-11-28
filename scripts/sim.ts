@@ -10,6 +10,7 @@ import {
   advance,
   confirmBalance,
   createBattle,
+  resolveMisfire,
   skipBalance,
   submitSelection,
   toggleBoost,
@@ -36,6 +37,8 @@ interface Outcome {
   result: 'win' | 'lose' | 'stuck';
   turns: number;
   hp: number;
+  /** 这一局用到了几种不同的反应 */
+  variety: number;
 }
 
 function runOne(levelId: number, correctRate: number): Outcome {
@@ -62,6 +65,9 @@ function runOne(levelId: number, correctRate: number): Outcome {
           : skipBalance(s);
     } else if (s.phase === 'resolving') {
       s = advance(s);
+    } else if (s.phase === 'misfire') {
+      // 真人玩家要先关掉提示卡，模拟器直接略过
+      s = resolveMisfire(s);
     } else {
       break;
     }
@@ -72,6 +78,7 @@ function runOne(levelId: number, correctRate: number): Outcome {
     result: s.phase === 'win' ? 'win' : s.phase === 'lose' ? 'lose' : 'stuck',
     turns: s.stats.turns,
     hp: s.playerHp,
+    variety: Object.keys(s.reactionCounts).length,
   };
 }
 
@@ -91,8 +98,9 @@ for (const level of LEVELS) {
   wins += w;
   total += ROUNDS;
   const avgTurns = (outcomes.reduce((a, o) => a + o.turns, 0) / ROUNDS).toFixed(1);
+  const avgVariety = (outcomes.reduce((a, o) => a + o.variety, 0) / ROUNDS).toFixed(1);
   rows.push(
-    `第 ${String(level.id).padStart(2)} 关 ${level.name.padEnd(6, '　')} 胜 ${String(w).padStart(2)} / 负 ${String(l).padStart(2)} / 卡死 ${st}  平均 ${avgTurns} 回合`,
+    `第 ${String(level.id).padStart(2)} 关 ${level.name.padEnd(6, '　')} 胜 ${String(w).padStart(2)} / 负 ${String(l).padStart(2)} / 卡死 ${st}  平均 ${avgTurns} 回合 · 用到 ${avgVariety} 种不同反应`,
   );
 }
 

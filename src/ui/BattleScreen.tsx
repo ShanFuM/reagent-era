@@ -7,11 +7,13 @@ import {
   createBattle,
   enemyResistOf,
   enemyWeaknessOf,
+  resolveMisfire,
   skillGate,
   skipBalance,
   submitSelection,
   toggleBoost,
   toggleCard,
+  useHint,
 } from '../engine/battle';
 import type { BattleState } from '../engine/battle';
 import { nextLevelInLine, solutionReactions, substance } from '../engine/data';
@@ -36,6 +38,25 @@ const KIND_CLASS: Record<string, string> = {
   有机物: 'organic',
 };
 
+/** 把一条反应渲染成带系数的方程式文本（下标用 unicode） */
+const equationText = (r: Reaction): string => {
+  const side = (terms: [string, number][]) =>
+    terms.map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`).join(' + ');
+  return `${side(r.reactants)} = ${side(r.products)}`;
+};
+
+const verdictText = (accuracy: string): string =>
+  accuracy === 'perfect'
+    ? '完美配平'
+    : accuracy === 'correct'
+      ? '配平正确'
+      : accuracy === 'wrong'
+        ? '配平有误'
+        : '跳过了配平';
+
+const verdictClass = (accuracy: string): string =>
+  accuracy === 'perfect' || accuracy === 'correct' ? 'ok' : accuracy === 'wrong' ? 'no' : 'skip';
+
 interface Props {
   level: Level;
   /** 当前年级线：决定「下一关」走哪条线 */
@@ -55,6 +76,8 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
   const tipShown = useRef(false);
   const prevHandLen = useRef(state.hand.length);
   const [dealing, setDealing] = useState(true);
+  /** 配平结束后弹出「正确方程式」，由玩家自己关闭才继续 */
+  const [solutionOpen, setSolutionOpen] = useState(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDealing(false), 820);
@@ -84,9 +107,10 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
 
   useEffect(() => {
     if (state.phase !== 'resolving') return;
+    if (solutionOpen) return; // 玩家还在看方程，别自动推进
     const timer = window.setTimeout(() => setState((s) => advance(s)), 1600);
     return () => window.clearTimeout(timer);
-  }, [state.phase, state.logSeq]);
+  }, [state.phase, state.logSeq, solutionOpen]);
 
   useEffect(() => {
     if (state.phase === 'win') onCleared(level.id);
@@ -100,10 +124,30 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
     return () => window.clearTimeout(timer);
   }, [state.logSeq, state.lastResult]);
 
+  // 每次命中后都弹「正确方程式」——包括第 1、2 关这种不要求配平的关卡
+  useEffect(() => {
+    if (state.phase === 'resolving' && state.lastResult) setSolutionOpen(true);
+  }, [state.phase, state.logSeq, state.lastResult]);
+
   const restart = () => {
     tipShown.current = false;
     setChainTip(false);
+    setSolutionOpen(false);
     setState(createBattle(level));
+  };
+
+  const submitBalance = (coeffs: number[], perfect: boolean) => {
+    setState((s) => confirmBalance(s, coeffs, perfect));
+  };
+
+  const skip = () => {
+    setState((s) => skipBalance(s));
+  };
+
+  /** 关闭方程校对卡后立刻继续，不用再等自动推进 */
+  const closeSolution = () => {
+    setSolutionOpen(false);
+    setState((s) => advance(s));
   };
   const nextLevel = nextLevelInLine(line, level);
   const gate = skillGate(state);
@@ -153,7 +197,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             回合 {state.turn} / {state.maxTurns}
           </span>
           <button className="btn-ghost small" onClick={() => setHintOpen(true)}>
-            💡 提示
+            📖 答案
           </button>
           <button className="btn-ghost small" onClick={restart}>
             重开
@@ -180,6 +224,9 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             <div className="chips">
               {state.shield > 0 && <span className="chip shield">🛡 护盾 {state.shield}</span>}
               {state.combo > 0 && <span className="chip combo">连锁 ×{state.combo}</span>}
+              <span className="chip variety">
+                已用反应 {Object.keys(state.reactionCounts).length} 种
+              </span>
             </div>
             <button
               className={`energy-btn ${state.boost ? 'on' : ''}`}
@@ -347,7 +394,9 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             return (
               <button
                 key={`${id}-${index}`}
-                className={`card k-${KIND_CLASS[sub.kind] ?? 'element'} ${selected ? 'sel' : ''} ${dealing ? 'deal-in' : ''}`}
+                className={`card k-${KIND_CLASS[sub.kind] ?? 'element'} ${selected ? 'sel' : ''} ${
+                  state.hint.includes(index) ? 'hint' : ''
+                } ${dealing ? 'deal-in' : ''}`}
                 style={{ animationDelay: `${index * 45}ms` }}
                 onClick={() => setState((s) => toggleCard(s, index))}
                 disabled={state.phase !== 'select'}
@@ -369,6 +418,13 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
                 : `已选 ${state.selected.length} 种 · 能反应就命中，不能反应浪费一回合`}
           </div>
           <button
+            className="btn-hint"
+            disabled={state.hintsLeft <= 0 || state.phase !== 'select'}
+            onClick={() => setState((s) => useHint(s))}
+          >
+            提示 · 剩 {state.hintsLeft} 次
+          </button>
+          <button
             className="btn-summon"
             disabled={state.selected.length === 0 || state.phase !== 'select'}
             onClick={() => {
@@ -386,8 +442,8 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           reaction={state.pending}
           timeLimit={level.balanceTime}
           combo={state.combo}
-          onConfirm={(coeffs, perfect) => setState((s) => confirmBalance(s, coeffs, perfect))}
-          onSkip={() => setState((s) => skipBalance(s))}
+          onConfirm={submitBalance}
+          onSkip={skip}
         />
       )}
 
@@ -396,7 +452,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           <div className="hint-card" onClick={(e) => e.stopPropagation()}>
             <div className="hint-head">
               <div>
-                <div className="hint-title">通关提示 · {level.name}</div>
+                <div className="hint-title">标准答案 · {level.name}</div>
                 <div className="hint-sub">
                   弱点：{level.enemy.weakness.join(' / ')}　|　{level.textbook}
                 </div>
@@ -419,6 +475,51 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
               ))}
             </div>
             <div className="hint-foot">先自己试试；卡住再看。答案不唯一，命中弱点的组合都算。</div>
+          </div>
+        </div>
+      )}
+
+      {solutionOpen && state.phase === 'resolving' && state.lastResult && (
+        <div className="overlay">
+          <div className="solution">
+            <div className="solution-head">
+              <span className="solution-title">正确方程式</span>
+              <span className={`solution-verdict ${verdictClass(state.lastResult.accuracy)}`}>
+                {verdictText(state.lastResult.accuracy)}
+              </span>
+            </div>
+            <div className="solution-eq">{equationText(state.lastResult.reaction)}</div>
+            <div className="solution-tags">
+              <span className="tag">{state.lastResult.reaction.type}</span>
+              <span className="tag">{state.lastResult.reaction.condition}</span>
+            </div>
+            <div className="solution-phen">
+              现象 · {state.lastResult.reaction.phenomenon}
+            </div>
+            {state.lastResult.reaction.trap && (
+              <div className="solution-trap">⚠ {state.lastResult.reaction.trap}</div>
+            )}
+            <button className="btn-primary" onClick={closeSolution}>
+              记住了 · 继续
+            </button>
+          </div>
+        </div>
+      )}
+
+      {state.phase === 'misfire' && state.misfire && (
+        <div className="overlay">
+          <div className="misfire">
+            <div className="misfire-title">这两种物质不反应</div>
+            <div className="misfire-pair">{state.misfire.names.join(' + ')}</div>
+            <p className="misfire-text">
+              在中学化学范围内，它们混合后不会发生反应。这一回合被浪费了。
+            </p>
+            <p className="misfire-hint">
+              可以留意这些能反应的组合：酸 + 碱、金属 + 盐、金属 + 酸、酸 + 碳酸盐、金属氧化物 + 酸。
+            </p>
+            <button className="btn-primary" onClick={() => setState((s) => resolveMisfire(s))}>
+              知道了 · 继续
+            </button>
           </div>
         </div>
       )}

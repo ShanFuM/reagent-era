@@ -96,7 +96,8 @@ export default function BalancePad({ reaction, timeLimit, combo, onConfirm, onSk
         </div>
 
         <div className="pad-note">
-          {reaction.trap ? `⚠ ${reaction.trap}` : `现象：${reaction.phenomenon}`}
+          <div className="pad-phenomenon">现象 · {reaction.phenomenon}</div>
+          {reaction.trap && <div className="pad-trap">⚠ {reaction.trap}</div>}
           {combo > 0 && <span className="pad-combo">连击 ×{combo}</span>}
         </div>
 

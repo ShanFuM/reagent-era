@@ -3,7 +3,7 @@ import type { BossPhase, Level, Reaction, ReactionType } from './data';
 import { checkBalance } from './formula.js';
 
 export type Accuracy = 'none' | 'perfect' | 'correct' | 'wrong' | 'skip';
-export type Phase = 'select' | 'balance' | 'resolving' | 'win' | 'lose';
+export type Phase = 'select' | 'balance' | 'resolving' | 'misfire' | 'win' | 'lose';
 export type LogKind = 'info' | 'hit' | 'enemy' | 'effect' | 'warn' | 'phase' | 'win';
 
 export interface LogEntry {
@@ -57,6 +57,14 @@ export interface BattleState {
   pending: Reaction | null;
   coefficients: number[];
   lastResult: TurnResult | null;
+  /** 选错组合时记录的「不反应」信息，界面据此弹提示 */
+  misfire: { names: string[] } | null;
+  /** 提示功能：本关剩余次数 */
+  hintsLeft: number;
+  /** 当前高亮的手牌下标 */
+  hint: number[];
+  /** 本关每种反应分别用了几次，用来做「换着打」的奖励/衰减 */
+  reactionCounts: Record<string, number>;
   log: LogEntry[];
   logSeq: number;
   stats: {
@@ -105,6 +113,8 @@ export const BOSS_PHASE_HEAL = 30;
 export const BOSS_PHASE_EXTRA_TURNS = 4;
 /** 工序阶段里，打非当前步骤的反应只结算一半伤害 */
 export const OFF_CHAIN_DAMAGE = 0.5;
+/** 每关可以点几次提示 */
+export const HINTS_PER_LEVEL = 3;
 
 const TYPE_PROFILE: Record<ReactionType, { base: number; effect: string }> = {
   置换: { base: 1.2, effect: 'corrode' },
@@ -279,20 +289,64 @@ function drawCards(s: BattleState, n: number): BattleState {
   return { ...s, hand, deck, discard };
 }
 
-/** 保证起手至少有一组可打的组合，否则重洗手牌（避免死局）。 */
+/**
+ * 在给定的一组牌里找一组能反应的组合，返回下标。
+ * preferWeakness 里列出的反应类型优先（提示更「有用」），同优先级下取张数最少的。
+ */
+function findCombo(hand: string[], preferWeakness: ReactionType[] = []): number[] | null {
+  const found: { idx: number[]; weak: boolean }[] = [];
+  const isWeak = (type: ReactionType) => preferWeakness.includes(type);
+
+  for (let i = 0; i < hand.length; i += 1) {
+    const one = lookupReaction([hand[i]]);
+    if (one) found.push({ idx: [i], weak: isWeak(one.reaction.type) });
+    for (let j = i + 1; j < hand.length; j += 1) {
+      const two = lookupReaction([hand[i], hand[j]]);
+      if (two) found.push({ idx: [i, j], weak: isWeak(two.reaction.type) });
+      for (let k = j + 1; k < hand.length; k += 1) {
+        const three = lookupReaction([hand[i], hand[j], hand[k]]);
+        if (three) found.push({ idx: [i, j, k], weak: isWeak(three.reaction.type) });
+      }
+    }
+  }
+
+  if (found.length === 0) return null;
+  found.sort((a, b) => {
+    if (a.weak !== b.weak) return a.weak ? -1 : 1;
+    return a.idx.length - b.idx.length;
+  });
+  return found[0].idx;
+}
+
+/**
+ * 死手保底：手牌一张都打不出去时，把整副牌（手牌 + 牌堆 + 弃牌）重排，
+ * 并且**保证**新手牌里一定含有一组能反应的组合，而不是听天由命重抽。
+ */
 function ensurePlayable(s: BattleState): BattleState {
   if (handHasMove(s.hand)) return s;
-  let deck = shuffle([...s.deck, ...s.hand, ...s.discard]);
-  const hand: string[] = [];
-  for (let i = 0; i < s.level.handSize && deck.length > 0; i += 1) {
-    const card = deck.pop();
+
+  const pool = shuffle([...s.deck, ...s.hand, ...s.discard]);
+  const combo = findCombo(pool);
+  const target = Math.min(s.level.handSize, HAND_LIMIT);
+
+  if (!combo) {
+    // 整副牌都凑不出反应——理论上不该发生（数据校验会拦），兜底原样返回
+    return pushLog(s, 'warn', '整副试剂都凑不出可发生的反应，这局没法打了。');
+  }
+
+  const picked = combo.map((i) => pool[i]);
+  const rest = pool.filter((_, i) => !combo.includes(i));
+  const hand = [...picked];
+  while (hand.length < target && rest.length > 0) {
+    const card = rest.shift();
     if (card) hand.push(card);
   }
-  const next = { ...s, deck, hand, discard: [] };
-  if (!handHasMove(hand)) {
-    return pushLog(next, 'warn', '手牌全是「无反应」组合，这局牌运很差——重洗一次。');
-  }
-  return pushLog(next, 'info', '手牌无法出招，自动重洗。');
+
+  return pushLog(
+    { ...s, hand, deck: rest, discard: [], hint: [] },
+    'info',
+    '手牌凑不出反应，已重新整理牌堆——保证这一手有可打的组合。',
+  );
 }
 
 /** 这一回合发牌要围绕哪条反应：有工序的阶段优先给当前这一步，其余随机取一条可打反应。 */
@@ -383,6 +437,10 @@ export function createBattle(level: Level): BattleState {
     pending: null,
     coefficients: [],
     lastResult: null,
+    misfire: null,
+    hintsLeft: HINTS_PER_LEVEL,
+    hint: [],
+    reactionCounts: {},
     log: [],
     logSeq: 0,
     stats: { dealt: 0, taken: 0, perfect: 0, turns: 0, boostUsed: 0, gateBlocked: 0 },
@@ -406,7 +464,21 @@ export function toggleCard(s: BattleState, index: number): BattleState {
   const selected = s.selected.includes(index)
     ? s.selected.filter((i) => i !== index)
     : [...s.selected, index];
-  return { ...s, selected };
+  return { ...s, selected, hint: [] };
+}
+
+/** 消耗一次提示机会，高亮一组能反应的手牌（优先命中弱点的组合） */
+export function useHint(s: BattleState): BattleState {
+  if (s.phase !== 'select' || s.hintsLeft <= 0) return s;
+  const combo = findCombo(s.hand, s.level.enemy.weakness);
+  if (!combo) {
+    return pushLog(s, 'warn', '手牌里确实没有能反应的组合了，只能先弃一回合。');
+  }
+  return pushLog(
+    { ...s, hintsLeft: s.hintsLeft - 1, hint: combo, selected: [] },
+    'info',
+    `提示：高亮的 ${combo.length} 种物质之间可以发生反应（本关还剩 ${s.hintsLeft - 1} 次）。`,
+  );
 }
 
 export function toggleBoost(s: BattleState): BattleState {
@@ -419,14 +491,14 @@ export function submitSelection(s: BattleState): BattleState {
   const ids = s.selected.map((i) => s.hand[i]);
   const hit = lookupReaction(ids);
   if (!hit) {
-    const names = ids.map((id) => substance(id).name).join(' + ');
-    let next = pushLog(
+    const names = ids.map((id) => substance(id).name);
+    // 不立刻结算敌方回合：先让界面把「不反应」讲清楚，玩家关掉弹窗再推进
+    const next = pushLog(
       s,
       'warn',
-      `「${names}」之间没有可发生的反应——这一回合被浪费了。`,
+      `「${names.join(' + ')}」之间没有可发生的反应——这一回合被浪费了。`,
     );
-    next = { ...next, selected: [], boost: false };
-    return endTurn(next);
+    return { ...next, selected: [], boost: false, phase: 'misfire', misfire: { names } };
   }
   const coeffCount = hit.reaction.reactants.length + hit.reaction.products.length;
   if (s.level.requireBalance) {
@@ -441,12 +513,24 @@ export function submitSelection(s: BattleState): BattleState {
   return settle(s, hit.id, hit.reaction, 'none', false);
 }
 
+/**
+ * 「换着打」的伤害系数：本关第一次用某个反应有加成，反复用同一个反应会衰减。
+ * 目的：让玩家在 8 张手牌里找不同组合，而不是一套连招打到死。
+ */
+export function varietyMultiplier(usedTimes: number): number {
+  if (usedTimes <= 0) return 1.1; // 首次使用，小幅加成
+  if (usedTimes === 1) return 0.95;
+  if (usedTimes === 2) return 0.75;
+  return 0.55;
+}
+
 export function previewDamage(
   s: BattleState,
   reaction: Reaction,
   accuracy: Accuracy,
   perfectBonus = false,
   reactionKey: string | null = null,
+  variety = 1,
 ): number {
   const profile = TYPE_PROFILE[reaction.type];
   const cond = COND_COEF[reaction.condition] ?? 1;
@@ -468,7 +552,8 @@ export function previewDamage(
     (1 + comboBonus) *
     boostMult *
     armorMult *
-    chainMult;
+    chainMult *
+    variety;
   return Math.max(1, Math.round(raw));
 }
 
@@ -573,7 +658,9 @@ function settle(
   const boosted = s.boost && s.energy > 0;
   const onChain = isOnChainStep(s, key);
   const offChain = isOffChainStep(s, key);
-  const damage = previewDamage(s, reaction, accuracy, perfect, key);
+  const usedTimes = s.reactionCounts[key] ?? 0;
+  const variety = varietyMultiplier(usedTimes);
+  const damage = previewDamage(s, reaction, accuracy, perfect, key, variety);
   const weak = enemyWeaknessOf(s).includes(reaction.type);
   const resist = enemyResistOf(s).includes(reaction.type);
   const profile = TYPE_PROFILE[reaction.type];
@@ -590,6 +677,8 @@ function settle(
     energy: boosted ? s.energy - 1 : s.energy,
     boost: false,
     selected: [],
+    hint: [],
+    reactionCounts: { ...s.reactionCounts, [key]: usedTimes + 1 },
     enemyHp: Math.max(0, s.enemyHp - damage),
     combo: weak ? s.combo + 1 : 0,
     stats: {
@@ -642,6 +731,12 @@ function settle(
     );
   }
   if (onChain) next = advanceChain(next, reaction, requiredSteps(s).length);
+
+  if (usedTimes === 0) {
+    next = pushLog(next, 'effect', '首次使用这个反应 · 伤害 ×1.1');
+  } else if (usedTimes >= 1) {
+    next = pushLog(next, 'warn', `同一个反应第 ${usedTimes + 1} 次使用 · 伤害衰减到 ×${variety}`);
+  }
 
   // 附加效果
   switch (profile.effect) {
@@ -782,6 +877,7 @@ export function endTurn(s: BattleState): BattleState {
     ...next,
     turn: next.turn + 1,
     selected: [],
+    hint: [],
     phase: 'select',
     phaseSwitch: false,
     stats: { ...next.stats, turns: next.stats.turns + 1 },
@@ -796,4 +892,10 @@ export function endTurn(s: BattleState): BattleState {
 export function advance(s: BattleState): BattleState {
   if (s.phase !== 'resolving') return s;
   return endTurn(s);
+}
+
+/** 玩家看完「这两种物质不反应」的提示后继续；这一回合照常被浪费 */
+export function resolveMisfire(s: BattleState): BattleState {
+  if (s.phase !== 'misfire') return s;
+  return endTurn({ ...s, misfire: null });
 }
