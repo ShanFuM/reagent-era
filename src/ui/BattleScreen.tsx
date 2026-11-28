@@ -18,6 +18,7 @@ import { nextLevelInLine, solutionReactions, substance } from '../engine/data';
 import type { GradeLine, Level, Reaction } from '../engine/data';
 import { formatFormula } from '../engine/formula.js';
 import BalancePad from './BalancePad';
+import { EnemySprite, PlayerSprite } from './Sprite';
 
 const formatEquation = (r: Reaction) =>
   `${r.reactants.map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`).join(' + ')} = ${r.products
@@ -47,6 +48,7 @@ interface Props {
 export default function BattleScreen({ level, line, onExit, onCleared, onNext }: Props) {
   const [state, setState] = useState<BattleState>(() => createBattle(level));
   const [hintOpen, setHintOpen] = useState(false);
+  const [cast, setCast] = useState<{ id: number; cards: string[] } | null>(null);
 
   useEffect(() => {
     if (state.phase !== 'resolving') return;
@@ -69,6 +71,14 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
   const chain = chainView(state);
   const weaknessTags = enemyWeaknessOf(state);
   const resistTags = enemyResistOf(state);
+
+  const castCards = () => {
+    const cards = state.selected.map((i) => state.hand[i]).filter(Boolean);
+    if (!cards.length) return;
+    const id = Date.now();
+    setCast({ id, cards });
+    window.setTimeout(() => setCast((c) => (c && c.id === id ? null : c)), 700);
+  };
 
   return (
     <div className="battle">
@@ -109,7 +119,13 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
       <div className="field">
         <aside className="side left">
           <div className="panel player-panel">
-            <div className="panel-label">配方师</div>
+            <div className="player-head">
+              <PlayerSprite className="player-avatar" />
+              <div>
+                <div className="panel-label">配方师</div>
+                <div className="player-sub">第 {state.turn} 回合</div>
+              </div>
+            </div>
             <div className="bar">
               <div className={`bar-fill ${hpRatio < 0.3 ? 'low' : ''}`} style={{ width: `${hpRatio * 100}%` }} />
               <span className="bar-text">
@@ -145,8 +161,36 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
 
         <main className="arena">
           <div className="arena-grid" />
+          {cast && (
+            <div className="cast-layer" key={cast.id}>
+              {cast.cards.map((id, i) => (
+                <div
+                  key={`${id}-${i}`}
+                  className="cast-card"
+                  style={{
+                    ['--rot' as string]: `${(i - (cast.cards.length - 1) / 2) * 14}deg`,
+                    animationDelay: `${i * 70}ms`,
+                  }}
+                >
+                  {formatFormula(substance(id).formula)}
+                </div>
+              ))}
+            </div>
+          )}
+          {state.phase === 'resolving' && state.lastResult && (
+            <div className="burst-layer" key={`burst-${state.logSeq}`}>
+              <span className={`burst-ring ${state.lastResult.weak ? 'weak' : ''}`} />
+              {Array.from({ length: 14 }).map((_, i) => (
+                <span
+                  key={i}
+                  className={`burst-dot ${state.lastResult?.weak ? 'weak' : ''}`}
+                  style={{ ['--a' as string]: `${i * (360 / 14)}deg` }}
+                />
+              ))}
+            </div>
+          )}
           <div className={`enemy ${state.phase === 'resolving' ? 'hit' : ''}`}>
-            <div className="enemy-art">{state.level.enemy.art}</div>
+            <EnemySprite level={state.level} className="enemy-art" />
             <div className="enemy-name">
               {state.level.enemy.name}
               {bossPhase && <span className="enemy-phase-name"> · {bossPhase.name}</span>}
@@ -269,7 +313,10 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           <button
             className="btn-summon"
             disabled={state.selected.length === 0 || state.phase !== 'select'}
-            onClick={() => setState((s) => submitSelection(s))}
+            onClick={() => {
+              castCards();
+              setState((s) => submitSelection(s));
+            }}
           >
             出 招
           </button>
