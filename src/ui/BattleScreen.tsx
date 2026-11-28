@@ -139,10 +139,13 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
     setState((s) => skipBalance(s));
   };
 
+  /** 平衡移动是选必1 内容，只有高二、高三线的学生才出这道题 */
+  const quizEnabled = line === '高二' || line === '高三';
+
   /** 关闭方程校对卡：有平衡题就先答题，没有就直接继续 */
   const closeSolution = () => {
     setSolutionOpen(false);
-    if (state.lastResult?.reaction.quiz) {
+    if (quizEnabled && state.lastResult?.reaction.quiz) {
       setQuizPicked(null);
       setQuizOpen(true);
       return;
@@ -525,7 +528,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
         </div>
       )}
 
-      {quizOpen && state.phase === 'resolving' && state.lastResult?.reaction.quiz && (
+      {quizOpen && quizEnabled && state.phase === 'resolving' && state.lastResult?.reaction.quiz && (
         <div className="overlay">
           <div className="quiz">
             <div className="quiz-title">平衡移动</div>
