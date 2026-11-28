@@ -32,6 +32,7 @@
   "Fe2O3": { "name": "氧化铁", "formula": "Fe2O3", "kind": "氧化物" },
   "Fe3O4": { "name": "四氧化三铁", "formula": "Fe3O4", "kind": "氧化物" },
   "Al2O3": { "name": "氧化铝", "formula": "Al2O3", "kind": "氧化物" },
+  "ZnO": { "name": "氧化锌", "formula": "ZnO", "kind": "氧化物" },
   "MgO": { "name": "氧化镁", "formula": "MgO", "kind": "氧化物" },
   "HCl": { "name": "盐酸", "formula": "HCl", "kind": "酸" },
   "H2SO4": { "name": "硫酸", "formula": "H2SO4", "kind": "酸" },
@@ -93,6 +94,7 @@
   "NH4Cl": { "name": "氯化铵", "formula": "NH4Cl", "kind": "盐" },
   "CH3COONa": { "name": "醋酸钠", "formula": "CH3COONa", "kind": "盐" },
   "Na2S": { "name": "硫化钠", "formula": "Na2S", "kind": "盐" },
+  "FeS": { "name": "硫化亚铁", "formula": "FeS", "kind": "盐" },
   "CH4": { "name": "甲烷", "formula": "CH4", "kind": "有机物" },
   "C2H5OH": { "name": "乙醇", "formula": "C2H5OH", "kind": "有机物" }
 }

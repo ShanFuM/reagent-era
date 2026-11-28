@@ -1059,18 +1059,32 @@ button:disabled {
 
 .pad-note {
   margin-top: 16px;
-  font-size: 12.5px;
-  color: var(--dim);
-  line-height: 1.7;
   display: flex;
-  gap: 14px;
-  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.pad-phenomenon {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--cyan);
+  letter-spacing: 0.3px;
+}
+
+.pad-trap {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--amber);
+  opacity: 0.9;
 }
 
 .pad-combo {
-  margin-left: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
   color: var(--amber);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .pad-actions {
@@ -1078,6 +1092,86 @@ button:disabled {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+}
+
+/* ---------- 方程校对（配平后给玩家看的正确答案） ---------- */
+.solution {
+  width: 920px;
+  background: linear-gradient(180deg, #0c141d, #080d13);
+  border: 1px solid rgba(63, 224, 207, 0.34);
+  border-radius: 20px;
+  padding: 30px 44px 26px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.66);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.solution-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.solution-title {
+  font-size: 14px;
+  letter-spacing: 6px;
+  color: var(--dim);
+}
+
+.solution-verdict {
+  font-size: 12px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  color: var(--dim);
+}
+
+.solution-verdict.ok {
+  color: var(--lime);
+  border-color: rgba(194, 240, 74, 0.42);
+}
+
+.solution-verdict.no {
+  color: var(--red);
+  border-color: rgba(255, 95, 109, 0.42);
+}
+
+.solution-eq {
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 34px;
+  line-height: 1.5;
+  text-align: center;
+  color: #eaf6ff;
+  padding: 6px 0 2px;
+  letter-spacing: 0.5px;
+}
+
+.solution-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.solution-phen {
+  font-size: 16px;
+  color: var(--cyan);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.solution-trap {
+  font-size: 13.5px;
+  color: var(--amber);
+  text-align: center;
+  line-height: 1.6;
+  max-width: 780px;
+  opacity: 0.92;
+}
+
+.solution .btn-primary {
+  margin-top: 6px;
+  padding: 12px 44px;
 }
 
 /* ---------- 结算 ---------- */

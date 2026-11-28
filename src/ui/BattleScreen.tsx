@@ -10,7 +10,7 @@ import {
 } from '../engine/battle';
 import type { BattleState } from '../engine/battle';
 import { nextLevelInLine, substance } from '../engine/data';
-import type { GradeLine, Level } from '../engine/data';
+import type { GradeLine, Level, Reaction } from '../engine/data';
 import { formatFormula } from '../engine/formula.js';
 import BalancePad from './BalancePad';
 
@@ -25,6 +25,25 @@ const KIND_CLASS: Record<string, string> = {
   有机物: 'organic',
 };
 
+/** 把一条反应渲染成带系数的方程式文本（下标用 unicode） */
+const equationText = (r: Reaction): string => {
+  const side = (terms: [string, number][]) =>
+    terms.map(([id, n]) => `${n > 1 ? n : ''}${formatFormula(id)}`).join(' + ');
+  return `${side(r.reactants)} = ${side(r.products)}`;
+};
+
+const verdictText = (accuracy: string): string =>
+  accuracy === 'perfect'
+    ? '完美配平'
+    : accuracy === 'correct'
+      ? '配平正确'
+      : accuracy === 'wrong'
+        ? '配平有误'
+        : '跳过了配平';
+
+const verdictClass = (accuracy: string): string =>
+  accuracy === 'perfect' || accuracy === 'correct' ? 'ok' : accuracy === 'wrong' ? 'no' : 'skip';
+
 interface Props {
   level: Level;
   /** 当前年级线：决定「下一关」走哪条线 */
@@ -36,18 +55,40 @@ interface Props {
 
 export default function BattleScreen({ level, line, onExit, onCleared, onNext }: Props) {
   const [state, setState] = useState<BattleState>(() => createBattle(level));
+  /** 配平结束后弹出「正确方程式」，由玩家自己关闭才继续 */
+  const [solutionOpen, setSolutionOpen] = useState(false);
 
   useEffect(() => {
     if (state.phase !== 'resolving') return;
+    if (solutionOpen) return; // 玩家还在看方程，别自动推进
     const timer = window.setTimeout(() => setState((s) => advance(s)), 1600);
     return () => window.clearTimeout(timer);
-  }, [state.phase, state.logSeq]);
+  }, [state.phase, state.logSeq, solutionOpen]);
 
   useEffect(() => {
     if (state.phase === 'win') onCleared(level.id);
   }, [state.phase, level.id, onCleared]);
 
-  const restart = () => setState(createBattle(level));
+  const restart = () => {
+    setSolutionOpen(false);
+    setState(createBattle(level));
+  };
+
+  const submitBalance = (coeffs: number[], perfect: boolean) => {
+    setSolutionOpen(true);
+    setState((s) => confirmBalance(s, coeffs, perfect));
+  };
+
+  const skip = () => {
+    setSolutionOpen(true);
+    setState((s) => skipBalance(s));
+  };
+
+  /** 关闭方程校对卡后立刻继续，不用再等自动推进 */
+  const closeSolution = () => {
+    setSolutionOpen(false);
+    setState((s) => advance(s));
+  };
   const nextLevel = nextLevelInLine(line, level);
   const hpRatio = state.playerHp / state.playerMaxHp;
   const enemyRatio = state.enemyHp / state.enemyMaxHp;
@@ -212,9 +253,36 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           reaction={state.pending}
           timeLimit={level.balanceTime}
           combo={state.combo}
-          onConfirm={(coeffs, perfect) => setState((s) => confirmBalance(s, coeffs, perfect))}
-          onSkip={() => setState((s) => skipBalance(s))}
+          onConfirm={submitBalance}
+          onSkip={skip}
         />
+      )}
+
+      {solutionOpen && state.phase === 'resolving' && state.lastResult && (
+        <div className="overlay">
+          <div className="solution">
+            <div className="solution-head">
+              <span className="solution-title">正确方程式</span>
+              <span className={`solution-verdict ${verdictClass(state.lastResult.accuracy)}`}>
+                {verdictText(state.lastResult.accuracy)}
+              </span>
+            </div>
+            <div className="solution-eq">{equationText(state.lastResult.reaction)}</div>
+            <div className="solution-tags">
+              <span className="tag">{state.lastResult.reaction.type}</span>
+              <span className="tag">{state.lastResult.reaction.condition}</span>
+            </div>
+            <div className="solution-phen">
+              现象 · {state.lastResult.reaction.phenomenon}
+            </div>
+            {state.lastResult.reaction.trap && (
+              <div className="solution-trap">⚠ {state.lastResult.reaction.trap}</div>
+            )}
+            <button className="btn-primary" onClick={closeSolution}>
+              记住了 · 继续
+            </button>
+          </div>
+        </div>
       )}
 
       {(state.phase === 'win' || state.phase === 'lose') && (

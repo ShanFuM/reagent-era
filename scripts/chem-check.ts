@@ -80,6 +80,33 @@ const CASES: Case[] = [
   { pair: ['Cl2', 'NaBr'], expect: true },
   { pair: ['Cl2', 'KI'], expect: true },
 
+  // —— 非金属还原金属氧化物 ——
+  { pair: ['C', 'CuO'], expect: true, note: '碳还原氧化铜，初中重点' },
+  { pair: ['C', 'Fe2O3'], expect: true },
+  { pair: ['H2', 'CuO'], expect: true },
+  { pair: ['H2', 'Fe2O3'], expect: true },
+  { pair: ['Al', 'Fe2O3'], expect: true, note: '铝热反应' },
+
+  // —— 酸性氧化物 + 碱 ——
+  { pair: ['CO2', 'NaOH'], expect: true },
+  { pair: ['SO2', 'NaOH'], expect: true },
+  { pair: ['CO2', 'Ca(OH)2'], expect: true },
+
+  // —— 金属 + 非金属 ——
+  { pair: ['Zn', 'O2'], expect: true },
+  { pair: ['Na', 'Cl2'], expect: true },
+  { pair: ['Fe', 'S'], expect: true },
+  { pair: ['Ag', 'O2'], expect: false, note: '银不与氧气反应' },
+
+  // —— 铵盐 + 碱 ——
+  { pair: ['NH4Cl', 'NaOH'], expect: true, note: '生成氨气' },
+
+  // —— 必须判为不反应 ——
+  { pair: ['C', 'HCl'], expect: false },
+  { pair: ['CuO', 'H2O'], expect: false, note: '氧化铜不与水反应' },
+  { pair: ['CO2', 'HCl'], expect: false },
+  { pair: ['Fe', 'CuO'], expect: false, note: '两个固体不发生置换' },
+
   // —— 必须有解的关卡 ——
   { pair: ['Zn', 'CuSO4'], expect: true },
 ];
@@ -161,6 +188,19 @@ for (const level of LEVELS) {
   }
   lines.push(`· 第 ${level.id} 关：可打出 ${playable} 条，其中命中弱点 ${hitting} 条`);
 }
+
+// 反应库规模：所有物质两两组合里有多少组能反应（衡量「自由多样」的指标）
+const names = Object.keys(SUBSTANCES);
+let reactingPairs = 0;
+let totalPairs = 0;
+for (let i = 0; i < names.length; i += 1) {
+  for (let j = i + 1; j < names.length; j += 1) {
+    totalPairs += 1;
+    if (lookupReaction([names[i], names[j]])) reactingPairs += 1;
+  }
+}
+const percent = ((reactingPairs / totalPairs) * 100).toFixed(1);
+lines.push(`· 反应库规模：${reactingPairs} / ${totalPairs} 组物质组合可以反应（${percent}%）`);
 
 console.log(lines.join('\n'));
 console.log(failed === 0 ? '\n✓ 反应判定全部通过' : `\n✗ ${failed} 项未通过`);

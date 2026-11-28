@@ -169,11 +169,23 @@ export function isSoluble(c: CationDef, a: AnionDef): boolean {
 
 export type Species =
   | { kind: 'metal'; element: string; ionization: CationDef; activity: number }
+  | { kind: 'nonmetal'; element: string }
   | { kind: 'acid'; anion: AnionDef }
   | { kind: 'base'; cation: CationDef; soluble: boolean }
   | { kind: 'salt'; cation: CationDef; anion: AnionDef; soluble: boolean }
   | { kind: 'basicOxide'; cation: CationDef }
+  | { kind: 'acidicOxide'; anion: AnionDef }
   | { kind: 'other' };
+
+/** 酸性氧化物对应的酸根：CO₂→CO₃²⁻、SO₂→SO₃²⁻、SO₃→SO₄²⁻ */
+const ACIDIC_OXIDE_ANION: Record<string, string> = {
+  CO2: 'CO3',
+  SO2: 'SO3',
+  SO3: 'SO4',
+};
+
+/** 能还原金属氧化物的非金属单质 */
+const REDUCING_NONMETALS = new Set(['C', 'H2']);
 
 export function classify(formula: string, substanceKind: string): Species {
   if (substanceKind === '单质') {
@@ -183,7 +195,13 @@ export function classify(formula: string, substanceKind: string): Species {
       const ion = ionId ? CATION_BY_ID.get(ionId) : undefined;
       if (ion) return { kind: 'metal', element: formula, ionization: ion, activity: act };
     }
-    return { kind: 'other' };
+    // 非金属单质：碳、氢气能作还原剂，氧气/氯气能作氧化剂
+    return { kind: 'nonmetal', element: formula };
+  }
+
+  if (substanceKind === '氧化物') {
+    const acidicAnion = ACIDIC_OXIDE_ANION[formula];
+    if (acidicAnion) return { kind: 'acidicOxide', anion: anion(acidicAnion) };
   }
 
   const parts = decompose(formula);
@@ -360,6 +378,92 @@ function basicOxideWithAcid(
   };
 }
 
+/** 碳 / 氢气在高温下还原金属氧化物（碳还原氧化铜是初中重点） */
+function reducerWithOxide(
+  red: Extract<Species, { kind: 'nonmetal' }>,
+  oxide: Extract<Species, { kind: 'basicOxide' }>,
+): Prediction | null {
+  if (!REDUCING_NONMETALS.has(red.element)) return null;
+  const activity = METAL_ACTIVITY[oxide.cation.element];
+  if (activity === undefined || activity < 6) return null; // 钾钙钠镁铝还原不了
+  const metal = oxide.cation.element;
+  const byCarbon = red.element === 'C';
+  return {
+    products: byCarbon ? [metal, 'CO2'] : [metal, 'H2O'],
+    type: '氧化还原',
+    condition: byCarbon ? '高温' : '加热',
+    phenomenon: byCarbon
+      ? '黑色粉末逐渐变红，生成的气体使澄清石灰水变浑浊'
+      : '黑色粉末变红，试管口有水滴生成',
+  };
+}
+
+/** 酸性氧化物 + 可溶性碱 → 盐 + 水 */
+function acidicOxideWithBase(
+  oxide: Extract<Species, { kind: 'acidicOxide' }>,
+  base: Extract<Species, { kind: 'base' }>,
+): Prediction | null {
+  if (!base.soluble) return null;
+  const salt = composeSalt(base.cation, oxide.anion);
+  const insoluble = !isSoluble(base.cation, oxide.anion);
+  return {
+    products: [salt, 'H2O'],
+    type: insoluble ? '沉淀' : '复分解',
+    condition: '常温',
+    phenomenon: insoluble ? '气体被吸收，生成白色沉淀' : '气体被吸收，溶液碱性减弱',
+  };
+}
+
+/** 金属 + 氧气 → 金属氧化物 */
+function metalWithOxygen(
+  metal: Extract<Species, { kind: 'metal' }>,
+  nonmetal: Extract<Species, { kind: 'nonmetal' }>,
+): Prediction | null {
+  if (nonmetal.element !== 'O2') return null;
+  if (metal.element === 'Fe') return null; // 铁燃烧生成 Fe₃O₄，交给手写表
+  if (metal.activity > 11) return null; // 铜之后不与氧气反应
+  const oxide = composeSalt(metal.ionization, anion('O'));
+  return {
+    products: [oxide],
+    type: '化合',
+    condition: '点燃',
+    phenomenon: '剧烈燃烧，生成固体氧化物',
+  };
+}
+
+/** 金属 + 氯气 → 金属氯化物 */
+function metalWithChlorine(
+  metal: Extract<Species, { kind: 'metal' }>,
+  nonmetal: Extract<Species, { kind: 'nonmetal' }>,
+): Prediction | null {
+  if (nonmetal.element !== 'Cl2') return null;
+  if (metal.element === 'Fe') return null; // 铁生成 FeCl₃，交给手写表
+  if (metal.activity > 11) return null;
+  const salt = composeSalt(metal.ionization, anion('Cl'));
+  return {
+    products: [salt],
+    type: '化合',
+    condition: '点燃',
+    phenomenon: '剧烈燃烧，生成棕黄色的烟',
+  };
+}
+
+/** 铵盐 + 可溶性碱 → 新盐 + 氨气 + 水 */
+function ammoniumWithBase(
+  base: Extract<Species, { kind: 'base' }>,
+  salt: Extract<Species, { kind: 'salt' }>,
+): Prediction | null {
+  if (salt.cation.id !== 'NH4') return null;
+  if (!base.soluble) return null;
+  const newSalt = composeSalt(base.cation, salt.anion);
+  return {
+    products: [newSalt, 'NH3', 'H2O'],
+    type: '产气',
+    condition: '加热',
+    phenomenon: '产生有刺激性气味的气体，使湿润的红色石蕊试纸变蓝',
+  };
+}
+
 /**
  * 给定两种物质，推断是否反应以及生成物。
  * 返回 null 表示「在中学化学范围内不反应」。
@@ -374,6 +478,14 @@ export function predictPair(aFormula: string, aKind: string, bFormula: string, b
   ];
 
   for (const [x, y] of pairs) {
+    if (x.kind === 'metal' && y.kind === 'nonmetal') {
+      const burnt = metalWithOxygen(x, y) ?? metalWithChlorine(x, y);
+      if (burnt) return burnt;
+    }
+    if (x.kind === 'nonmetal' && y.kind === 'basicOxide') return reducerWithOxide(x, y);
+    if (x.kind === 'acidicOxide' && y.kind === 'base') return acidicOxideWithBase(x, y);
+    if (x.kind === 'base' && y.kind === 'salt' && y.cation.id === 'NH4')
+      return ammoniumWithBase(x, y);
     if (x.kind === 'metal' && y.kind === 'acid') return metalWithAcid(x, y);
     if (x.kind === 'metal' && y.kind === 'salt') return metalWithSalt(x, y);
     if (x.kind === 'acid' && y.kind === 'base') return acidWithBase(x, y);

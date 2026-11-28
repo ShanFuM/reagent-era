@@ -932,5 +932,76 @@
     "precipitate": ["S", "MnO2"],
     "stars": 3,
     "trap": "中性或弱碱性介质里高锰酸根被还原成 MnO₂；酸性介质才生成 Mn²⁺"
+  },
+  "r97": {
+    "levels": [1, 4],
+    "reactants": [["C", 1], ["CuO", 2]],
+    "products": [["Cu", 2], ["CO2", 1]],
+    "type": "氧化还原",
+    "condition": "高温",
+    "phenomenon": "黑色粉末逐渐变红，生成的气体使澄清石灰水变浑浊",
+    "gas": ["CO2"],
+    "stars": 3,
+    "trap": "碳作还原剂，把铜从 +2 价还原成单质；条件必须是高温"
+  },
+  "r98": {
+    "levels": [4],
+    "reactants": [["H2", 1], ["CuO", 1]],
+    "products": [["Cu", 1], ["H2O", 1]],
+    "type": "氧化还原",
+    "condition": "加热",
+    "phenomenon": "黑色粉末变红，试管口有水珠生成",
+    "stars": 3,
+    "trap": "氢气还原氧化铜，实验结束要先撤导管再停加热，防止铜被重新氧化"
+  },
+  "r99": {
+    "levels": [1],
+    "reactants": [["Al", 2], ["Fe2O3", 1]],
+    "products": [["Al2O3", 1], ["Fe", 2]],
+    "type": "氧化还原",
+    "condition": "高温",
+    "phenomenon": "剧烈放热，发出耀眼白光，生成铁水",
+    "stars": 3,
+    "trap": "铝热反应：铝的还原性强于铁，可用于焊接钢轨"
+  },
+  "r100": {
+    "levels": [4],
+    "reactants": [["C2H5OH", 1], ["O2", 3]],
+    "products": [["CO2", 2], ["H2O", 3]],
+    "type": "燃烧",
+    "condition": "点燃",
+    "phenomenon": "淡蓝色火焰，放出大量热",
+    "stars": 2
+  },
+  "r101": {
+    "levels": [4],
+    "reactants": [["CO", 2], ["O2", 1]],
+    "products": [["CO2", 2]],
+    "type": "燃烧",
+    "condition": "点燃",
+    "phenomenon": "蓝色火焰，放出大量热",
+    "stars": 3,
+    "trap": "一氧化碳有毒，燃烧产物是二氧化碳"
+  },
+  "r102": {
+    "levels": [7],
+    "reactants": [["Fe", 1], ["S", 1]],
+    "products": [["FeS", 1]],
+    "type": "化合",
+    "condition": "加热",
+    "phenomenon": "剧烈反应，生成黑色固体",
+    "stars": 2,
+    "trap": "硫的氧化性弱，只能把铁氧化到 +2 价"
+  },
+  "r103": {
+    "levels": [12],
+    "reactants": [["Al", 2], ["NaOH", 2], ["H2O", 6]],
+    "products": [["Na[Al(OH)4]", 2], ["H2", 3]],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "铝溶解并产生大量气泡",
+    "gas": ["H2"],
+    "stars": 3,
+    "trap": "铝能溶于强碱，这是铝两性的体现；产物写四羟基合铝酸钠"
   }
 }
