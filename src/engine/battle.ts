@@ -342,7 +342,7 @@ function dealHand(s: BattleState): BattleState {
   };
 
   for (const [id] of reaction.reactants) take(id);
-  for (let i = 0; i < 2; i += 1) take();
+  for (let i = 0; i < 3; i += 1) take();
 
   return { ...s, hand, deck, discard };
 }
