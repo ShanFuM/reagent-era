@@ -31,8 +31,8 @@ let bgmTimer: number | null = null;
 let bgmStep = 0;
 let nextNoteTime = 0;
 
-const MASTER_VOLUME = 0.5;
-const MUSIC_VOLUME = 0.16;
+const MASTER_VOLUME = 0.9;
+const MUSIC_VOLUME = 0.2;
 
 function ensureContext(): AudioContext | null {
   if (typeof window === 'undefined') return null;
@@ -143,55 +143,55 @@ export function sfx(name: SfxName): void {
   if (muted) return;
   switch (name) {
     case 'tap':
-      tone({ freq: 880, to: 1180, dur: 0.06, type: 'triangle', gain: 0.09 });
+      tone({ freq: 880, to: 1180, dur: 0.06, type: 'triangle', gain: 0.14 });
       break;
     case 'deal':
-      hiss({ dur: 0.09, gain: 0.07, freq: 2600, q: 1.6 });
+      hiss({ dur: 0.09, gain: 0.11, freq: 2600, q: 1.6 });
       break;
     case 'cast':
-      tone({ freq: 220, to: 760, dur: 0.22, type: 'sawtooth', gain: 0.08 });
-      tone({ freq: 330, to: 1100, dur: 0.2, type: 'triangle', gain: 0.05, delay: 0.02 });
+      tone({ freq: 220, to: 760, dur: 0.22, type: 'sawtooth', gain: 0.12 });
+      tone({ freq: 330, to: 1100, dur: 0.2, type: 'triangle', gain: 0.08, delay: 0.02 });
       break;
     case 'hit':
-      tone({ freq: 160, to: 60, dur: 0.28, type: 'sine', gain: 0.24 });
-      hiss({ dur: 0.18, gain: 0.14, freq: 900, q: 0.9 });
+      tone({ freq: 160, to: 60, dur: 0.28, type: 'sine', gain: 0.32 });
+      hiss({ dur: 0.18, gain: 0.19, freq: 900, q: 0.9 });
       break;
     case 'crit':
-      tone({ freq: 180, to: 55, dur: 0.36, type: 'sine', gain: 0.3 });
-      tone({ freq: 920, to: 1320, dur: 0.16, type: 'square', gain: 0.06, delay: 0.02 });
-      hiss({ dur: 0.26, gain: 0.18, freq: 1400, q: 0.8 });
+      tone({ freq: 180, to: 55, dur: 0.36, type: 'sine', gain: 0.4 });
+      tone({ freq: 920, to: 1320, dur: 0.16, type: 'square', gain: 0.09, delay: 0.02 });
+      hiss({ dur: 0.26, gain: 0.24, freq: 1400, q: 0.8 });
       break;
     case 'miss':
-      tone({ freq: 180, to: 90, dur: 0.3, type: 'sawtooth', gain: 0.1 });
+      tone({ freq: 180, to: 90, dur: 0.3, type: 'sawtooth', gain: 0.14 });
       break;
     case 'tick':
-      tone({ freq: 1500, dur: 0.035, type: 'square', gain: 0.045 });
+      tone({ freq: 1500, dur: 0.035, type: 'square', gain: 0.07 });
       break;
     case 'perfect':
-      tone({ freq: 784, dur: 0.12, type: 'triangle', gain: 0.12 });
-      tone({ freq: 1046, dur: 0.18, type: 'triangle', gain: 0.12, delay: 0.09 });
-      tone({ freq: 1568, dur: 0.24, type: 'triangle', gain: 0.1, delay: 0.18 });
+      tone({ freq: 784, dur: 0.12, type: 'triangle', gain: 0.17 });
+      tone({ freq: 1046, dur: 0.18, type: 'triangle', gain: 0.17, delay: 0.09 });
+      tone({ freq: 1568, dur: 0.24, type: 'triangle', gain: 0.14, delay: 0.18 });
       break;
     case 'win':
       [523, 659, 784, 1046].forEach((f, i) =>
-        tone({ freq: f, dur: 0.3, type: 'triangle', gain: 0.14, delay: i * 0.11 }),
+        tone({ freq: f, dur: 0.3, type: 'triangle', gain: 0.18, delay: i * 0.11 }),
       );
       break;
     case 'lose':
       [392, 330, 262, 196].forEach((f, i) =>
-        tone({ freq: f, dur: 0.4, type: 'sine', gain: 0.14, delay: i * 0.13 }),
+        tone({ freq: f, dur: 0.4, type: 'sine', gain: 0.18, delay: i * 0.13 }),
       );
       break;
     case 'right':
-      tone({ freq: 880, dur: 0.1, type: 'triangle', gain: 0.12 });
-      tone({ freq: 1320, dur: 0.16, type: 'triangle', gain: 0.1, delay: 0.08 });
+      tone({ freq: 880, dur: 0.1, type: 'triangle', gain: 0.16 });
+      tone({ freq: 1320, dur: 0.16, type: 'triangle', gain: 0.14, delay: 0.08 });
       break;
     case 'wrong':
-      tone({ freq: 220, to: 160, dur: 0.26, type: 'sawtooth', gain: 0.1 });
+      tone({ freq: 220, to: 160, dur: 0.26, type: 'sawtooth', gain: 0.14 });
       break;
     case 'phase':
-      tone({ freq: 110, to: 55, dur: 0.7, type: 'sine', gain: 0.2 });
-      tone({ freq: 440, to: 880, dur: 0.5, type: 'triangle', gain: 0.07 });
+      tone({ freq: 110, to: 55, dur: 0.7, type: 'sine', gain: 0.28 });
+      tone({ freq: 440, to: 880, dur: 0.5, type: 'triangle', gain: 0.1 });
       break;
     default:
       break;
@@ -224,7 +224,7 @@ function scheduleStep(step: number, when: number): void {
     osc.type = 'sine';
     osc.frequency.value = chord.root;
     env.gain.setValueAtTime(0.0001, when);
-    env.gain.exponentialRampToValueAtTime(0.5, when + 0.05);
+    env.gain.exponentialRampToValueAtTime(0.4, when + 0.05);
     env.gain.exponentialRampToValueAtTime(0.0001, when + 1.6);
     osc.connect(env);
     env.connect(musicBus);
@@ -241,7 +241,7 @@ function scheduleStep(step: number, when: number): void {
     osc.type = 'triangle';
     osc.frequency.value = freq;
     env.gain.setValueAtTime(0.0001, when);
-    env.gain.exponentialRampToValueAtTime(0.16, when + 0.02);
+    env.gain.exponentialRampToValueAtTime(0.24, when + 0.02);
     env.gain.exponentialRampToValueAtTime(0.0001, when + 0.5);
     osc.connect(env);
     env.connect(musicBus);
