@@ -147,11 +147,56 @@ for (const [key, lv] of Object.entries(levels)) {
   if (!(lv.handSize >= 2)) fail(`${label} 手牌上限过小`);
 }
 
+// ---------- 3.5 年级线 ----------
+// 同一关可以属于多条线（前 4 关是四条线共用的新手教程），
+// 所以校验的是「每条线内部 order 唯一 + 关卡数够」。
+const LINE_NAMES = ['初三', '高一', '高二', '高三'];
+/** @type {Map<string, { id: number, order: number, label: string }[]>} */
+const byLine = new Map(LINE_NAMES.map((n) => [n, []]));
+
+for (const [key, lv] of Object.entries(levels)) {
+  const label = `第 ${key} 关「${lv.name}」`;
+  const linesOk = Array.isArray(lv.lines) && lv.lines.length > 0;
+  const orderOk = Number.isInteger(lv.order) && lv.order >= 1;
+
+  if (!linesOk) {
+    fail(`${label} 缺少 lines（该关出现在哪几条年级线）`);
+  } else {
+    if (new Set(lv.lines).size !== lv.lines.length) fail(`${label} 的 lines 有重复项`);
+    for (const name of lv.lines) {
+      if (!LINE_NAMES.includes(name)) fail(`${label} 的 lines 里有未知年级线 "${name}"`);
+    }
+  }
+  if (!orderOk) fail(`${label} 的 order 必须是正整数（当前 ${JSON.stringify(lv.order)}）`);
+
+  if (linesOk && orderOk) {
+    for (const name of lv.lines) {
+      if (LINE_NAMES.includes(name)) byLine.get(name).push({ id: lv.id, order: lv.order, label });
+    }
+  }
+}
+
+for (const name of LINE_NAMES) {
+  const list = byLine.get(name);
+  if (list.length < 4) {
+    fail(`年级线「${name}」只有 ${list.length} 关，至少要 4 关`);
+  }
+  const seen = new Map();
+  for (const item of list) {
+    const prev = seen.get(item.order);
+    if (prev) fail(`年级线「${name}」的 order ${item.order} 重复：${prev} 与 ${item.label}`);
+    else seen.set(item.order, item.label);
+  }
+}
+
 // ---------- 4. 汇总 ----------
 const totalReactions = Object.keys(reactions).length;
 console.log(`物质 ${Object.keys(substances).length} 种 · 方程式 ${totalReactions} 条 · 关卡 ${Object.keys(levels).length} 关`);
 for (const [lid, list] of [...playableCache.entries()].sort((a, b) => a[0] - b[0])) {
   console.log(`  第 ${String(lid).padStart(2)} 关：可打出 ${list.length} 条反应`);
+}
+for (const name of LINE_NAMES) {
+  console.log(`  ${name}线：${byLine.get(name).length} 关`);
 }
 
 if (warnings.length) {

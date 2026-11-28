@@ -9,8 +9,8 @@ import {
   toggleCard,
 } from '../engine/battle';
 import type { BattleState } from '../engine/battle';
-import { LEVELS, substance } from '../engine/data';
-import type { Level } from '../engine/data';
+import { nextLevelInLine, substance } from '../engine/data';
+import type { GradeLine, Level } from '../engine/data';
 import { formatFormula } from '../engine/formula.js';
 import BalancePad from './BalancePad';
 
@@ -27,12 +27,14 @@ const KIND_CLASS: Record<string, string> = {
 
 interface Props {
   level: Level;
+  /** 当前年级线：决定「下一关」走哪条线 */
+  line: GradeLine;
   onExit: () => void;
   onCleared: (id: number) => void;
   onNext: (id: number) => void;
 }
 
-export default function BattleScreen({ level, onExit, onCleared, onNext }: Props) {
+export default function BattleScreen({ level, line, onExit, onCleared, onNext }: Props) {
   const [state, setState] = useState<BattleState>(() => createBattle(level));
 
   useEffect(() => {
@@ -46,7 +48,7 @@ export default function BattleScreen({ level, onExit, onCleared, onNext }: Props
   }, [state.phase, level.id, onCleared]);
 
   const restart = () => setState(createBattle(level));
-  const nextLevel = LEVELS.find((l) => l.id === level.id + 1) ?? null;
+  const nextLevel = nextLevelInLine(line, level);
   const hpRatio = state.playerHp / state.playerMaxHp;
   const enemyRatio = state.enemyHp / state.enemyMaxHp;
 
@@ -57,9 +59,11 @@ export default function BattleScreen({ level, onExit, onCleared, onNext }: Props
           ← 关卡
         </button>
         <div className="topbar-title">
-          <span className="lv-no">第 {String(level.id).padStart(2, '0')} 关</span>
+          <span className="lv-no">第 {String(level.order).padStart(2, '0')} 关</span>
           <span className="lv-name">{level.name}</span>
-          <span className="lv-stage">{level.stage}</span>
+          <span className="lv-stage">
+            {line}线 · {level.stage}
+          </span>
         </div>
         <div className="topbar-right">
           <span className="turn-pill">

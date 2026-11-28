@@ -46,8 +46,17 @@ export interface Enemy {
   intro: string;
 }
 
+/** 四条年级线。同一关可以同时属于多条线（前 4 关对四条线相同）。 */
+export type GradeLine = '初三' | '高一' | '高二' | '高三';
+
+export const GRADE_LINES: GradeLine[] = ['初三', '高一', '高二', '高三'];
+
 export interface Level {
   id: number;
+  /** 该关出现在哪几条年级线里 */
+  lines: GradeLine[];
+  /** 在该线内的顺序，同一条线内不重复 */
+  order: number;
   name: string;
   stage: string;
   textbook: string;
@@ -65,6 +74,16 @@ export const REACTIONS = reactionsRaw as unknown as Record<string, Reaction>;
 export const LEVELS: Level[] = Object.values(
   levelsRaw as unknown as Record<string, Level>,
 ).sort((a, b) => a.id - b.id);
+
+/** 某条年级线的关卡，按线内 order 排好。 */
+export function levelsOfLine(line: GradeLine): Level[] {
+  return LEVELS.filter((l) => l.lines.includes(line)).sort((a, b) => a.order - b.order);
+}
+
+/** 同一条线里的下一关；已是最后一关时返回 null。 */
+export function nextLevelInLine(line: GradeLine, current: Level): Level | null {
+  return levelsOfLine(line).find((l) => l.order === current.order + 1) ?? null;
+}
 
 /** 反应物组合 → 反应。键把物质 id 排序后拼接，保证 (A,B) 与 (B,A) 等价。 */
 const REACTION_BY_KEY = new Map<string, [string, Reaction]>();
