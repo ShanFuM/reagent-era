@@ -244,7 +244,7 @@ export function EnemySprite({ level, className = '' }: { level: Level; className
 
 /**
  * 玩家形象：末日的配方师。
- * 原创 SVG：蓬松银发 + 破旧白大褂 + 锈色围巾 + 斜挎带与试剂管。
+ * 原创 SVG：银灰长发 + 破旧白大褂 + 锈色围巾 + 斜挎带与试剂管。
  */
 export function PlayerSprite({ className = '' }: { className?: string }) {
   return (
@@ -252,10 +252,10 @@ export function PlayerSprite({ className = '' }: { className?: string }) {
       <div className="sprite-glow player-glow" />
       <svg viewBox="0 0 120 150" className="sprite-svg">
         <defs>
-          <linearGradient id="hero-hair" x1="0.1" y1="0" x2="0.4" y2="1">
-            <stop offset="0%" stopColor="#f4f1ea" />
-            <stop offset="45%" stopColor="#d9d4c9" />
-            <stop offset="100%" stopColor="#a9a39a" />
+          <linearGradient id="hero-hair" x1="0.15" y1="0" x2="0.45" y2="1">
+            <stop offset="0%" stopColor="#f6f3ec" />
+            <stop offset="45%" stopColor="#dcd6c9" />
+            <stop offset="100%" stopColor="#a9a29a" />
           </linearGradient>
           <linearGradient id="hero-coat" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#f2ecdf" />
@@ -271,54 +271,65 @@ export function PlayerSprite({ className = '' }: { className?: string }) {
           </linearGradient>
         </defs>
 
-        {/* 后发 */}
-        <path d="M60 14 C40 14 26 32 26 56 C26 78 31 94 42 100 L48 96 L56 102 L64 96 L72 102 L78 100
-                 C89 94 94 78 94 56 C94 32 80 14 60 14 Z"
-              fill="url(#hero-hair)" stroke="#2a2f45" strokeWidth="3.2" strokeLinejoin="round" />
+        {/* 后发：长直，垂到肩下 */}
+        <path d="M60 12 C36 12 22 32 22 58 C22 86 22 106 25 124 L95 124 C98 106 98 86 98 58
+                 C98 32 84 12 60 12 Z"
+              fill="url(#hero-hair)" stroke="#2a2f45" strokeWidth="3.2" />
 
-        {/* 白大褂（下摆磨破） */}
+        {/* 白大褂 */}
         <path d="M38 150 V104 C38 96 46 92 54 89 L60 98 L66 89 C74 92 82 96 82 104 V144
                  L77 150 L72 144 L67 150 L62 144 L57 150 L52 144 L47 150 L42 144 L38 150 Z"
               fill="url(#hero-coat)" stroke="#2a2f45" strokeWidth="3" strokeLinejoin="round" />
-        {/* 衣领 */}
         <path d="M53 89 L45 103 L57 99 Z" fill="url(#hero-coat)" stroke="#2a2f45" strokeWidth="2.2" strokeLinejoin="round" />
         <path d="M67 89 L75 103 L63 99 Z" fill="url(#hero-coat)" stroke="#2a2f45" strokeWidth="2.2" strokeLinejoin="round" />
-        {/* 补丁 */}
         <path d="M63 115 h15 v12 h-15 z" fill="#a99f8c" stroke="#2a2f45" strokeWidth="1.8" />
         <path d="M65 119 h11 M65 123 h11" stroke="#efe8d9" strokeWidth="1.3" strokeDasharray="2 2" />
 
-        {/* 斜挎带 */}
+        {/* 斜挎带 + 试剂管 */}
         <path d="M50 94 L74 138" stroke="#6b5344" strokeWidth="6.5" strokeLinecap="round" />
         <path d="M50 94 L74 138" stroke="#8e7059" strokeWidth="2" strokeDasharray="3 5" strokeLinecap="round" />
-        {/* 试剂管 */}
         <rect x="59" y="103" width="9" height="20" rx="4.5" fill="url(#hero-vial)" stroke="#2a2f45" strokeWidth="1.8" />
         <rect x="61" y="106" width="5" height="5" rx="2" fill="#ffffff" opacity="0.55" />
 
         {/* 脸 */}
-        <ellipse cx="60" cy="66" rx="21.5" ry="20.5" fill="#f7ddc9" stroke="#2a2f45" strokeWidth="3.2" />
+        <ellipse cx="60" cy="68" rx="21.5" ry="20.5" fill="#f7ddc9" stroke="#2a2f45" strokeWidth="3.2" />
 
-        {/* 侧发 */}
-        <path d="M39 58 C34 70 34 84 37 96 C43 88 44 70 45 60 Z"
-              fill="url(#hero-hair)" stroke="#2a2f45" strokeWidth="2.8" strokeLinejoin="round" />
-        <path d="M81 58 C86 70 86 84 83 96 C77 88 76 70 75 60 Z"
-              fill="url(#hero-hair)" stroke="#2a2f45" strokeWidth="2.8" strokeLinejoin="round" />
-
-        {/* 刘海 */}
-        <path d="M31 60 C31 32 44 15 60 15 C76 15 89 32 89 60 C85 49 76 45 68 50 C65 55 63 58 60 59 C57 58 55 55 52 50 C44 45 35 49 31 60 Z"
+        {/* 头发主体：一整片盖子，下缘波浪盖住额头 */}
+        <path d="M60 12
+                 C38 12 24 30 24 54
+                 C24 60 25 65 26 68
+                 C30 60 34 54 38 51
+                 C40 59 42 64 45 66
+                 C48 58 52 51 56 48
+                 C58 56 59 62 60 65
+                 C61 62 62 56 64 48
+                 C68 51 72 58 75 66
+                 C78 64 80 59 82 51
+                 C86 54 90 60 94 68
+                 C95 65 96 60 96 54
+                 C96 30 82 12 60 12 Z"
               fill="url(#hero-hair)" stroke="#2a2f45" strokeWidth="3" strokeLinejoin="round" />
 
+        {/* 发丝：顺着盖子走向的细线 */}
+        <g fill="none" stroke="#b9b2a5" strokeWidth="1.8" opacity="0.7" strokeLinecap="round">
+          <path d="M38 24 C31 36 28 50 29 66" />
+          <path d="M82 24 C89 36 92 50 91 66" />
+          <path d="M52 18 C46 30 44 42 45 54" />
+          <path d="M68 18 C74 30 76 42 75 54" />
+        </g>
+
         {/* 围巾 */}
-        <path d="M42 84 C50 91 70 91 78 84 C80 91 78 97 71 99 C62 102 50 102 43 98 C38 95 39 89 42 84 Z"
+        <path d="M42 86 C50 93 70 93 78 86 C80 93 78 99 71 101 C62 104 50 104 43 100 C38 97 39 91 42 86 Z"
               fill="url(#hero-scarf)" stroke="#2a2f45" strokeWidth="2.6" strokeLinejoin="round" />
-        <path d="M74 95 C82 101 84 112 80 122 L75 117 L78 124 L71 121 L72 128 L66 120 Z"
+        <path d="M74 97 C82 103 84 114 80 124 L75 119 L78 126 L71 123 L72 130 L66 122 Z"
               fill="url(#hero-scarf)" stroke="#2a2f45" strokeWidth="2.4" strokeLinejoin="round" />
 
         {/* 表情 */}
-        <path d="M46 70 q6.5 -6.5 13 0" fill="none" stroke="#2a2f45" strokeWidth="3.4" strokeLinecap="round" />
-        <path d="M61 70 q6.5 -6.5 13 0" fill="none" stroke="#2a2f45" strokeWidth="3.4" strokeLinecap="round" />
-        <ellipse cx="43" cy="77" rx="4.6" ry="2.6" fill="#ee9a8e" opacity="0.7" />
-        <ellipse cx="77" cy="77" rx="4.6" ry="2.6" fill="#ee9a8e" opacity="0.7" />
-        <path d="M55 79 q5 7 10 0 z" fill="#d9756e" stroke="#2a2f45" strokeWidth="2" strokeLinejoin="round" />
+        <path d="M47 72 q6.5 -6.5 13 0" fill="none" stroke="#2a2f45" strokeWidth="3.4" strokeLinecap="round" />
+        <path d="M62 72 q6.5 -6.5 13 0" fill="none" stroke="#2a2f45" strokeWidth="3.4" strokeLinecap="round" />
+        <ellipse cx="44" cy="79" rx="4.6" ry="2.6" fill="#ee9a8e" opacity="0.7" />
+        <ellipse cx="76" cy="79" rx="4.6" ry="2.6" fill="#ee9a8e" opacity="0.7" />
+        <path d="M55 81 q5 6 10 0 z" fill="#d9756e" stroke="#2a2f45" strokeWidth="2" strokeLinejoin="round" />
       
       </svg>
     </div>
