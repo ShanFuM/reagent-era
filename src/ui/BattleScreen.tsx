@@ -8,6 +8,7 @@ import {
   submitSelection,
   toggleBoost,
   toggleCard,
+  useHint,
 } from '../engine/battle';
 import type { BattleState } from '../engine/battle';
 import { nextLevelInLine, substance } from '../engine/data';
@@ -223,7 +224,9 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             return (
               <button
                 key={`${id}-${index}`}
-                className={`card k-${KIND_CLASS[sub.kind] ?? 'element'} ${selected ? 'sel' : ''}`}
+                className={`card k-${KIND_CLASS[sub.kind] ?? 'element'} ${
+                  selected ? 'sel' : ''
+                } ${state.hint.includes(index) ? 'hint' : ''}`}
                 onClick={() => setState((s) => toggleCard(s, index))}
                 disabled={state.phase !== 'select'}
               >
@@ -242,6 +245,13 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
                 ? '可以再加一种，或直接出招（单质分解）'
                 : `已选 ${state.selected.length} 种 · 能反应就命中，不能反应浪费一回合`}
           </div>
+          <button
+            className="btn-hint"
+            disabled={state.hintsLeft <= 0 || state.phase !== 'select'}
+            onClick={() => setState((s) => useHint(s))}
+          >
+            提示 · 剩 {state.hintsLeft} 次
+          </button>
           <button
             className="btn-summon"
             disabled={state.selected.length === 0 || state.phase !== 'select'}

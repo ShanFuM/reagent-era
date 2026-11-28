@@ -829,6 +829,43 @@ button:disabled {
   box-shadow: 0 0 0 2px rgba(194, 240, 74, 0.35), 0 12px 30px rgba(194, 240, 74, 0.16);
 }
 
+/* 提示高亮：告诉玩家「这几张能反应」，但不揭示产物 */
+.card.hint:not(.sel) {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 2px rgba(255, 182, 72, 0.4), 0 0 22px rgba(255, 182, 72, 0.28);
+  animation: hintPulse 1.1s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px rgba(255, 182, 72, 0.35), 0 0 16px rgba(255, 182, 72, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(255, 182, 72, 0.6), 0 0 30px rgba(255, 182, 72, 0.4);
+  }
+}
+
+.btn-hint {
+  border: 1px solid rgba(255, 182, 72, 0.45);
+  color: var(--amber);
+  border-radius: 10px;
+  padding: 10px 0;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+.btn-hint:hover:not(:disabled) {
+  background: rgba(255, 182, 72, 0.12);
+  border-color: var(--amber);
+}
+
+.btn-hint:disabled {
+  opacity: 0.35;
+  border-color: var(--line-2);
+  color: var(--dim-2);
+}
+
 .card:disabled {
   opacity: 0.55;
 }

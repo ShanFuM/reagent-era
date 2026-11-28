@@ -51,6 +51,10 @@ export interface BattleState {
   lastResult: TurnResult | null;
   /** 选错组合时记录的「不反应」信息，界面据此弹提示 */
   misfire: { names: string[] } | null;
+  /** 提示功能：本关剩余次数 */
+  hintsLeft: number;
+  /** 当前高亮的手牌下标 */
+  hint: number[];
   log: LogEntry[];
   logSeq: number;
   stats: { dealt: number; taken: number; perfect: number; turns: number };
@@ -60,6 +64,8 @@ export const BASE_DAMAGE = 18;
 export const PLAYER_MAX_HP = 150;
 /** 手牌上限：多了会把牌堆挤爆，也会让界面溢出 */
 export const HAND_LIMIT = 8;
+/** 每关可以点几次提示 */
+export const HINTS_PER_LEVEL = 3;
 
 const TYPE_PROFILE: Record<ReactionType, { base: number; effect: string }> = {
   置换: { base: 1.2, effect: 'corrode' },
@@ -157,20 +163,64 @@ function drawCards(s: BattleState, n: number): BattleState {
   return { ...s, hand, deck, discard };
 }
 
-/** 保证起手至少有一组可打的组合，否则重洗手牌（避免死局）。 */
+/**
+ * 在给定的一组牌里找一组能反应的组合，返回下标。
+ * preferWeakness 里列出的反应类型优先（提示更「有用」），同优先级下取张数最少的。
+ */
+function findCombo(hand: string[], preferWeakness: ReactionType[] = []): number[] | null {
+  const found: { idx: number[]; weak: boolean }[] = [];
+  const isWeak = (type: ReactionType) => preferWeakness.includes(type);
+
+  for (let i = 0; i < hand.length; i += 1) {
+    const one = lookupReaction([hand[i]]);
+    if (one) found.push({ idx: [i], weak: isWeak(one.reaction.type) });
+    for (let j = i + 1; j < hand.length; j += 1) {
+      const two = lookupReaction([hand[i], hand[j]]);
+      if (two) found.push({ idx: [i, j], weak: isWeak(two.reaction.type) });
+      for (let k = j + 1; k < hand.length; k += 1) {
+        const three = lookupReaction([hand[i], hand[j], hand[k]]);
+        if (three) found.push({ idx: [i, j, k], weak: isWeak(three.reaction.type) });
+      }
+    }
+  }
+
+  if (found.length === 0) return null;
+  found.sort((a, b) => {
+    if (a.weak !== b.weak) return a.weak ? -1 : 1;
+    return a.idx.length - b.idx.length;
+  });
+  return found[0].idx;
+}
+
+/**
+ * 死手保底：手牌一张都打不出去时，把整副牌（手牌 + 牌堆 + 弃牌）重排，
+ * 并且**保证**新手牌里一定含有一组能反应的组合，而不是听天由命重抽。
+ */
 function ensurePlayable(s: BattleState): BattleState {
   if (handHasMove(s.hand)) return s;
-  let deck = shuffle([...s.deck, ...s.hand, ...s.discard]);
-  const hand: string[] = [];
-  for (let i = 0; i < s.level.handSize && deck.length > 0; i += 1) {
-    const card = deck.pop();
+
+  const pool = shuffle([...s.deck, ...s.hand, ...s.discard]);
+  const combo = findCombo(pool);
+  const target = Math.min(s.level.handSize, HAND_LIMIT);
+
+  if (!combo) {
+    // 整副牌都凑不出反应——理论上不该发生（数据校验会拦），兜底原样返回
+    return pushLog(s, 'warn', '整副试剂都凑不出可发生的反应，这局没法打了。');
+  }
+
+  const picked = combo.map((i) => pool[i]);
+  const rest = pool.filter((_, i) => !combo.includes(i));
+  const hand = [...picked];
+  while (hand.length < target && rest.length > 0) {
+    const card = rest.shift();
     if (card) hand.push(card);
   }
-  const next = { ...s, deck, hand, discard: [] };
-  if (!handHasMove(hand)) {
-    return pushLog(next, 'warn', '手牌全是「无反应」组合，这局牌运很差——重洗一次。');
-  }
-  return pushLog(next, 'info', '手牌无法出招，自动重洗。');
+
+  return pushLog(
+    { ...s, hand, deck: rest, discard: [], hint: [] },
+    'info',
+    '手牌凑不出反应，已重新整理牌堆——保证这一手有可打的组合。',
+  );
 }
 
 export function createBattle(level: Level): BattleState {
@@ -206,6 +256,8 @@ export function createBattle(level: Level): BattleState {
     coefficients: [],
     lastResult: null,
     misfire: null,
+    hintsLeft: HINTS_PER_LEVEL,
+    hint: [],
     log: [],
     logSeq: 0,
     stats: { dealt: 0, taken: 0, perfect: 0, turns: 0 },
@@ -223,7 +275,21 @@ export function toggleCard(s: BattleState, index: number): BattleState {
   const selected = s.selected.includes(index)
     ? s.selected.filter((i) => i !== index)
     : [...s.selected, index];
-  return { ...s, selected };
+  return { ...s, selected, hint: [] };
+}
+
+/** 消耗一次提示机会，高亮一组能反应的手牌（优先命中弱点的组合） */
+export function useHint(s: BattleState): BattleState {
+  if (s.phase !== 'select' || s.hintsLeft <= 0) return s;
+  const combo = findCombo(s.hand, s.level.enemy.weakness);
+  if (!combo) {
+    return pushLog(s, 'warn', '手牌里确实没有能反应的组合了，只能先弃一回合。');
+  }
+  return pushLog(
+    { ...s, hintsLeft: s.hintsLeft - 1, hint: combo, selected: [] },
+    'info',
+    `提示：高亮的 ${combo.length} 种物质之间可以发生反应（本关还剩 ${s.hintsLeft - 1} 次）。`,
+  );
 }
 
 export function toggleBoost(s: BattleState): BattleState {
@@ -303,6 +369,7 @@ function settle(
     energy: boosted ? s.energy - 1 : s.energy,
     boost: false,
     selected: [],
+    hint: [],
     enemyHp: Math.max(0, s.enemyHp - damage),
     combo: weak ? s.combo + 1 : 0,
     stats: {
@@ -471,6 +538,7 @@ export function endTurn(s: BattleState): BattleState {
     ...next,
     turn: next.turn + 1,
     selected: [],
+    hint: [],
     phase: 'select',
     stats: { ...next.stats, turns: next.stats.turns + 1 },
   };
