@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   advance,
+  applyQuizResult,
   bossPhaseOf,
   chainView,
   confirmBalance,
@@ -67,6 +68,9 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
   const [dealing, setDealing] = useState(true);
   /** 配平结束后弹出「正确方程式」，由玩家自己关闭才继续 */
   const [solutionOpen, setSolutionOpen] = useState(false);
+  /** 平衡关：方程卡之后追加一道「平衡向哪移动」的选择题 */
+  const [quizOpen, setQuizOpen] = useState(false);
+  const [quizPicked, setQuizPicked] = useState<number | null>(null);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDealing(false), 820);
@@ -96,10 +100,10 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
 
   useEffect(() => {
     if (state.phase !== 'resolving') return;
-    if (solutionOpen) return; // 玩家还在看方程，别自动推进
+    if (solutionOpen || quizOpen) return; // 玩家还在看卡片，别自动推进
     const timer = window.setTimeout(() => setState((s) => advance(s)), 1600);
     return () => window.clearTimeout(timer);
-  }, [state.phase, state.logSeq, solutionOpen]);
+  }, [state.phase, state.logSeq, solutionOpen, quizOpen]);
 
   useEffect(() => {
     if (state.phase === 'win') onCleared(level.id);
@@ -122,6 +126,8 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
     tipShown.current = false;
     setChainTip(false);
     setSolutionOpen(false);
+    setQuizOpen(false);
+    setQuizPicked(null);
     setState(createBattle(level));
   };
 
@@ -133,9 +139,28 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
     setState((s) => skipBalance(s));
   };
 
-  /** 关闭方程校对卡后立刻继续，不用再等自动推进 */
+  /** 关闭方程校对卡：有平衡题就先答题，没有就直接继续 */
   const closeSolution = () => {
     setSolutionOpen(false);
+    if (state.lastResult?.reaction.quiz) {
+      setQuizPicked(null);
+      setQuizOpen(true);
+      return;
+    }
+    setState((s) => advance(s));
+  };
+
+  const pickQuizOption = (index: number) => {
+    if (quizPicked !== null) return;
+    const quiz = state.lastResult?.reaction.quiz;
+    if (!quiz) return;
+    setQuizPicked(index);
+    setState((s) => applyQuizResult(s, index === quiz.answer));
+  };
+
+  const closeQuiz = () => {
+    setQuizOpen(false);
+    setQuizPicked(null);
     setState((s) => advance(s));
   };
   const nextLevel = nextLevelInLine(line, level);
@@ -380,6 +405,9 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           {state.hand.map((id, index) => {
             const sub = substance(id);
             const selected = state.selected.includes(index);
+            const label = formatFormula(sub.formula);
+            // 长化学式（四羟基合铝酸钠之类）按长度缩字号，否则会撑出卡片
+            const formulaSize = label.length > 9 ? 15 : label.length > 6 ? 19 : 26;
             return (
               <button
                 key={`${id}-${index}`}
@@ -391,7 +419,9 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
                 disabled={state.phase !== 'select'}
               >
                 <CardIcon kind={sub.kind} />
-                <span className="card-formula">{formatFormula(sub.formula)}</span>
+                <span className="card-formula" style={{ fontSize: formulaSize }}>
+                  {label}
+                </span>
                 <span className="card-name">{sub.name}</span>
                 <span className="card-kind">{sub.kind}</span>
               </button>
@@ -491,6 +521,50 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             <button className="btn-primary" onClick={closeSolution}>
               记住了 · 继续
             </button>
+          </div>
+        </div>
+      )}
+
+      {quizOpen && state.phase === 'resolving' && state.lastResult?.reaction.quiz && (
+        <div className="overlay">
+          <div className="quiz">
+            <div className="quiz-title">平衡移动</div>
+            <div className="quiz-eq">{equationText(state.lastResult.reaction)}</div>
+            <div className="quiz-question">{state.lastResult.reaction.quiz.question}</div>
+            <div className="quiz-options">
+              {state.lastResult.reaction.quiz.options.map((option, index) => {
+                const quiz = state.lastResult?.reaction.quiz;
+                const answered = quizPicked !== null;
+                const isAnswer = quiz ? index === quiz.answer : false;
+                const picked = quizPicked === index;
+                const cls = !answered ? '' : isAnswer ? 'right' : picked ? 'wrong' : 'dim';
+                return (
+                  <button
+                    key={option}
+                    className={`quiz-option ${cls}`}
+                    onClick={() => pickQuizOption(index)}
+                    disabled={answered}
+                  >
+                    {option}
+                  </button>
+                );
+              })}
+            </div>
+            {quizPicked !== null && (
+              <>
+                <div
+                  className={`quiz-result ${quizPicked === state.lastResult.reaction.quiz.answer ? 'ok' : 'no'}`}
+                >
+                  {quizPicked === state.lastResult.reaction.quiz.answer
+                    ? '判断正确 · 获得 1 点能量'
+                    : `判断有误 · 正确答案是「${state.lastResult.reaction.quiz.options[state.lastResult.reaction.quiz.answer]}」`}
+                </div>
+                <div className="quiz-explain">{state.lastResult.reaction.quiz.explain}</div>
+                <button className="btn-primary" onClick={closeQuiz}>
+                  继续
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

@@ -33,6 +33,13 @@ export interface Reaction {
   precipitate?: string[];
   stars?: number;
   trap?: string;
+  /** 平衡关用：配平后追加一道「平衡向哪移动」的选择题 */
+  quiz?: {
+    question: string;
+    options: string[];
+    answer: number;
+    explain: string;
+  };
 }
 
 export interface Enemy {

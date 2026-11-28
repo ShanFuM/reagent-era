@@ -215,6 +215,8 @@ function mainProductOf(reaction: Reaction): string | null {
 }
 
 function addCardToHand(s: BattleState, id: string): BattleState {
+  // 已经有这张就不重复加：工序产物常常本来就是原料（如氧化铝），重复会让玩家困惑
+  if (s.hand.includes(id)) return s;
   // 出招时至少会移除 1 张手牌，所以这里加上 1 张不会突破 HAND_LIMIT
   return { ...s, hand: [...s.hand, id] };
 }
@@ -470,6 +472,23 @@ export function toggleCard(s: BattleState, index: number): BattleState {
 /** 消耗一次提示机会，高亮一组能反应的手牌（优先命中弱点的组合） */
 export function useHint(s: BattleState): BattleState {
   if (s.phase !== 'select' || s.hintsLeft <= 0) return s;
+
+  // 有工序/链条的阶段：提示必须指向「当前这一步」，而不是随便找一组能反应的
+  const stepId = bossPhaseOf(s)?.required?.[s.chainStep];
+  if (stepId) {
+    const step = REACTIONS[stepId];
+    if (step) {
+      const combo = step.reactants.map(([id]) => s.hand.indexOf(id));
+      if (combo.every((i) => i >= 0)) {
+        return pushLog(
+          { ...s, hintsLeft: s.hintsLeft - 1, hint: combo, selected: [] },
+          'info',
+          `提示：按工序，这一步要打「${step.reactants.map(([id]) => substance(id).name).join(' + ')}」（本关还剩 ${s.hintsLeft - 1} 次）。`,
+        );
+      }
+    }
+  }
+
   const combo = findCombo(s.hand, s.level.enemy.weakness);
   if (!combo) {
     return pushLog(s, 'warn', '手牌里确实没有能反应的组合了，只能先弃一回合。');
@@ -898,4 +917,12 @@ export function advance(s: BattleState): BattleState {
 export function resolveMisfire(s: BattleState): BattleState {
   if (s.phase !== 'misfire') return s;
   return endTurn({ ...s, misfire: null });
+}
+
+/** 平衡关的选择题：答对给 1 点能量，答错不给 */
+export function applyQuizResult(s: BattleState, correct: boolean): BattleState {
+  if (!correct) {
+    return pushLog(s, 'warn', '平衡移动判断错了——这一击没有额外能量。');
+  }
+  return pushLog({ ...s, energy: s.energy + 1 }, 'effect', '判断正确，获得 1 点能量。');
 }

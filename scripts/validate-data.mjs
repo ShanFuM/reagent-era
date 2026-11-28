@@ -107,6 +107,18 @@ for (const [rid, r] of Object.entries(reactions)) {
   if (!r.phenomenon) warn(`${label} 缺少现象描述`);
   if (!r.type) fail(`${label} 缺少反应类型`);
   if (!r.condition) fail(`${label} 缺少反应条件`);
+
+  // 平衡关的选择题
+  if (r.quiz) {
+    const q = r.quiz;
+    if (!q.question) fail(`${label} 的 quiz 缺少题干`);
+    if (!Array.isArray(q.options) || q.options.length < 2) {
+      fail(`${label} 的 quiz 至少要有 2 个选项`);
+    } else if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer >= q.options.length) {
+      fail(`${label} 的 quiz.answer 必须是有效选项下标`);
+    }
+    if (!q.explain) fail(`${label} 的 quiz 缺少解析`);
+  }
 }
 
 // ---------- 3. 关卡 ----------
