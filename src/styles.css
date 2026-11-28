@@ -1858,13 +1858,13 @@ button:disabled {
 }
 
 .player-avatar .sprite-svg {
-  width: 72px;
-  height: 72px;
+  width: 84px;
+  height: 84px;
 }
 
 .player-avatar .sprite-glow {
-  width: 80px;
-  height: 80px;
+  width: 94px;
+  height: 94px;
   background: radial-gradient(circle, rgba(194, 240, 74, 0.35), transparent 68%);
 }
 
