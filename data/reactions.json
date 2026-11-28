@@ -3839,5 +3839,808 @@
     "phenomenon": "先出现白色沉淀，碱过量后沉淀溶解",
     "stars": 3,
     "trap": "氢氧化铝溶于过量强碱；用氨水则沉淀不会溶解"
+  },
+  "r120": {
+    "levels": [
+      8,
+      202
+    ],
+    "reactants": [
+      [
+        "KMnO4",
+        2
+      ],
+      [
+        "H2S",
+        5
+      ],
+      [
+        "H2SO4",
+        3
+      ]
+    ],
+    "products": [
+      [
+        "K2SO4",
+        1
+      ],
+      [
+        "MnSO4",
+        2
+      ],
+      [
+        "S",
+        5
+      ],
+      [
+        "H2O",
+        8
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "紫红色褪去，析出淡黄色沉淀",
+    "precipitate": [
+      "S"
+    ],
+    "stars": 3,
+    "trap": "酸性介质中 MnO₄⁻ 被还原为 Mn²⁺，不是 MnO₂"
+  },
+  "r121": {
+    "levels": [
+      8,
+      202
+    ],
+    "reactants": [
+      [
+        "KMnO4",
+        2
+      ],
+      [
+        "SO2",
+        5
+      ],
+      [
+        "H2O",
+        2
+      ]
+    ],
+    "products": [
+      [
+        "K2SO4",
+        1
+      ],
+      [
+        "MnSO4",
+        2
+      ],
+      [
+        "H2SO4",
+        2
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "紫红色褪去，刺激性气味消失",
+    "stars": 3,
+    "trap": "+4 价硫被氧化到 +6 价"
+  },
+  "r122": {
+    "levels": [
+      202
+    ],
+    "reactants": [
+      [
+        "S",
+        1
+      ],
+      [
+        "H2SO4",
+        2
+      ]
+    ],
+    "products": [
+      [
+        "SO2",
+        3
+      ],
+      [
+        "H2O",
+        2
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "加热",
+    "phenomenon": "硫被浓硫酸氧化，产生刺激性气味气体",
+    "gas": [
+      "SO2"
+    ],
+    "stars": 3,
+    "trap": "浓硫酸的强氧化性；稀硫酸不与硫反应"
+  },
+  "r123": {
+    "levels": [
+      8,
+      202
+    ],
+    "reactants": [
+      [
+        "H2S",
+        1
+      ],
+      [
+        "H2SO4",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "S",
+        1
+      ],
+      [
+        "SO2",
+        1
+      ],
+      [
+        "H2O",
+        2
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "产生刺激性气味气体并析出淡黄色沉淀",
+    "gas": [
+      "SO2"
+    ],
+    "precipitate": [
+      "S"
+    ],
+    "stars": 3,
+    "trap": "同种元素 −2 价与 +6 价归中到 0 价"
+  },
+  "r124": {
+    "levels": [
+      8,
+      203
+    ],
+    "reactants": [
+      [
+        "C",
+        1
+      ],
+      [
+        "HNO3",
+        4
+      ]
+    ],
+    "products": [
+      [
+        "CO2",
+        1
+      ],
+      [
+        "NO2",
+        4
+      ],
+      [
+        "H2O",
+        2
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "加热",
+    "phenomenon": "碳被氧化，产生红棕色气体",
+    "gas": [
+      "CO2",
+      "NO2"
+    ],
+    "stars": 3,
+    "trap": "浓硝酸的强氧化性，自身被还原为 NO₂"
+  },
+  "r125": {
+    "levels": [
+      203
+    ],
+    "reactants": [
+      [
+        "S",
+        1
+      ],
+      [
+        "HNO3",
+        6
+      ]
+    ],
+    "products": [
+      [
+        "H2SO4",
+        1
+      ],
+      [
+        "NO2",
+        6
+      ],
+      [
+        "H2O",
+        2
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "加热",
+    "phenomenon": "硫被氧化，产生红棕色气体",
+    "gas": [
+      "NO2"
+    ],
+    "stars": 3
+  },
+  "r126": {
+    "levels": [
+      8
+    ],
+    "reactants": [
+      [
+        "Fe",
+        1
+      ],
+      [
+        "HNO3",
+        4
+      ]
+    ],
+    "products": [
+      [
+        "Fe(NO3)3",
+        1
+      ],
+      [
+        "NO",
+        1
+      ],
+      [
+        "H2O",
+        2
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "铁溶解，产生无色气体，遇空气变红棕",
+    "gas": [
+      "NO"
+    ],
+    "stars": 3,
+    "trap": "稀硝酸生成 NO；铁过量时会生成 Fe²⁺"
+  },
+  "r127": {
+    "levels": [
+      204
+    ],
+    "reactants": [
+      [
+        "SO2",
+        1
+      ],
+      [
+        "Cl2",
+        1
+      ],
+      [
+        "H2O",
+        2
+      ]
+    ],
+    "products": [
+      [
+        "H2SO4",
+        1
+      ],
+      [
+        "HCl",
+        2
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "两种气体同时褪色，溶液酸性增强",
+    "stars": 3,
+    "trap": "二氧化硫的还原性；氯水与二氧化硫不能同时用于漂白"
+  },
+  "r128": {
+    "levels": [
+      12
+    ],
+    "reactants": [
+      [
+        "NH3",
+        1
+      ],
+      [
+        "HCl",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "NH4Cl",
+        1
+      ]
+    ],
+    "type": "化合",
+    "condition": "常温",
+    "phenomenon": "两瓶气体接近时产生大量白烟",
+    "stars": 3,
+    "trap": "白烟是 NH₄Cl 固体小颗粒，不是白雾"
+  },
+  "r129": {
+    "levels": [
+      12
+    ],
+    "reactants": [
+      [
+        "NO2",
+        2
+      ],
+      [
+        "NaOH",
+        2
+      ]
+    ],
+    "products": [
+      [
+        "NaNO3",
+        1
+      ],
+      [
+        "NaNO2",
+        1
+      ],
+      [
+        "H2O",
+        1
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "红棕色气体被吸收",
+    "stars": 3,
+    "trap": "NO₂ 既作氧化剂又作还原剂，这是尾气处理的方法"
+  },
+  "r130": {
+    "levels": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      11,
+      12,
+      101,
+      102,
+      108,
+      201,
+      202,
+      203,
+      204,
+      301,
+      302,
+      304
+    ],
+    "reactants": [
+      [
+        "H2O",
+        2
+      ]
+    ],
+    "products": [
+      [
+        "H2",
+        2
+      ],
+      [
+        "O2",
+        1
+      ]
+    ],
+    "type": "分解",
+    "condition": "通电",
+    "phenomenon": "两极产生气泡，正氧负氢，体积比 1:2",
+    "gas": [
+      "H2",
+      "O2"
+    ],
+    "stars": 3,
+    "trap": "正极氧气、负极氢气，体积比 1:2"
+  },
+  "r131": {
+    "levels": [
+      4,
+      108
+    ],
+    "reactants": [
+      [
+        "CaCO3",
+        1
+      ],
+      [
+        "CO2",
+        1
+      ],
+      [
+        "H2O",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "Ca(HCO3)2",
+        1
+      ]
+    ],
+    "type": "化合",
+    "condition": "常温",
+    "phenomenon": "沉淀逐渐溶解，溶液变澄清",
+    "stars": 3,
+    "trap": "溶洞形成与硬水的成因"
+  },
+  "r132": {
+    "levels": [
+      8
+    ],
+    "reactants": [
+      [
+        "FeCl3",
+        2
+      ],
+      [
+        "H2S",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "FeCl2",
+        2
+      ],
+      [
+        "S",
+        1
+      ],
+      [
+        "HCl",
+        2
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "棕黄色变浅绿，析出淡黄色沉淀",
+    "precipitate": [
+      "S"
+    ],
+    "stars": 2
+  },
+  "r133": {
+    "levels": [
+      201,
+      204
+    ],
+    "reactants": [
+      [
+        "Cl2",
+        1
+      ],
+      [
+        "Na2SO3",
+        1
+      ],
+      [
+        "H2O",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "Na2SO4",
+        1
+      ],
+      [
+        "HCl",
+        2
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "黄绿色褪去，溶液酸性增强",
+    "stars": 2
+  },
+  "r134": {
+    "levels": [
+      204
+    ],
+    "reactants": [
+      [
+        "Cl2",
+        1
+      ],
+      [
+        "Na2S",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "NaCl",
+        2
+      ],
+      [
+        "S",
+        1
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "黄绿色褪去，析出淡黄色沉淀",
+    "precipitate": [
+      "S"
+    ],
+    "stars": 3
+  },
+  "r135": {
+    "levels": [
+      201
+    ],
+    "reactants": [
+      [
+        "Br2",
+        1
+      ],
+      [
+        "KI",
+        2
+      ]
+    ],
+    "products": [
+      [
+        "KBr",
+        2
+      ],
+      [
+        "I2",
+        1
+      ]
+    ],
+    "type": "置换",
+    "condition": "常温",
+    "phenomenon": "溶液变棕黄，淀粉变蓝",
+    "stars": 2,
+    "trap": "氧化性 Br₂ > I₂，所以溴能把碘置换出来"
+  },
+  "r136": {
+    "levels": [
+      202,
+      204
+    ],
+    "reactants": [
+      [
+        "Na2SO3",
+        2
+      ],
+      [
+        "O2",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "Na2SO4",
+        2
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "亚硫酸钠被空气氧化为硫酸钠",
+    "stars": 2,
+    "trap": "亚硫酸钠需密封保存，久置会被氧化"
+  },
+  "r137": {
+    "levels": [
+      202
+    ],
+    "reactants": [
+      [
+        "Na2SO3",
+        1
+      ],
+      [
+        "H2SO4",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "Na2SO4",
+        1
+      ],
+      [
+        "SO2",
+        1
+      ],
+      [
+        "H2O",
+        1
+      ]
+    ],
+    "type": "产气",
+    "condition": "常温",
+    "phenomenon": "产生有刺激性气味的气体",
+    "gas": [
+      "SO2"
+    ],
+    "stars": 2,
+    "trap": "实验室制取二氧化硫的常用方法"
+  },
+  "r138": {
+    "levels": [
+      6
+    ],
+    "reactants": [
+      [
+        "Na2O2",
+        1
+      ],
+      [
+        "SO2",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "Na2SO4",
+        1
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "常温",
+    "phenomenon": "淡黄色固体变为白色",
+    "stars": 2
+  },
+  "r139": {
+    "levels": [
+      4
+    ],
+    "reactants": [
+      [
+        "Cu2(OH)2CO3",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "CuO",
+        2
+      ],
+      [
+        "H2O",
+        1
+      ],
+      [
+        "CO2",
+        1
+      ]
+    ],
+    "type": "分解",
+    "condition": "加热",
+    "phenomenon": "绿色固体变黑，管口有水珠，产生使石灰水变浑浊的气体",
+    "gas": [
+      "CO2"
+    ],
+    "stars": 2,
+    "trap": "铜绿受热分解，这就是「铜器生锈」的产物"
+  },
+  "r140": {
+    "levels": [
+      203
+    ],
+    "reactants": [
+      [
+        "NH4Cl",
+        1
+      ],
+      [
+        "NaOH",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "NaCl",
+        1
+      ],
+      [
+        "NH3",
+        1
+      ],
+      [
+        "H2O",
+        1
+      ]
+    ],
+    "type": "产气",
+    "condition": "加热",
+    "phenomenon": "产生有刺激性气味的气体，使湿润红色石蕊试纸变蓝",
+    "gas": [
+      "NH3"
+    ],
+    "stars": 3,
+    "trap": "铵盐与强碱共热放出氨气，这是检验 NH₄⁺ 的方法"
+  },
+  "r141": {
+    "levels": [
+      203
+    ],
+    "reactants": [
+      [
+        "NH4Cl",
+        2
+      ],
+      [
+        "Ca(OH)2",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "CaCl2",
+        1
+      ],
+      [
+        "NH3",
+        2
+      ],
+      [
+        "H2O",
+        2
+      ]
+    ],
+    "type": "产气",
+    "condition": "加热",
+    "phenomenon": "产生大量有刺激性气味的气体",
+    "gas": [
+      "NH3"
+    ],
+    "stars": 3,
+    "trap": "实验室制氨气的标准方法"
+  },
+  "r142": {
+    "levels": [
+      4
+    ],
+    "reactants": [
+      [
+        "Fe3O4",
+        1
+      ],
+      [
+        "CO",
+        4
+      ]
+    ],
+    "products": [
+      [
+        "Fe",
+        3
+      ],
+      [
+        "CO2",
+        4
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "高温",
+    "phenomenon": "黑色固体变为银白色，产生使石灰水变浑浊的气体",
+    "gas": [
+      "CO2"
+    ],
+    "stars": 3
   }
 }

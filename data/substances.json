@@ -498,5 +498,14 @@
     "name": "五氧化二磷",
     "formula": "P2O5",
     "kind": "氧化物"
-  }
+  },
+  "Na2SO3": { "name": "亚硫酸钠", "formula": "Na2SO3", "kind": "盐" },
+  "MnSO4": { "name": "硫酸锰", "formula": "MnSO4", "kind": "盐" },
+  "Fe2(SO4)3": { "name": "硫酸铁", "formula": "Fe2(SO4)3", "kind": "盐" },
+  "Fe(NO3)3": { "name": "硝酸铁", "formula": "Fe(NO3)3", "kind": "盐" },
+  "Cu2(OH)2CO3": { "name": "碱式碳酸铜", "formula": "Cu2(OH)2CO3", "kind": "盐" },
+  "NaNO2": { "name": "亚硝酸钠", "formula": "NaNO2", "kind": "盐" },
+  "MgSO4": { "name": "硫酸镁", "formula": "MgSO4", "kind": "盐" },
+  "KNO3": { "name": "硝酸钾", "formula": "KNO3", "kind": "盐" },
+  "NH4NO3": { "name": "硝酸铵", "formula": "NH4NO3", "kind": "盐" }
 }

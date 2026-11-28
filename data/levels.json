@@ -89,7 +89,7 @@
       "resist": ["中和"],
       "intro": "整座石灰窑活了过来，每一步都震得地面开裂。"
     },
-    "shelf": ["CaCO3", "HCl", "CaO", "H2O", "CO2", "C", "O2", "CuO", "Fe2O3", "CO", "NaHCO3", "Ca(OH)2", "Ca(HCO3)2"],
+    "shelf": ["CaCO3", "HCl", "CaO", "H2O", "CO2", "C", "O2", "CuO", "Fe2O3", "CO", "NaHCO3", "Ca(OH)2", "Ca(HCO3)2", "Cu2(OH)2CO3", "Fe3O4"],
     "handSize": 6,
     "energy": 2,
     "balanceTime": 15,
@@ -137,7 +137,7 @@
       "resist": ["分解"],
       "intro": "一团黄色火焰，靠近它的水都会被点着。"
     },
-    "shelf": ["Na", "H2O", "O2", "Na2O2", "CO2", "Na2O", "Na2CO3", "NaHCO3", "HCl"],
+    "shelf": ["Na", "H2O", "O2", "Na2O2", "CO2", "Na2O", "Na2CO3", "NaHCO3", "HCl", "SO2"],
     "handSize": 6,
     "energy": 2,
     "balanceTime": 15,
@@ -186,7 +186,7 @@
       "resist": ["化合", "中和"],
       "intro": "一个不断吸走电子的空洞，靠近它的物质都会失去光泽。"
     },
-    "shelf": ["KMnO4", "HCl", "Cu", "H2SO4", "HNO3", "H2S", "SO2", "H2O2", "KClO3", "MnO2", "Fe", "Na2S", "NaOH", "H2O", "C"],
+    "shelf": ["KMnO4", "HCl", "Cu", "H2SO4", "HNO3", "H2S", "SO2", "H2O2", "KClO3", "MnO2", "Fe", "Na2S", "NaOH", "H2O", "C", "FeCl3"],
     "handSize": 7,
     "energy": 2,
     "balanceTime": 12,
@@ -510,7 +510,7 @@
       "resist": ["化合"],
       "intro": "一面刻着七列元素的墙，越往下颜色越深。"
     },
-    "shelf": ["Cl2", "NaBr", "KI", "MnO2", "HCl", "Na", "H2O", "Cu", "Fe"],
+    "shelf": ["Cl2", "NaBr", "KI", "MnO2", "HCl", "Na", "H2O", "Cu", "Fe", "Br2", "Na2SO3"],
     "handSize": 6,
     "energy": 2,
     "balanceTime": 12,
@@ -535,7 +535,7 @@
       "resist": ["中和"],
       "intro": "一片呛人的淡黄色烟雾，边缘不断有单质硫析出。"
     },
-    "shelf": ["S", "O2", "SO2", "SO3", "H2O", "H2S", "KMnO4", "Cu", "H2SO4"],
+    "shelf": ["S", "O2", "SO2", "SO3", "H2O", "H2S", "KMnO4", "Cu", "H2SO4", "Na2SO3"],
     "handSize": 6,
     "energy": 2,
     "balanceTime": 12,
@@ -560,7 +560,7 @@
       "resist": ["沉淀"],
       "intro": "一条不断循环的回廊，空气里飘着刺鼻的气味。"
     },
-    "shelf": ["N2", "H2", "NH3", "O2", "NO", "NO2", "H2O", "HNO3", "Cu", "S", "C"],
+    "shelf": ["N2", "H2", "NH3", "O2", "NO", "NO2", "H2O", "HNO3", "Cu", "S", "C", "NH4Cl", "NaOH", "Ca(OH)2"],
     "handSize": 6,
     "energy": 2,
     "balanceTime": 10,
@@ -585,7 +585,7 @@
       "resist": ["化合"],
       "intro": "一座烧得通红的炉子，炉口轮流喷出黄绿色和棕红色的烟。"
     },
-    "shelf": ["Cl2", "Na", "H2O", "Fe", "Cu", "HCl", "NaOH", "SO2", "O2", "FeCl3", "CuSO4"],
+    "shelf": ["Cl2", "Na", "H2O", "Fe", "Cu", "HCl", "NaOH", "SO2", "O2", "FeCl3", "CuSO4", "Na2SO3", "Na2S"],
     "handSize": 7,
     "energy": 3,
     "balanceTime": 10,
