@@ -134,6 +134,9 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             <div className="chips">
               {state.shield > 0 && <span className="chip shield">🛡 护盾 {state.shield}</span>}
               {state.combo > 0 && <span className="chip combo">连锁 ×{state.combo}</span>}
+              <span className="chip variety">
+                已用反应 {Object.keys(state.reactionCounts).length} 种
+              </span>
             </div>
             <button
               className={`energy-btn ${state.boost ? 'on' : ''}`}

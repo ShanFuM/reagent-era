@@ -55,6 +55,8 @@ export interface BattleState {
   hintsLeft: number;
   /** 当前高亮的手牌下标 */
   hint: number[];
+  /** 本关每种反应分别用了几次，用来做「换着打」的奖励/衰减 */
+  reactionCounts: Record<string, number>;
   log: LogEntry[];
   logSeq: number;
   stats: { dealt: number; taken: number; perfect: number; turns: number };
@@ -258,6 +260,7 @@ export function createBattle(level: Level): BattleState {
     misfire: null,
     hintsLeft: HINTS_PER_LEVEL,
     hint: [],
+    reactionCounts: {},
     log: [],
     logSeq: 0,
     stats: { dealt: 0, taken: 0, perfect: 0, turns: 0 },
@@ -324,11 +327,23 @@ export function submitSelection(s: BattleState): BattleState {
   return settle(s, hit.id, hit.reaction, 'none', false);
 }
 
+/**
+ * 「换着打」的伤害系数：本关第一次用某个反应有加成，反复用同一个反应会衰减。
+ * 目的：让玩家在 8 张手牌里找不同组合，而不是一套连招打到死。
+ */
+export function varietyMultiplier(usedTimes: number): number {
+  if (usedTimes <= 0) return 1.1; // 首次使用，小幅加成
+  if (usedTimes === 1) return 0.95;
+  if (usedTimes === 2) return 0.75;
+  return 0.55;
+}
+
 export function previewDamage(
   s: BattleState,
   reaction: Reaction,
   accuracy: Accuracy,
   perfectBonus = false,
+  variety = 1,
 ): number {
   const profile = TYPE_PROFILE[reaction.type];
   const cond = COND_COEF[reaction.condition] ?? 1;
@@ -340,7 +355,15 @@ export function previewDamage(
   const boostMult = s.boost && s.energy > 0 ? 1.25 : 1;
   const armorMult = Math.max(0.4, 1 - s.enemyArmor * 0.12);
   const raw =
-    BASE_DAMAGE * profile.base * cond * acc * weakMult * (1 + comboBonus) * boostMult * armorMult;
+    BASE_DAMAGE *
+    profile.base *
+    cond *
+    acc *
+    weakMult *
+    (1 + comboBonus) *
+    boostMult *
+    armorMult *
+    variety;
   return Math.max(1, Math.round(raw));
 }
 
@@ -352,7 +375,9 @@ function settle(
   perfect: boolean,
 ): BattleState {
   const boosted = s.boost && s.energy > 0;
-  const damage = previewDamage(s, reaction, accuracy, perfect);
+  const usedTimes = s.reactionCounts[key] ?? 0;
+  const variety = varietyMultiplier(usedTimes);
+  const damage = previewDamage(s, reaction, accuracy, perfect, variety);
   const weak = s.level.enemy.weakness.includes(reaction.type);
   const resist = s.level.enemy.resist.includes(reaction.type);
   const profile = TYPE_PROFILE[reaction.type];
@@ -370,6 +395,7 @@ function settle(
     boost: false,
     selected: [],
     hint: [],
+    reactionCounts: { ...s.reactionCounts, [key]: usedTimes + 1 },
     enemyHp: Math.max(0, s.enemyHp - damage),
     combo: weak ? s.combo + 1 : 0,
     stats: {
@@ -408,6 +434,12 @@ function settle(
     `${reaction.type}反应${accText} 造成 ${damage} 点伤害${weak ? '（命中弱点 ×2）' : resist ? '（被抗性削弱）' : ''}`,
   );
   if (reaction.phenomenon) next = pushLog(next, 'effect', reaction.phenomenon);
+
+  if (usedTimes === 0) {
+    next = pushLog(next, 'effect', '首次使用这个反应 · 伤害 ×1.1');
+  } else if (usedTimes >= 1) {
+    next = pushLog(next, 'warn', `同一个反应第 ${usedTimes + 1} 次使用 · 伤害衰减到 ×${variety}`);
+  }
 
   // 附加效果
   switch (profile.effect) {

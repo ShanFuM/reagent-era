@@ -197,7 +197,7 @@
       "resist": ["化合", "中和"],
       "intro": "一个不断吸走电子的空洞，靠近它的物质都会失去光泽。"
     },
-    "shelf": ["KMnO4", "HCl", "Cu", "H2SO4", "HNO3", "H2S", "SO2", "H2O2", "KClO3", "MnO2"],
+    "shelf": ["KMnO4", "HCl", "Cu", "H2SO4", "HNO3", "H2S", "SO2", "H2O2", "KClO3", "MnO2", "Fe", "Na2S", "NaOH"],
     "handSize": 7,
     "energy": 2,
     "balanceTime": 12,
@@ -289,7 +289,7 @@
     "enemy": {
       "name": "裂谷之核",
       "art": "💠",
-      "hp": 420,
+      "hp": 480,
       "atk": 15,
       "armor": 2,
       "weakness": ["复分解", "沉淀", "氧化还原", "分解"],

@@ -537,6 +537,11 @@ button:disabled {
   color: var(--amber);
 }
 
+.chip.variety {
+  border-color: rgba(194, 240, 74, 0.35);
+  color: var(--lime);
+}
+
 .energy-btn {
   margin-top: 12px;
   width: 100%;
