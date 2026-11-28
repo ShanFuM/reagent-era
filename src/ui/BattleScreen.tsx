@@ -51,6 +51,24 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
   const [cast, setCast] = useState<{ id: number; cards: string[] } | null>(null);
   const prevTaken = useRef(state.stats.taken);
   const [hurt, setHurt] = useState(false);
+  const prevHandLen = useRef(state.hand.length);
+  const [dealing, setDealing] = useState(true);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDealing(false), 820);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (state.hand.length > prevHandLen.current) {
+      setDealing(true);
+      const timer = window.setTimeout(() => setDealing(false), 860);
+      prevHandLen.current = state.hand.length;
+      return () => window.clearTimeout(timer);
+    }
+    prevHandLen.current = state.hand.length;
+    return undefined;
+  }, [state.hand.length]);
 
   useEffect(() => {
     if (state.stats.taken === prevTaken.current) return;
@@ -209,6 +227,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             </div>
             <div className="bar enemy-bar">
               <div className="bar-fill enemy-fill" style={{ width: `${enemyRatio * 100}%` }} />
+              <span className="bar-ticks" />
               <span className="bar-text">
                 {state.enemyHp} / {state.enemyMaxHp}
               </span>
@@ -303,7 +322,8 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             return (
               <button
                 key={`${id}-${index}`}
-                className={`card k-${KIND_CLASS[sub.kind] ?? 'element'} ${selected ? 'sel' : ''}`}
+                className={`card k-${KIND_CLASS[sub.kind] ?? 'element'} ${selected ? 'sel' : ''} ${dealing ? 'deal-in' : ''}`}
+                style={{ animationDelay: `${index * 45}ms` }}
                 onClick={() => setState((s) => toggleCard(s, index))}
                 disabled={state.phase !== 'select'}
               >

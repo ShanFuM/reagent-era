@@ -1744,3 +1744,44 @@ button:disabled {
     opacity: 0;
   }
 }
+
+/* ---------- 发牌动画 / 血条刻度 ---------- */
+.card.deal-in {
+  animation: deal-in 0.46s cubic-bezier(0.2, 0.85, 0.3, 1) backwards;
+}
+
+@keyframes deal-in {
+  from {
+    opacity: 0;
+    transform: translate(150px, 70px) scale(0.78) rotate(10deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bar-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(25% - 1.5px),
+      rgba(255, 255, 255, 0.22) calc(25% - 1.5px),
+      rgba(255, 255, 255, 0.22) 25%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(10% - 1px),
+      rgba(2, 6, 10, 0.55) calc(10% - 1px),
+      rgba(2, 6, 10, 0.55) 10%
+    );
+}
+
+.enemy.hit .enemy-fill {
+  filter: brightness(1.55) saturate(1.2);
+}
