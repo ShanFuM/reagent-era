@@ -3,6 +3,7 @@ import Stage from './ui/Stage';
 import TitleScreen from './ui/TitleScreen';
 import LevelSelect from './ui/LevelSelect';
 import BattleScreen from './ui/BattleScreen';
+import { startBgm, unlock } from './audio/sound';
 import { LEVELS } from './engine/data';
 import type { GradeLine } from './engine/data';
 
@@ -77,6 +78,22 @@ export default function App() {
       /* 同上 */
     }
   }, [line]);
+
+  // 浏览器要求首次发声在用户手势之后，这里挂一次性监听，深链直接进战斗也能出声
+  useEffect(() => {
+    const onFirstGesture = () => {
+      unlock();
+      startBgm();
+      window.removeEventListener('pointerdown', onFirstGesture);
+      window.removeEventListener('keydown', onFirstGesture);
+    };
+    window.addEventListener('pointerdown', onFirstGesture);
+    window.addEventListener('keydown', onFirstGesture);
+    return () => {
+      window.removeEventListener('pointerdown', onFirstGesture);
+      window.removeEventListener('keydown', onFirstGesture);
+    };
+  }, []);
 
   const markCleared = useCallback((id: number) => {
     setCleared((prev) => (prev.includes(id) ? prev : [...prev, id]));

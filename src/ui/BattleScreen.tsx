@@ -21,6 +21,7 @@ import { nextLevelInLine, solutionReactions, substance } from '../engine/data';
 import type { GradeLine, Level } from '../engine/data';
 import { formatFormula } from '../engine/formula.js';
 import { equationText } from '../engine/equation';
+import { isMuted, setMuted, sfx } from '../audio/sound';
 import BalancePad from './BalancePad';
 import { EnemySprite, PlayerSprite, CardIcon } from './Sprite';
 
@@ -71,6 +72,8 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
   /** 平衡关：方程卡之后追加一道「平衡向哪移动」的选择题 */
   const [quizOpen, setQuizOpen] = useState(false);
   const [quizPicked, setQuizPicked] = useState<number | null>(null);
+  const [soundOff, setSoundOff] = useState(isMuted());
+  const [damagePop, setDamagePop] = useState<{ id: number; value: number; weak: boolean } | null>(null);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDealing(false), 820);
@@ -122,6 +125,40 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
     if (state.phase === 'resolving' && state.lastResult) setSolutionOpen(true);
   }, [state.phase, state.logSeq, state.lastResult]);
 
+  // 结算音效：命中弱点用更重的音，普通命中用短促的
+  useEffect(() => {
+    if (state.phase === 'resolving' && state.lastResult) {
+      sfx(state.lastResult.weak ? 'crit' : 'hit');
+    }
+  }, [state.logSeq, state.phase, state.lastResult]);
+
+  useEffect(() => {
+    if (state.phase === 'misfire') sfx('miss');
+  }, [state.logSeq, state.phase]);
+
+  useEffect(() => {
+    if (state.phase === 'win') sfx('win');
+    else if (state.phase === 'lose') sfx('lose');
+  }, [state.phase]);
+
+  // Boss 换形态
+  useEffect(() => {
+    if (state.bossIndex > 0) sfx('phase');
+  }, [state.bossIndex]);
+
+  // 伤害飘字：每次结算在敌人身上弹一个数字
+  useEffect(() => {
+    const result = state.lastResult;
+    if (state.phase !== 'resolving' || !result || result.damage <= 0) return;
+    const id = Date.now();
+    setDamagePop({ id, value: result.damage, weak: result.weak });
+    const timer = window.setTimeout(
+      () => setDamagePop((d) => (d && d.id === id ? null : d)),
+      900,
+    );
+    return () => window.clearTimeout(timer);
+  }, [state.logSeq, state.phase, state.lastResult]);
+
   const restart = () => {
     tipShown.current = false;
     setChainTip(false);
@@ -132,6 +169,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
   };
 
   const submitBalance = (coeffs: number[], perfect: boolean) => {
+    if (perfect) sfx('perfect');
     setState((s) => confirmBalance(s, coeffs, perfect));
   };
 
@@ -158,6 +196,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
     const quiz = state.lastResult?.reaction.quiz;
     if (!quiz) return;
     setQuizPicked(index);
+    sfx(index === quiz.answer ? 'right' : 'wrong');
     setState((s) => applyQuizResult(s, index === quiz.answer));
   };
 
@@ -213,6 +252,18 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           <span className="turn-pill">
             回合 {state.turn} / {state.maxTurns}
           </span>
+          <button
+            className="btn-ghost small btn-sound"
+            onClick={() => {
+              const next = !soundOff;
+              setMuted(next);
+              setSoundOff(next);
+              if (!next) sfx('tap');
+            }}
+            title={soundOff ? '打开声音' : '关闭声音'}
+          >
+            {soundOff ? '🔇' : '🔊'}
+          </button>
           <button className="btn-ghost small" onClick={() => setHintOpen(true)}>
             📖 答案
           </button>
@@ -300,6 +351,15 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
           )}
           <div className={`enemy ${state.phase === 'resolving' ? 'hit' : ''}`}>
             <EnemySprite level={state.level} className="enemy-art" />
+            {damagePop && (
+              <div
+                key={damagePop.id}
+                className={`damage-pop ${damagePop.weak ? 'weak' : ''}`}
+              >
+                -{damagePop.value}
+                {damagePop.weak && <span className="damage-tag">弱点</span>}
+              </div>
+            )}
             <div className="enemy-name">
               {state.level.enemy.name}
               {bossPhase && <span className="enemy-phase-name"> · {bossPhase.name}</span>}
@@ -418,7 +478,10 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
                   state.hint.includes(index) ? 'hint' : ''
                 } ${dealing ? 'deal-in' : ''}`}
                 style={{ animationDelay: `${index * 45}ms` }}
-                onClick={() => setState((s) => toggleCard(s, index))}
+                onClick={() => {
+                  sfx('tap');
+                  setState((s) => toggleCard(s, index));
+                }}
                 disabled={state.phase !== 'select'}
               >
                 <CardIcon kind={sub.kind} />
@@ -450,6 +513,7 @@ export default function BattleScreen({ level, line, onExit, onCleared, onNext }:
             className="btn-summon"
             disabled={state.selected.length === 0 || state.phase !== 'select'}
             onClick={() => {
+              sfx('cast');
               castCards();
               setState((s) => submitSelection(s));
             }}

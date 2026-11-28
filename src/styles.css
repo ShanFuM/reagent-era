@@ -1555,6 +1555,68 @@ button:disabled {
   max-width: 720px;
 }
 
+/* ---------- 伤害飘字 ---------- */
+.damage-pop {
+  position: absolute;
+  top: 26%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 54px;
+  font-weight: 800;
+  color: #ff7a85;
+  text-shadow: 0 4px 0 rgba(0, 0, 0, 0.45), 0 0 28px rgba(255, 90, 110, 0.55);
+  pointer-events: none;
+  animation: damage-float 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.damage-pop.weak {
+  font-size: 66px;
+  color: #ffe07a;
+  text-shadow: 0 4px 0 rgba(0, 0, 0, 0.45), 0 0 34px rgba(255, 200, 80, 0.7);
+}
+
+.damage-tag {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #ffd166;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 209, 102, 0.5);
+  border-radius: 6px;
+  padding: 3px 7px;
+  margin-top: 10px;
+}
+
+@keyframes damage-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 18px) scale(0.6);
+  }
+  22% {
+    opacity: 1;
+    transform: translate(-50%, -6px) scale(1.16);
+  }
+  42% {
+    transform: translate(-50%, -14px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -58px) scale(0.92);
+  }
+}
+
+/* 音效开关按钮 */
+.btn-sound {
+  font-size: 15px;
+  padding: 4px 9px;
+  line-height: 1;
+}
+
 /* ---------- 结算 ---------- */
 .result {
   width: 720px;
