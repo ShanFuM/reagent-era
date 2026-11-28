@@ -4642,5 +4642,254 @@
       "CO2"
     ],
     "stars": 3
+  },
+  "r143": {
+    "levels": [
+      4
+    ],
+    "reactants": [
+      [
+        "Fe3O4",
+        1
+      ],
+      [
+        "HCl",
+        8
+      ]
+    ],
+    "products": [
+      [
+        "FeCl2",
+        1
+      ],
+      [
+        "FeCl3",
+        2
+      ],
+      [
+        "H2O",
+        4
+      ]
+    ],
+    "type": "复分解",
+    "condition": "常温",
+    "phenomenon": "黑色固体溶解，溶液呈黄绿色",
+    "stars": 3,
+    "trap": "Fe₃O₄ 可看作 FeO·Fe₂O₃，所以同时生成 +2 与 +3 价的盐"
+  },
+  "r144": {
+    "levels": [
+      4
+    ],
+    "reactants": [
+      [
+        "Cu2(OH)2CO3",
+        1
+      ],
+      [
+        "HCl",
+        4
+      ]
+    ],
+    "products": [
+      [
+        "CuCl2",
+        2
+      ],
+      [
+        "CO2",
+        1
+      ],
+      [
+        "H2O",
+        3
+      ]
+    ],
+    "type": "复分解",
+    "condition": "常温",
+    "phenomenon": "绿色固体溶解，产生气泡，溶液变蓝绿",
+    "gas": [
+      "CO2"
+    ],
+    "stars": 3,
+    "trap": "铜绿是碱式盐，与酸反应同时生成盐、水和二氧化碳"
+  },
+  "r145": {
+    "levels": [
+      4,
+      108
+    ],
+    "reactants": [
+      [
+        "CaO",
+        1
+      ],
+      [
+        "CO2",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "CaCO3",
+        1
+      ]
+    ],
+    "type": "化合",
+    "condition": "常温",
+    "phenomenon": "白色固体表面变硬",
+    "stars": 2,
+    "trap": "碱性氧化物与酸性氧化物直接化合"
+  },
+  "r146": {
+    "levels": [
+      6
+    ],
+    "reactants": [
+      [
+        "Na2O",
+        1
+      ],
+      [
+        "CO2",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "Na2CO3",
+        1
+      ]
+    ],
+    "type": "化合",
+    "condition": "常温",
+    "phenomenon": "白色固体吸收二氧化碳",
+    "stars": 2
+  },
+  "r147": {
+    "levels": [
+      6
+    ],
+    "reactants": [
+      [
+        "Na2O",
+        1
+      ],
+      [
+        "SO2",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "Na2SO3",
+        1
+      ]
+    ],
+    "type": "化合",
+    "condition": "常温",
+    "phenomenon": "白色固体吸收刺激性气体",
+    "stars": 2
+  },
+  "r148": {
+    "levels": [
+      4
+    ],
+    "reactants": [
+      [
+        "Ca(HCO3)2",
+        1
+      ],
+      [
+        "Ca(OH)2",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "CaCO3",
+        2
+      ],
+      [
+        "H2O",
+        2
+      ]
+    ],
+    "type": "沉淀",
+    "condition": "常温",
+    "phenomenon": "生成白色沉淀",
+    "precipitate": [
+      "CaCO3"
+    ],
+    "stars": 3,
+    "trap": "硬水软化：加热或加石灰都能把碳酸氢钙转成碳酸钙沉淀"
+  },
+  "r149": {
+    "levels": [
+      4,
+      107
+    ],
+    "reactants": [
+      [
+        "NaHCO3",
+        2
+      ],
+      [
+        "Ca(OH)2",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "CaCO3",
+        1
+      ],
+      [
+        "Na2CO3",
+        1
+      ],
+      [
+        "H2O",
+        2
+      ]
+    ],
+    "type": "沉淀",
+    "condition": "常温",
+    "phenomenon": "生成白色沉淀",
+    "precipitate": [
+      "CaCO3"
+    ],
+    "stars": 2,
+    "trap": "碳酸氢钠与碱反应生成正盐"
+  },
+  "r150": {
+    "levels": [
+      6
+    ],
+    "reactants": [
+      [
+        "Na",
+        4
+      ],
+      [
+        "CO2",
+        1
+      ]
+    ],
+    "products": [
+      [
+        "Na2O",
+        2
+      ],
+      [
+        "C",
+        1
+      ]
+    ],
+    "type": "氧化还原",
+    "condition": "点燃",
+    "phenomenon": "钠在二氧化碳中继续燃烧，析出黑色颗粒",
+    "stars": 2,
+    "trap": "活泼金属能在二氧化碳中燃烧，二氧化碳不能扑灭钠火"
   }
 }

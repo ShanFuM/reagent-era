@@ -443,6 +443,106 @@ const CANDIDATES = [
       trap: '溶洞形成与硬水的成因',
     },
   ],
+  // —— 第三批：复杂氧化物、酸式盐、碱性氧化物 ——
+  [
+    [['Fe3O4', 1], ['HCl', 8]],
+    [['FeCl2', 1], ['FeCl3', 2], ['H2O', 4]],
+    {
+      type: '复分解',
+      condition: '常温',
+      phenomenon: '黑色固体溶解，溶液呈黄绿色',
+      stars: 3,
+      trap: 'Fe₃O₄ 可看作 FeO·Fe₂O₃，所以同时生成 +2 与 +3 价的盐',
+    },
+  ],
+  [
+    [['Fe3O4', 1], ['H2SO4', 4]],
+    [['FeSO4', 1], ['Fe2(SO4)3', 1], ['H2O', 4]],
+    {
+      type: '复分解',
+      condition: '常温',
+      phenomenon: '黑色固体溶解',
+      stars: 2,
+    },
+  ],
+  [
+    [['Cu2(OH)2CO3', 1], ['HCl', 4]],
+    [['CuCl2', 2], ['CO2', 1], ['H2O', 3]],
+    {
+      type: '复分解',
+      condition: '常温',
+      phenomenon: '绿色固体溶解，产生气泡，溶液变蓝绿',
+      gas: ['CO2'],
+      stars: 3,
+      trap: '铜绿是碱式盐，与酸反应同时生成盐、水和二氧化碳',
+    },
+  ],
+  [
+    [['CaO', 1], ['CO2', 1]],
+    [['CaCO3', 1]],
+    {
+      type: '化合',
+      condition: '常温',
+      phenomenon: '白色固体表面变硬',
+      stars: 2,
+      trap: '碱性氧化物与酸性氧化物直接化合',
+    },
+  ],
+  [
+    [['Na2O', 1], ['CO2', 1]],
+    [['Na2CO3', 1]],
+    {
+      type: '化合',
+      condition: '常温',
+      phenomenon: '白色固体吸收二氧化碳',
+      stars: 2,
+    },
+  ],
+  [
+    [['Na2O', 1], ['SO2', 1]],
+    [['Na2SO3', 1]],
+    {
+      type: '化合',
+      condition: '常温',
+      phenomenon: '白色固体吸收刺激性气体',
+      stars: 2,
+    },
+  ],
+  [
+    [['Ca(HCO3)2', 1], ['Ca(OH)2', 1]],
+    [['CaCO3', 2], ['H2O', 2]],
+    {
+      type: '沉淀',
+      condition: '常温',
+      phenomenon: '生成白色沉淀',
+      precipitate: ['CaCO3'],
+      stars: 3,
+      trap: '硬水软化：加热或加石灰都能把碳酸氢钙转成碳酸钙沉淀',
+    },
+  ],
+  [
+    [['NaHCO3', 2], ['Ca(OH)2', 1]],
+    [['CaCO3', 1], ['Na2CO3', 1], ['H2O', 2]],
+    {
+      type: '沉淀',
+      condition: '常温',
+      phenomenon: '生成白色沉淀',
+      precipitate: ['CaCO3'],
+      stars: 2,
+      trap: '碳酸氢钠与碱反应生成正盐',
+    },
+  ],
+  [
+    [['Na', 4], ['CO2', 1]],
+    [['Na2O', 2], ['C', 1]],
+    {
+      type: '氧化还原',
+      condition: '点燃',
+      phenomenon: '钠在二氧化碳中继续燃烧，析出黑色颗粒',
+      stars: 2,
+      trap: '活泼金属能在二氧化碳中燃烧，二氧化碳不能扑灭钠火',
+    },
+  ],
 ];
 
 const existing = Object.keys(reactions);

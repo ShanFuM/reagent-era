@@ -90,14 +90,7 @@ export default function BalancePad({ reaction, timeLimit, combo, onConfirm, onSk
                   </button>
                 </span>
                 <span className="eq-formula">{formatFormula(id)}</span>
-                <span className="eq-mark">
-                  {productMark(
-                    id,
-                    reaction.gas ?? [],
-                    reaction.precipitate ?? [],
-                    reaction.condition,
-                  )}
-                </span>
+                <span className="eq-mark">{productMark(reaction, id)}</span>
                 {i < reaction.products.length - 1 && <span className="eq-op">+</span>}
               </span>
             );
