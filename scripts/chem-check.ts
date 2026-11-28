@@ -106,6 +106,9 @@ const CASES: Case[] = [
   { pair: ['CuO', 'H2O'], expect: false, note: '氧化铜不与水反应' },
   { pair: ['CO2', 'HCl'], expect: false },
   { pair: ['Fe', 'CuO'], expect: false, note: '两个固体不发生置换' },
+  { pair: ['HCl', 'H2O'], expect: false, note: '水不是碱性氧化物，曾经推出 HCl + H₂O = HCl + H₂O' },
+  { pair: ['NaOH', 'H2O'], expect: false, note: '碱溶于水不是化学反应' },
+  { pair: ['H2O2', 'HCl'], expect: false, note: '过氧化氢同样不能被当成碱性氧化物' },
 
   // —— 必须有解的关卡 ——
   { pair: ['Zn', 'CuSO4'], expect: true },

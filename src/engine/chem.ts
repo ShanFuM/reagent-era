@@ -228,6 +228,9 @@ export function classify(formula: string, substanceKind: string): Species {
   }
 
   if (substanceKind === '氧化物' && parts && parts.anion.id === 'O') {
+    // 水与过氧化氢会解析成 H⁺ + O²⁻，但它们不是碱性氧化物，否则会推出
+    // 「HCl + H₂O = HCl + H₂O」这种左右相同、什么都没发生的假反应
+    if (parts.cation.element === 'H') return { kind: 'other' };
     const basic = !['C', 'S', 'N', 'P'].includes(parts.cation.element);
     if (basic) return { kind: 'basicOxide', cation: parts.cation };
   }
@@ -469,6 +472,26 @@ function ammoniumWithBase(
  * 返回 null 表示「在中学化学范围内不反应」。
  */
 export function predictPair(aFormula: string, aKind: string, bFormula: string, bKind: string): Prediction | null {
+  const prediction = predictPairRaw(aFormula, aKind, bFormula, bKind);
+  if (!prediction) return null;
+  // 兜底：生成物与反应物完全相同的「假反应」一律判为不反应
+  if (isNoop(aFormula, bFormula, prediction.products)) return null;
+  return prediction;
+}
+
+/** 左右两边是同一组物质，说明这条规则其实什么也没做 */
+function isNoop(aFormula: string, bFormula: string, products: string[]): boolean {
+  const left = [aFormula, bFormula].sort().join('|');
+  const right = [...products].sort().join('|');
+  return left === right;
+}
+
+function predictPairRaw(
+  aFormula: string,
+  aKind: string,
+  bFormula: string,
+  bKind: string,
+): Prediction | null {
   const a = classify(aFormula, aKind);
   const b = classify(bFormula, bKind);
 
