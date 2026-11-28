@@ -1,6 +1,6 @@
 {
   "r01": {
-    "levels": [1, 11],
+    "levels": [1, 11, 106, 108, 304],
     "reactants": [["Zn", 1], ["HCl", 2]],
     "products": [["ZnCl2", 1], ["H2", 1]],
     "type": "置换",
@@ -11,7 +11,7 @@
     "trap": "铁与稀酸生成 Fe²⁺，不是 Fe³⁺"
   },
   "r02": {
-    "levels": [1],
+    "levels": [1, 104, 106, 204, 304],
     "reactants": [["Fe", 1], ["HCl", 2]],
     "products": [["FeCl2", 1], ["H2", 1]],
     "type": "置换",
@@ -22,7 +22,7 @@
     "trap": "产物是 FeCl₂，写成 FeCl₃ 即错"
   },
   "r03": {
-    "levels": [1],
+    "levels": [1, 106],
     "reactants": [["Mg", 1], ["HCl", 2]],
     "products": [["MgCl2", 1], ["H2", 1]],
     "type": "置换",
@@ -32,7 +32,7 @@
     "stars": 2
   },
   "r04": {
-    "levels": [1],
+    "levels": [1, 106],
     "reactants": [["Zn", 1], ["H2SO4", 1]],
     "products": [["ZnSO4", 1], ["H2", 1]],
     "type": "置换",
@@ -42,7 +42,7 @@
     "stars": 3
   },
   "r05": {
-    "levels": [1],
+    "levels": [1, 104, 106],
     "reactants": [["Fe", 1], ["H2SO4", 1]],
     "products": [["FeSO4", 1], ["H2", 1]],
     "type": "置换",
@@ -52,7 +52,7 @@
     "stars": 2
   },
   "r06": {
-    "levels": [1],
+    "levels": [1, 104, 106, 204, 304],
     "reactants": [["Fe", 1], ["CuSO4", 1]],
     "products": [["FeSO4", 1], ["Cu", 1]],
     "type": "置换",
@@ -62,7 +62,7 @@
     "trap": "湿法炼铜的原理"
   },
   "r07": {
-    "levels": [1],
+    "levels": [1, 104, 106],
     "reactants": [["Al", 2], ["CuSO4", 3]],
     "products": [["Al2(SO4)3", 1], ["Cu", 3]],
     "type": "置换",
@@ -71,7 +71,7 @@
     "stars": 2
   },
   "r08": {
-    "levels": [1],
+    "levels": [1, 106],
     "reactants": [["Cu", 1], ["AgNO3", 2]],
     "products": [["Cu(NO3)2", 1], ["Ag", 2]],
     "type": "置换",
@@ -80,7 +80,7 @@
     "stars": 3
   },
   "r09": {
-    "levels": [1],
+    "levels": [1, 101, 102, 104, 204, 304],
     "reactants": [["Fe", 3], ["O2", 2]],
     "products": [["Fe3O4", 1]],
     "type": "化合",
@@ -90,7 +90,7 @@
     "trap": "产物是 Fe₃O₄，不是 Fe₂O₃"
   },
   "r10": {
-    "levels": [1],
+    "levels": [1, 101, 102],
     "reactants": [["Mg", 2], ["O2", 1]],
     "products": [["MgO", 2]],
     "type": "化合",
@@ -99,7 +99,7 @@
     "stars": 3
   },
   "r11": {
-    "levels": [1],
+    "levels": [1, 202, 203, 204, 304],
     "reactants": [["Cu", 2], ["O2", 1]],
     "products": [["CuO", 2]],
     "type": "化合",
@@ -108,7 +108,7 @@
     "stars": 2
   },
   "r12": {
-    "levels": [2],
+    "levels": [2, 107, 108, 204],
     "reactants": [["HCl", 1], ["NaOH", 1]],
     "products": [["NaCl", 1], ["H2O", 1]],
     "type": "中和",
@@ -117,7 +117,7 @@
     "stars": 3
   },
   "r13": {
-    "levels": [2],
+    "levels": [2, 107],
     "reactants": [["HCl", 2], ["Ca(OH)2", 1]],
     "products": [["CaCl2", 1], ["H2O", 2]],
     "type": "中和",
@@ -126,7 +126,7 @@
     "stars": 2
   },
   "r14": {
-    "levels": [2],
+    "levels": [2, 107],
     "reactants": [["H2SO4", 1], ["Ca(OH)2", 1]],
     "products": [["CaSO4", 1], ["H2O", 2]],
     "type": "中和",
@@ -154,7 +154,7 @@
     "stars": 2
   },
   "r17": {
-    "levels": [2],
+    "levels": [2, 107],
     "reactants": [["H2SO4", 1], ["NaOH", 2]],
     "products": [["Na2SO4", 1], ["H2O", 2]],
     "type": "中和",
@@ -181,7 +181,7 @@
     "stars": 2
   },
   "r20": {
-    "levels": [3],
+    "levels": [3, 106, 107],
     "reactants": [["AgNO3", 1], ["HCl", 1]],
     "products": [["AgCl", 1], ["HNO3", 1]],
     "type": "沉淀",
@@ -192,7 +192,7 @@
     "trap": "检验 Cl⁻ 的经典方法"
   },
   "r21": {
-    "levels": [3],
+    "levels": [3, 107],
     "reactants": [["BaCl2", 1], ["H2SO4", 1]],
     "products": [["BaSO4", 1], ["HCl", 2]],
     "type": "沉淀",
@@ -202,7 +202,7 @@
     "stars": 3
   },
   "r22": {
-    "levels": [3, 6],
+    "levels": [3, 6, 107, 303],
     "reactants": [["Na2CO3", 1], ["HCl", 2]],
     "products": [["NaCl", 2], ["H2O", 1], ["CO2", 1]],
     "type": "产气",
@@ -212,7 +212,7 @@
     "stars": 3
   },
   "r23": {
-    "levels": [3],
+    "levels": [3, 105, 107],
     "reactants": [["Ca(OH)2", 1], ["Na2CO3", 1]],
     "products": [["CaCO3", 1], ["NaOH", 2]],
     "type": "沉淀",
@@ -223,7 +223,7 @@
     "trap": "工业制烧碱的原理"
   },
   "r24": {
-    "levels": [3],
+    "levels": [3, 105, 107, 108, 204],
     "reactants": [["CuSO4", 1], ["NaOH", 2]],
     "products": [["Cu(OH)2", 1], ["Na2SO4", 1]],
     "type": "沉淀",
@@ -233,7 +233,7 @@
     "stars": 3
   },
   "r25": {
-    "levels": [3],
+    "levels": [3, 107, 204],
     "reactants": [["FeCl3", 1], ["NaOH", 3]],
     "products": [["Fe(OH)3", 1], ["NaCl", 3]],
     "type": "沉淀",
@@ -243,7 +243,7 @@
     "stars": 3
   },
   "r26": {
-    "levels": [3],
+    "levels": [3, 105],
     "reactants": [["Na2SO4", 1], ["BaCl2", 1]],
     "products": [["BaSO4", 1], ["NaCl", 2]],
     "type": "沉淀",
@@ -253,7 +253,7 @@
     "stars": 2
   },
   "r27": {
-    "levels": [3],
+    "levels": [3, 105],
     "reactants": [["AgNO3", 1], ["NaCl", 1]],
     "products": [["AgCl", 1], ["NaNO3", 1]],
     "type": "沉淀",
@@ -263,7 +263,7 @@
     "stars": 2
   },
   "r28": {
-    "levels": [4],
+    "levels": [4, 108],
     "reactants": [["CaCO3", 1], ["HCl", 2]],
     "products": [["CaCl2", 1], ["H2O", 1], ["CO2", 1]],
     "type": "产气",
@@ -274,7 +274,7 @@
     "trap": "实验室制取 CO₂ 的标准方法"
   },
   "r29": {
-    "levels": [4],
+    "levels": [4, 108],
     "reactants": [["CaCO3", 1]],
     "products": [["CaO", 1], ["CO2", 1]],
     "type": "分解",
@@ -284,7 +284,7 @@
     "stars": 3
   },
   "r30": {
-    "levels": [4],
+    "levels": [4, 108],
     "reactants": [["CaO", 1], ["H2O", 1]],
     "products": [["Ca(OH)2", 1]],
     "type": "化合",
@@ -293,7 +293,7 @@
     "stars": 3
   },
   "r31": {
-    "levels": [4],
+    "levels": [4, 103],
     "reactants": [["CO2", 1], ["Ca(OH)2", 1]],
     "products": [["CaCO3", 1], ["H2O", 1]],
     "type": "沉淀",
@@ -304,7 +304,7 @@
     "trap": "检验 CO₂ 的方法"
   },
   "r32": {
-    "levels": [4],
+    "levels": [4, 102, 108, 301],
     "reactants": [["CO2", 1], ["H2O", 1]],
     "products": [["H2CO3", 1]],
     "type": "化合",
@@ -313,7 +313,7 @@
     "stars": 2
   },
   "r33": {
-    "levels": [4],
+    "levels": [4, 101, 102, 103, 108, 301],
     "reactants": [["C", 1], ["O2", 1]],
     "products": [["CO2", 1]],
     "type": "化合",
@@ -322,7 +322,7 @@
     "stars": 3
   },
   "r34": {
-    "levels": [4],
+    "levels": [4, 102, 103, 108, 301],
     "reactants": [["CO2", 1], ["C", 1]],
     "products": [["CO", 2]],
     "type": "化合",
@@ -331,7 +331,7 @@
     "stars": 2
   },
   "r35": {
-    "levels": [4],
+    "levels": [4, 103, 108],
     "reactants": [["CO", 1], ["CuO", 1]],
     "products": [["Cu", 1], ["CO2", 1]],
     "type": "氧化还原",
@@ -340,7 +340,7 @@
     "stars": 3
   },
   "r36": {
-    "levels": [4],
+    "levels": [4, 103, 108],
     "reactants": [["CO", 3], ["Fe2O3", 1]],
     "products": [["Fe", 2], ["CO2", 3]],
     "type": "氧化还原",
@@ -349,7 +349,7 @@
     "stars": 3
   },
   "r37": {
-    "levels": [4, 6],
+    "levels": [4, 6, 107, 303],
     "reactants": [["NaHCO3", 2]],
     "products": [["Na2CO3", 1], ["H2O", 1], ["CO2", 1]],
     "type": "分解",
@@ -369,7 +369,7 @@
     "stars": 2
   },
   "r39": {
-    "levels": [5],
+    "levels": [5, 201, 204],
     "reactants": [["Cl2", 1], ["H2O", 1]],
     "products": [["HCl", 1], ["HClO", 1]],
     "type": "氧化还原",
@@ -379,7 +379,7 @@
     "trap": "Cl₂ 既是氧化剂又是还原剂"
   },
   "r40": {
-    "levels": [5],
+    "levels": [5, 204],
     "reactants": [["Cl2", 1], ["NaOH", 2]],
     "products": [["NaCl", 1], ["NaClO", 1], ["H2O", 1]],
     "type": "氧化还原",
@@ -397,7 +397,7 @@
     "stars": 3
   },
   "r42": {
-    "levels": [5],
+    "levels": [5, 201],
     "reactants": [["Cl2", 1], ["NaBr", 2]],
     "products": [["NaCl", 2], ["Br2", 1]],
     "type": "置换",
@@ -406,7 +406,7 @@
     "stars": 3
   },
   "r43": {
-    "levels": [5],
+    "levels": [5, 201],
     "reactants": [["Cl2", 1], ["KI", 2]],
     "products": [["KCl", 2], ["I2", 1]],
     "type": "置换",
@@ -415,7 +415,7 @@
     "stars": 3
   },
   "r44": {
-    "levels": [5],
+    "levels": [5, 204],
     "reactants": [["Fe", 2], ["Cl2", 3]],
     "products": [["FeCl3", 2]],
     "type": "化合",
@@ -425,7 +425,7 @@
     "trap": "与盐酸不同，Cl₂ 把铁直接氧化到 +3"
   },
   "r45": {
-    "levels": [5],
+    "levels": [5, 204],
     "reactants": [["Cu", 1], ["Cl2", 1]],
     "products": [["CuCl2", 1]],
     "type": "化合",
@@ -443,7 +443,7 @@
     "stars": 2
   },
   "r47": {
-    "levels": [5],
+    "levels": [5, 201],
     "reactants": [["MnO2", 1], ["HCl", 4]],
     "products": [["MnCl2", 1], ["Cl2", 1], ["H2O", 2]],
     "type": "氧化还原",
@@ -454,7 +454,7 @@
     "trap": "必须用浓盐酸，稀盐酸不反应"
   },
   "r48": {
-    "levels": [6],
+    "levels": [6, 201, 204],
     "reactants": [["Na", 2], ["H2O", 2]],
     "products": [["NaOH", 2], ["H2", 1]],
     "type": "置换",
@@ -464,7 +464,7 @@
     "stars": 3
   },
   "r49": {
-    "levels": [6],
+    "levels": [6, 204],
     "reactants": [["Na", 2], ["O2", 1]],
     "products": [["Na2O2", 1]],
     "type": "化合",
@@ -512,7 +512,7 @@
     "stars": 2
   },
   "r54": {
-    "levels": [6],
+    "levels": [6, 107, 303],
     "reactants": [["NaHCO3", 1], ["HCl", 1]],
     "products": [["NaCl", 1], ["H2O", 1], ["CO2", 1]],
     "type": "产气",
@@ -531,7 +531,7 @@
     "stars": 3
   },
   "r56": {
-    "levels": [7],
+    "levels": [7, 204],
     "reactants": [["FeCl3", 2], ["Fe", 1]],
     "products": [["FeCl2", 3]],
     "type": "化合",
@@ -541,7 +541,7 @@
     "trap": "Fe³⁺ 与 Fe 归中，不是置换"
   },
   "r57": {
-    "levels": [7],
+    "levels": [7, 204],
     "reactants": [["Cu", 1], ["FeCl3", 2]],
     "products": [["CuCl2", 1], ["FeCl2", 2]],
     "type": "氧化还原",
@@ -568,7 +568,7 @@
     "stars": 2
   },
   "r60": {
-    "levels": [7],
+    "levels": [7, 104, 108],
     "reactants": [["Fe2O3", 1], ["HCl", 6]],
     "products": [["FeCl3", 2], ["H2O", 3]],
     "type": "复分解",
@@ -577,7 +577,7 @@
     "stars": 2
   },
   "r61": {
-    "levels": [7],
+    "levels": [7, 101, 102, 204, 304],
     "reactants": [["Fe", 3], ["H2O", 4]],
     "products": [["Fe3O4", 1], ["H2", 4]],
     "type": "置换",
@@ -598,7 +598,7 @@
     "trap": "电子守恒配平天花板，系数 2/16/2/2/5/8"
   },
   "r63": {
-    "levels": [8],
+    "levels": [8, 106, 202],
     "reactants": [["Cu", 1], ["H2SO4", 2]],
     "products": [["CuSO4", 1], ["SO2", 1], ["H2O", 2]],
     "type": "氧化还原",
@@ -609,7 +609,7 @@
     "trap": "只有浓硫酸才有强氧化性，稀硫酸不反应"
   },
   "r64": {
-    "levels": [8],
+    "levels": [8, 203],
     "reactants": [["Cu", 3], ["HNO3", 8]],
     "products": [["Cu(NO3)2", 3], ["NO", 2], ["H2O", 4]],
     "type": "氧化还原",
@@ -620,7 +620,7 @@
     "trap": "稀硝酸生成 NO，浓硝酸生成 NO₂"
   },
   "r65": {
-    "levels": [8],
+    "levels": [8, 202],
     "reactants": [["H2S", 2], ["SO2", 1]],
     "products": [["S", 3], ["H2O", 2]],
     "type": "氧化还原",
@@ -630,7 +630,7 @@
     "stars": 3
   },
   "r66": {
-    "levels": [8],
+    "levels": [8, 101],
     "reactants": [["H2O2", 2]],
     "products": [["H2O", 2], ["O2", 1]],
     "type": "分解",
@@ -640,7 +640,7 @@
     "stars": 3
   },
   "r67": {
-    "levels": [8],
+    "levels": [8, 101],
     "reactants": [["KClO3", 2]],
     "products": [["KCl", 2], ["O2", 3]],
     "type": "分解",
@@ -650,7 +650,7 @@
     "stars": 3
   },
   "r68": {
-    "levels": [8],
+    "levels": [8, 101, 202],
     "reactants": [["KMnO4", 2]],
     "products": [["K2MnO4", 1], ["MnO2", 1], ["O2", 1]],
     "type": "分解",
@@ -660,7 +660,7 @@
     "stars": 3
   },
   "r69": {
-    "levels": [9, 12],
+    "levels": [9, 12, 203, 302],
     "reactants": [["N2", 1], ["H2", 3]],
     "products": [["NH3", 2]],
     "type": "化合",
@@ -670,7 +670,7 @@
     "trap": "ΔH = −92.4 kJ/mol，加压降温有利于氨的生成"
   },
   "r70": {
-    "levels": [9, 12],
+    "levels": [9, 12, 202, 204, 302],
     "reactants": [["SO2", 2], ["O2", 1]],
     "products": [["SO3", 2]],
     "type": "化合",
@@ -679,7 +679,7 @@
     "stars": 3
   },
   "r71": {
-    "levels": [9],
+    "levels": [9, 203, 302],
     "reactants": [["NO2", 2]],
     "products": [["N2O4", 1]],
     "type": "化合",
@@ -689,7 +689,7 @@
     "trap": "勒夏特列原理最经典的演示实验"
   },
   "r72": {
-    "levels": [9],
+    "levels": [9, 108, 301],
     "reactants": [["CO", 1], ["H2O", 1]],
     "products": [["CO2", 1], ["H2", 1]],
     "type": "氧化还原",
@@ -698,7 +698,7 @@
     "stars": 2
   },
   "r73": {
-    "levels": [9],
+    "levels": [9, 302],
     "reactants": [["H2", 1], ["I2", 1]],
     "products": [["HI", 2]],
     "type": "化合",
@@ -707,7 +707,7 @@
     "stars": 2
   },
   "r74": {
-    "levels": [9],
+    "levels": [9, 102, 301],
     "reactants": [["CH4", 1], ["O2", 2]],
     "products": [["CO2", 1], ["H2O", 2]],
     "type": "燃烧",
@@ -716,7 +716,7 @@
     "stars": 3
   },
   "r75": {
-    "levels": [10],
+    "levels": [10, 303],
     "reactants": [["AgCl", 1], ["NaBr", 1]],
     "products": [["AgBr", 1], ["NaCl", 1]],
     "type": "沉淀",
@@ -737,7 +737,7 @@
     "stars": 3
   },
   "r77": {
-    "levels": [10],
+    "levels": [10, 303],
     "reactants": [["AlCl3", 1], ["NaHCO3", 3]],
     "products": [["Al(OH)3", 1], ["CO2", 3], ["NaCl", 3]],
     "type": "产气",
@@ -749,7 +749,7 @@
     "trap": "Al³⁺ 与 HCO₃⁻ 相互促进水解，写等号"
   },
   "r78": {
-    "levels": [10],
+    "levels": [10, 107, 303],
     "reactants": [["FeCl3", 1], ["NaHCO3", 3]],
     "products": [["Fe(OH)3", 1], ["CO2", 3], ["NaCl", 3]],
     "type": "产气",
@@ -760,7 +760,7 @@
     "stars": 3
   },
   "r79": {
-    "levels": [10],
+    "levels": [10, 303],
     "reactants": [["Na2CO3", 1], ["CH3COOH", 2]],
     "products": [["CH3COONa", 2], ["H2O", 1], ["CO2", 1]],
     "type": "产气",
@@ -770,7 +770,7 @@
     "stars": 2
   },
   "r80": {
-    "levels": [10],
+    "levels": [10, 303],
     "reactants": [["Na2S", 1], ["HCl", 2]],
     "products": [["NaCl", 2], ["H2S", 1]],
     "type": "产气",
@@ -780,7 +780,7 @@
     "stars": 2
   },
   "r81": {
-    "levels": [11],
+    "levels": [11, 304],
     "reactants": [["NaCl", 2], ["H2O", 2]],
     "products": [["NaOH", 2], ["H2", 1], ["Cl2", 1]],
     "type": "氧化还原",
@@ -791,7 +791,7 @@
     "trap": "电解饱和食盐水，不是电解水"
   },
   "r82": {
-    "levels": [11],
+    "levels": [11, 108, 204, 304],
     "reactants": [["CuSO4", 2], ["H2O", 2]],
     "products": [["Cu", 2], ["O2", 1], ["H2SO4", 2]],
     "type": "氧化还原",
@@ -801,7 +801,7 @@
     "stars": 3
   },
   "r83": {
-    "levels": [11],
+    "levels": [11, 203, 301, 302, 304],
     "reactants": [["H2", 2], ["O2", 1]],
     "products": [["H2O", 2]],
     "type": "化合",
@@ -810,7 +810,7 @@
     "stars": 3
   },
   "r84": {
-    "levels": [11],
+    "levels": [11, 101, 102, 204, 304],
     "reactants": [["Fe", 4], ["O2", 3], ["H2O", 6]],
     "products": [["Fe(OH)3", 4]],
     "type": "氧化还原",
@@ -859,7 +859,7 @@
     "stars": 3
   },
   "r89": {
-    "levels": [12],
+    "levels": [12, 104],
     "reactants": [["Al", 4], ["O2", 3]],
     "products": [["Al2O3", 2]],
     "type": "化合",
@@ -877,7 +877,7 @@
     "stars": 3
   },
   "r91": {
-    "levels": [12],
+    "levels": [12, 101, 202],
     "reactants": [["S", 1], ["O2", 1]],
     "products": [["SO2", 1]],
     "type": "化合",
@@ -886,7 +886,7 @@
     "stars": 3
   },
   "r92": {
-    "levels": [12],
+    "levels": [12, 202, 302],
     "reactants": [["SO3", 1], ["H2O", 1]],
     "products": [["H2SO4", 1]],
     "type": "化合",
@@ -895,7 +895,7 @@
     "stars": 3
   },
   "r93": {
-    "levels": [12],
+    "levels": [12, 203],
     "reactants": [["NH3", 4], ["O2", 5]],
     "products": [["NO", 4], ["H2O", 6]],
     "type": "氧化还原",
@@ -904,7 +904,7 @@
     "stars": 3
   },
   "r94": {
-    "levels": [12],
+    "levels": [12, 203],
     "reactants": [["NO", 2], ["O2", 1]],
     "products": [["NO2", 2]],
     "type": "化合",
@@ -913,7 +913,7 @@
     "stars": 3
   },
   "r95": {
-    "levels": [12],
+    "levels": [12, 203, 302],
     "reactants": [["NO2", 3], ["H2O", 1]],
     "products": [["HNO3", 2], ["NO", 1]],
     "type": "氧化还原",
@@ -923,7 +923,7 @@
     "trap": "3NO₂ + H₂O = 2HNO₃ + NO，不是简单的水合"
   },
   "r96": {
-    "levels": [8],
+    "levels": [8, 202],
     "reactants": [["KMnO4", 2], ["H2S", 3]],
     "products": [["MnO2", 2], ["S", 3], ["KOH", 2], ["H2O", 2]],
     "type": "氧化还原",
@@ -932,5 +932,16 @@
     "precipitate": ["S", "MnO2"],
     "stars": 3,
     "trap": "中性或弱碱性介质里高锰酸根被还原成 MnO₂；酸性介质才生成 Mn²⁺"
+  },
+  "r97": {
+    "levels": [103, 108],
+    "reactants": [["CuO", 2], ["C", 1]],
+    "products": [["Cu", 2], ["CO2", 1]],
+    "type": "氧化还原",
+    "condition": "高温",
+    "phenomenon": "黑色氧化铜逐渐变为光亮的红色，生成的气体使澄清石灰水变浑浊",
+    "gas": ["CO2"],
+    "stars": 2,
+    "trap": "碳作还原剂，夺走氧化铜里的氧；碳被氧化成 CO₂"
   }
 }
